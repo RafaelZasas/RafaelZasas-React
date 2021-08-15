@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    match /Feedback/{document} {
+      allow read, create;
+      allow delete:  if isAdmin();
+        match /replies/{reply=**} {
+        	allow read, create;
+      		allow delete: if isAdmin() || isOwner(
+          get(/databases/$(database)/documents/Feedback/$(document)/replies/$(reply)).data.user
+          );
+    	}
+    }
+    
+    
+    
+    match /PeerAdvising/{anything=**} {
+      allow read, write;
+    }
+
+    match /users/{userID} {
+     allow write: if isOwner(userID) || isAdmin();
+     allow read;
+    }
+    
+    // reusable function to determine document ownership
+    
+    function isOwner(userID){
+    	return request.auth.uid == userID;
+    }
+    
+      // Allow the user permissions if their user document has the
+      // 'admin' field set to 'true'
+      // Note* that the document data can only be accessed after the .data field
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.permissions.admin == true;
+    }
+    
+  }
+}
