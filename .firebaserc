@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "rafael-zasas"
+  },
+  "targets": {
+    "rafael-zasas": {
+      "hosting": {
+        "rtx": [
+          "rafaelzasas-next-react"
+        ]
+      }
+    }
+  }
+}
