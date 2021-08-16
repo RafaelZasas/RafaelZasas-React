@@ -6,7 +6,10 @@
 <div align="center">
 
 ### 🚀 Build and Deployment Status
+[![Dev Build](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml/badge.svg?branch=develop)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml)
 [![Dev Deploy](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml)
+[![Live Deployment](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml/badge.svg?branch=main)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml)
+
 
 ### 📈 Project Stats
 ![Lines of code](https://img.shields.io/tokei/lines/github/RafaelZasas/RafaelZasas-React?style=for-the-badge)
@@ -16,9 +19,9 @@
 
 ### 💡 About
 
-<p style="font-weight: bold; color: dodgerblue">This is the React version of my <a href="https://rafaelzasas.com">Personal Website</a>.
-There is also a Angular version of my website 
-which can be viewed <a href="https://rafaelzasas.com">Here</a>.</p>
+<p style="font-weight: bold; color: dodgerblue">This is the React version of my Personal Website and can be viewed <a href="https://rtx.rafaelzasas.com">Here</a>.</p>
+<p>There is also a Angular version of my website which can be viewed <a href="https://rafaelzasas.com">Here</a>.</p>
+<p>This site was built using React and NextJs and is styled using Tailwind CSS and the open sourced community (Thank you!)</p>
 
 ### <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"  height="30px" align="center" > Repo  Stats
 ![GitHub watchers](https://img.shields.io/github/watchers/RafaelZasas/RafaelZasas-React?style=social)
