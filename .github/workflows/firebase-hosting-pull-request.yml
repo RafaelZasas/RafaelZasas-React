@@ -17,9 +17,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build
-      - run: 'npm run build && npm run export'
+        run: 'npm run build && npm run export'
       - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RAFAEL_ZASAS }}'
           projectId: rafael-zasas
+          expires: 30d
+          channelId: 'Beta'
