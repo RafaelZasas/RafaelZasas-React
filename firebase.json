@@ -4,7 +4,7 @@
   },
   "hosting": {
     "target": "rtx",
-    "public": "/out",
+    "public": "out",
     "ignore": [
       "firebase.json",
       "**/.*",
