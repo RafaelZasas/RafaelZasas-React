@@ -6,23 +6,24 @@
 <div align="center">
 
 ### 🚀 Build and Deployment Status
-[![Deploy](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=main)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/firebase-hosting-merge.yml)
-### 📈 Project Stats
-![Code Climate issues](https://img.shields.io/codeclimate/issues/rafaelzasas/RafaelZasas?style=for-the-badge)
-![Lines of code](https://img.shields.io/tokei/lines/github/RafaelZasas/raf-website?style=for-the-badge)
-![GitHub contributors](https://img.shields.io/github/contributors/RafaelZasas/raf-website?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/RafaelZasas/raf-website?style=for-the-badge)
+[![Dev Deploy](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml)
 
+### 📈 Project Stats
+![Lines of code](https://img.shields.io/tokei/lines/github/RafaelZasas/RafaelZasas-React?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/RafaelZasas/RafaelZasas-React?style=for-the-badge)
+[![GitHub issues](https://img.shields.io/github/issues/RafaelZasas/RafaelZasas-React?style=for-the-badge)](https://github.com/RafaelZasas/RafaelZasas-React/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/RafaelZasas/RafaelZasas-React?style=for-the-badge)](https://github.com/RafaelZasas/RafaelZasas-React/pulls)
 
 ### 💡 About
 
-<p style="font-weight: bold; color: dodgerblue">This is the Angular version of my <a href="https://rafaelzasas.com">Personal Website</a>. There is also a React version of my website 
-which is currently under development.</p>
+<p style="font-weight: bold; color: dodgerblue">This is the React version of my <a href="https://rafaelzasas.com">Personal Website</a>.
+There is also a Angular version of my website 
+which can be viewed <a href="https://rafaelzasas.com">Here</a>.</p>
 
 ### <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"  height="30px" align="center" > Repo  Stats
-![GitHub watchers](https://img.shields.io/github/watchers/RafaelZasas/raf-website?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/rafaelzasas/raf-website?style=social)
-![GitHub forks](https://img.shields.io/github/forks/rafaelzasas/raf-website?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/RafaelZasas/RafaelZasas-React?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/rafaelzasas/RafaelZasas-React?style=social)
+![GitHub forks](https://img.shields.io/github/forks/rafaelzasas/RafaelZasas-React?style=social)
 
 
 ### 🍻 Connect With Me!
