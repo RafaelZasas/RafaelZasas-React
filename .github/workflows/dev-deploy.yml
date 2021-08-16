@@ -21,6 +21,5 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RAFAEL_ZASAS }}'
           projectId: rafael-zasas
           expires: 30d
-          entryPoint: "./lib/"
           channelId: 'Beta'
           target: rafaelzasas-next-react
