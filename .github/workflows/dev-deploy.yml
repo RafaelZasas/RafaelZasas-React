@@ -23,4 +23,4 @@ jobs:
           expires: 30d
           channelId: 'Beta'
           entrypoint: ./lib
-          target: rafaelzasas-next-react
+          target: rtx rafaelzasas-next-react
