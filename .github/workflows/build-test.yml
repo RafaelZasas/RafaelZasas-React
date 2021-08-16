@@ -4,7 +4,7 @@ on:
     branches:
       - develop
 jobs:
-  build_and_preview:
+  build_and_test:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
@@ -15,4 +15,4 @@ jobs:
       - name: Linter
         run: 'npm run lint'
       - name: Build
-        run: 'npm run deploy'
+        run: 'npm run build'
