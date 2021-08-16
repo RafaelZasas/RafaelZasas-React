@@ -22,4 +22,5 @@ jobs:
           projectId: rafael-zasas
           expires: 30d
           channelId: 'Beta'
+          entrypoint: ./lib
           target: rafaelzasas-next-react
