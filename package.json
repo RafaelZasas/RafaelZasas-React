@@ -27,6 +27,13 @@
     "firebase": "^8.9.1",
     "firebase-admin": "^9.11.0",
     "firebase-functions": "^3.15.3",
+    "image-trace-loader": "^1.0.2",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-mozjpeg": "^9.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^9.0.0",
+    "jimp": "^0.16.1",
+    "lqip-loader": "^2.2.1",
     "next": "11.1.0",
     "next-compose-plugins": "^2.2.1",
     "next-optimized-images": "^2.6.2",
@@ -35,7 +42,10 @@
     "react-dom": "17.0.2",
     "react-firebase-hooks": "^3.0.4",
     "react-spinners": "^0.11.0",
-    "tailwindcss": "^2.0.2"
+    "responsive-loader": "^2.3.0",
+    "svg-sprite-loader": "^6.0.9",
+    "tailwindcss": "^2.0.2",
+    "webp-loader": "^0.6.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.3.3",
