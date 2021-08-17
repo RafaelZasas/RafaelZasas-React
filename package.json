@@ -11,7 +11,7 @@
     "build:css": "postcss styles/tailwind.css -o styles/main.css",
     "build:watch": "postcss styles/tailwind.css -o styles/main.css --watch",
     "prod:build": "NODE_ENV=production npm run build:css && npm run build",
-    "deploy": "npm run build:css && npm run build && npm run export"
+    "deploy": "npm run build:css && && next start next build && next export"
   },
   "dependencies": {
     "@emotion/css": "^11.1.3",
