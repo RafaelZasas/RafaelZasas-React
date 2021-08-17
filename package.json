@@ -21,6 +21,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
+    "@headlessui/react": "^1.4.0",
     "@iconscout/unicons": "^4.0.0",
     "autoprefixer": "^10.1.0",
     "firebase": "^8.9.1",
@@ -35,6 +36,7 @@
     "tailwindcss": "^2.0.2"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.3.3",
     "@types/node": "^16.6.1",
     "@types/react": "^17.0.18",
     "autoprefixer": "^10.3.1",

@@ -15,7 +15,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className='flex items-center flex-wrap bg-blue-500 p-3 '>
+      <header className='flex items-center flex-wrap bg-blue-500 p-3'>
         <Link href='/'>
           <a className='inline-flex items-center p-2 mr-4 '>
             <FontAwesomeIcon icon={faChevronLeft} color={'white'}/>
@@ -89,7 +89,7 @@ export const Navbar = () => {
 
           </div>
         </div>
-      </nav>
+      </header>
     </>
   );
 };
