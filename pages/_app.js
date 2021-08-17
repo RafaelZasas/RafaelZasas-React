@@ -3,14 +3,16 @@ import '../styles/main.css';
 import {Navbar} from '../components/Navbar'
 import Footer from "../components/Footer";
 
-function MyApp({ Component, pageProps }) {
-  return (
-    <main>
-    <Navbar />
-    <Component {...pageProps} />
-      <Footer />
-    </main>
-  );
+function MyApp({Component, pageProps}) {
+    return (
+        <body className='flex flex-col min-h-screen'>
+        <Navbar/>
+        <main className='flex-grow' >
+            <Component {...pageProps} />
+        </main>
+        <Footer/>
+        </body>
+    );
 }
 
 export default MyApp
