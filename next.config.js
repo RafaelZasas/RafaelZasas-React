@@ -1,6 +1,10 @@
-// next.config.js
-const withPlugins = require('next-compose-plugins');
-const optimizedImages = require('next-optimized-images');
+module.exports = {
+  reactStrictMode: true,
+  images: {
+    loader: 'imgix',
+    path: 'https://rafaelzasas.imgix.net'
+  },
+}
 
 module.exports = withPlugins([
   [optimizedImages, {
