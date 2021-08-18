@@ -3,11 +3,15 @@ import '../styles/main.css';
 import {Navbar} from '../components/Navbar'
 import Footer from "../components/Footer";
 import {UserContext} from "../lib/context";
+import {useUserData} from "../lib/hooks";
 
 function MyApp({Component, pageProps}) {
+
+    const userData = useUserData();
+
     return (
         <UserContext.Provider
-            value={{user:{}, username: 'raff'}}>
+            value={userData}>
             <div className='flex flex-col min-h-screen'>
                 <Navbar/>
                 <main className='flex-grow' >
