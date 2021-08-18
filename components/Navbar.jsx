@@ -8,7 +8,7 @@ import {UserContext} from '../lib/context'
 
 export const Navbar = () => {
     const [active, setActive] = useState(false);
-    const {user, username} = useContext(UserContext);
+    const {user, userData} = useContext(UserContext);
 
     const handleClick = () => {
         setActive(!active);
@@ -70,7 +70,7 @@ export const Navbar = () => {
                             </a>
                         </Link>
 
-                        {username && (
+                        {userData?.username && (
                             <>
                                 <Link href='/profile'>
                                     <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
@@ -80,7 +80,7 @@ export const Navbar = () => {
                             </>
                         )}
 
-                        {!username && (
+                        {!userData?.username && (
                             <Link href='/login'>
                                 <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
                                     Login
