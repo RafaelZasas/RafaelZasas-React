@@ -6,6 +6,7 @@ export interface User {
     photoURL?: string;
     profilePhoto?: string;
     username?: string;
+    website?: string;
     permissions: {
         user: boolean,
         edit: boolean,
