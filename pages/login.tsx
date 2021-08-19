@@ -1,5 +1,5 @@
-import {appleAuthProvider, auth, githubAuthProvider, googleAuthProvider} from '../lib/firebase';
-
+import {appleAuthProvider, auth, githubAuthProvider, googleAuthProvider, firestore} from '../lib/firebase';
+import {useRouter} from "next/router";
 
 export default function Login() {
     return (
@@ -76,7 +76,7 @@ export default function Login() {
                     <div className="mt-6">
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-300" />
+                                <div className="w-full border-t border-gray-300"/>
                             </div>
                             <div className="relative flex justify-center text-sm">
                                 <span className="px-2 bg-white text-gray-500">Or continue with</span>
@@ -86,7 +86,7 @@ export default function Login() {
                         <div className="mt-6 grid grid-cols-3 gap-3">
                             <SignInWithGoogleButton/>
                             <SignInWithGitHubButton/>
-                            <SignInWithAppleButton />
+                            <SignInWithAppleButton/>
                         </div>
                     </div>
                 </div>
@@ -95,39 +95,49 @@ export default function Login() {
     )
 }
 
-function SignInWithGoogleButton(){
+function SignInWithGoogleButton() {
+    const router = useRouter();
     const signInWithApple = async () => {
-        await auth.signInWithPopup(googleAuthProvider);
+        const token = await auth.signInWithPopup(googleAuthProvider);
+        await validateNewUser(token) ? await router.push('/profile') : await router.push('/');
     };
 
     return (
         <div>
             <button onClick={signInWithApple}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
                 <span className="sr-only">Sign in with Google</span>
-                <svg className="w-5 h-5" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"
+                     xmlns="http://www.w3.org/2000/svg">
                     <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                        <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                        <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                        <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                        <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                    </g></svg>
+                        <path fill="#4285F4"
+                              d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                        <path fill="#34A853"
+                              d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                        <path fill="#FBBC05"
+                              d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                        <path fill="#EA4335"
+                              d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                    </g>
+                </svg>
             </button>
         </div>
     )
 
 }
 
-function SignInWithGitHubButton(){
+function SignInWithGitHubButton() {
+    const router = useRouter();
     const signInWithGitHub = async () => {
-        await auth.signInWithPopup(githubAuthProvider);
+        const token = await auth.signInWithPopup(githubAuthProvider);
+        await validateNewUser(token) ? await router.push('/profile') : await router.push('/');
     };
 
     return (
         <div>
             <button onClick={signInWithGitHub}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
                 <span className="sr-only">Sign in with GitHub</span>
                 <svg className="w-5 h-5" aria-hidden="true" viewBox="0 0 20 20">
@@ -142,21 +152,53 @@ function SignInWithGitHubButton(){
     )
 }
 
-function SignInWithAppleButton(){
-    const signInWithGitHub = async () => {
-        await auth.signInWithPopup(appleAuthProvider);
+function SignInWithAppleButton() {
+    const router = useRouter();
+    const signInWithApple = async () => {
+        const token = await auth.signInWithPopup(appleAuthProvider);
+        await validateNewUser(token) ? await router.push('/profile') : await router.push('/');
     };
 
     return (
         <div>
-            <button onClick={signInWithGitHub}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            <button onClick={signInWithApple}
+                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
                 <span className="sr-only">Sign in with Apple</span>
                 <svg className="w-5 h-5" aria-hidden="true" viewBox="0 0 842 1e3" width="842" height="1e3">
-                    <path d="M702 960c-54.2 52.6-114 44.4-171 19.6-60.6-25.3-116-26.9-180 0-79.7 34.4-122 24.4-170-19.6-271-279-231-704 77-720 74.7 4 127 41.3 171 44.4 65.4-13.3 128-51.4 198-46.4 84.1 6.8 147 40 189 99.7-173 104-132 332 26.9 396-31.8 83.5-72.6 166-141 227zM423 237C414.9 113 515.4 11 631 1c15.9 143-130 250-208 236z"/>
+                    <path
+                        d="M702 960c-54.2 52.6-114 44.4-171 19.6-60.6-25.3-116-26.9-180 0-79.7 34.4-122 24.4-170-19.6-271-279-231-704 77-720 74.7 4 127 41.3 171 44.4 65.4-13.3 128-51.4 198-46.4 84.1 6.8 147 40 189 99.7-173 104-132 332 26.9 396-31.8 83.5-72.6 166-141 227zM423 237C414.9 113 515.4 11 631 1c15.9 143-130 250-208 236z"/>
                 </svg>
             </button>
         </div>
     )
+}
+
+/**
+ * Adds default user data into firestore if user is signing in for the first time
+ * @param token Firebase token provided on completion of sign in
+ */
+async function validateNewUser(token) {
+    const userRef = firestore.doc(`users/${token.user.uid}`);
+    const userData = await userRef.get();
+
+    if (!userData.data()) {
+        const data = {
+            uid: token.user.uid,
+            email: token.user.email,
+            profilePhoto: token.user.photoURL,
+            username: token.user.displayName,
+            permissions: {
+                user: true,
+                edit: false,
+                admin: false
+            },
+            communications: {
+                email: {comments: false, projects: false, updates: false},
+                push: {comments: false, projects: false, updates: false}
+            }
+        }
+        await userRef.set(data, {merge: true});
+        return true;
+    } else return false;
 }
