@@ -6,7 +6,7 @@
 <div align="center">
 
 ### 🚀 Build and Deployment Status
-[![Dev Build](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml/badge.svg?branch=develop)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml)
+[![Build Test](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml)
 [![Dev Deploy](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml)
 [![Live Deployment](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml/badge.svg?branch=main)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml)
 
