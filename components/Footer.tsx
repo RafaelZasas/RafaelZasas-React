@@ -101,7 +101,7 @@ const navigation = {
 const Footer = () => {
     const [mode, setMode] = useState("auto");
     return (
-        <footer className="bg-blue-50 fixed inset-x-0 bottom-0" aria-labelledby="footer-heading">
+        <footer className="bg-blue-50 " aria-labelledby="footer-heading">
             <h2 id="footer-heading" className="sr-only">
                 Footer
             </h2>
@@ -184,8 +184,8 @@ const Footer = () => {
                             <div className="mt-12 md:mt-0">
                                 <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">Contact</h3>
                                 <ul role="list" className="mt-4 space-y-4">
-                                    {navigation.contact.map((item) => (
-                                        <li key={item.name}>
+                                    {navigation.contact.map((item, index) => (
+                                        <li key={index}>
                                             <a href={item.href}
                                                className="text-base text-gray-500 hover:text-gray-900">
                                                 {item.name}
