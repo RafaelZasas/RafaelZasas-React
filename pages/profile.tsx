@@ -9,6 +9,9 @@ import {firestore} from "../lib/firebase";
 
 export default function ProfilePage({}) {
     const {user, userData} = useContext(UserContext);
+    const [isValid, setIsValid] = useState(true);
+
+
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -58,7 +61,8 @@ export default function ProfilePage({}) {
                         <div className="mt-5 md:mt-0">
                             <div className="space-y-6">
 
-                                <UsernameInput/>
+                                <UsernameInput
+                                    formValidityState={[isValid, setIsValid]} />
 
                                 <WebsiteInput/>
 
@@ -91,7 +95,7 @@ export default function ProfilePage({}) {
                 <div className="sm:block md:block lg:block xl:block">
                     <div className="">
                         <CancelBtn/>
-                        <SaveBtn/>
+                        <SaveBtn isValid={isValid}/>
                     </div>
 
                     <div className="mb-2 sm:mt-2 float-right">
@@ -105,9 +109,10 @@ export default function ProfilePage({}) {
 }
 
 
-function UsernameInput() {
+const  UsernameInput = props => {
 
-    const [isValid, setIsValid] = useState(true);
+    // validity state passed into component as a property- used in parent to disable submit button
+    const [isValid, setIsValid] = props.formValidityState;
     const [loading, setLoading] = useState(false);
     const [usernameValue, setUsernameValue] = useState('hopefullyNobodyUsesThis');
     const {user, userData} = useContext(UserContext);
@@ -118,6 +123,7 @@ function UsernameInput() {
         invalid: `block w-full pr-10 border-red-300 text-red-900 placeholder-red-300
         focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md`
     }
+
 
     const onChange = (e) => {
         setLoading(true);
@@ -419,13 +425,15 @@ function CancelBtn() {
     );
 }
 
-function SaveBtn() {
+const SaveBtn = props => {
+    const isValid = props.isValid;
     return (
             <button
                 type="submit"
+                disabled={!isValid}
                 className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm
                      font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
-                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
                 Save
             </button>
     );
