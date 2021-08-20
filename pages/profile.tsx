@@ -5,13 +5,18 @@ import {auth} from '../lib/firebase';
 import {useRouter} from "next/router";
 import debounce from "lodash.debounce";
 import {firestore} from "../lib/firebase";
+import {Toast} from '../components/toast';
 
 
 export default function ProfilePage({}) {
     const {user, userData} = useContext(UserContext);
     const [isValid, setIsValid] = useState(true);
-
-
+    const [show, setShow] = useState(false);
+    const [toastData, setToastData] = useState({
+        heading: null,
+        body: null,
+        type: null,
+    })
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -34,82 +39,105 @@ export default function ProfilePage({}) {
         }
         try {
             await firestore.doc(`users/${user.uid}`).update(formData);
+            setToastData({
+                heading: 'Success!',
+                body: 'Your profile and preferences have been saved.',
+                type: 'success'
+            });
+            setShow(true);
+            setTimeout(() => {
+                setShow(false)
+            }, 2000);
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            setToastData({
+                heading: 'Error Updating Profile',
+                body: e.message,
+                type: 'error'
+            });
+            setShow(true);
+            setTimeout(() => {
+                setShow(false)
+            }, 2000);
         }
 
 
     }
 
     return (
-            <form className="space-y-6 px-5 py-4" onSubmit={onSubmit}>
+        <form className="space-y-6 px-5 py-4" onSubmit={onSubmit}>
+            <>
+                <Toast
+                    setShow={setShow}
+                    toastData={toastData}
+                    show={show}
+                /> </>
+            {/* Form Inputs */}
+            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
 
-                {/* Form Inputs */}
-                <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+                {/* Heading */}
+                <div className="w-full pb-5">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Profile</h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        This information will be displayed on the feedback section and your public profile.
+                    </p>
+                </div>
 
-                    {/* Heading */}
-                    <div className="w-full pb-5">
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">Profile</h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                            This information will be displayed on the feedback section and your public profile.
-                        </p>
-                    </div>
+                {/* Personal Info Section */}
 
-                    {/* Personal Info Section */}
+                <div className="w-full md:gap-6 mt-2">
+                    <div className="mt-5 md:mt-0">
+                        <div className="space-y-6">
 
-                    <div className="w-full md:gap-6 mt-2">
-                        <div className="mt-5 md:mt-0">
-                            <div className="space-y-6">
+                            <UsernameInput
+                                formValidityState={[isValid, setIsValid]}/>
 
-                                <UsernameInput
-                                    formValidityState={[isValid, setIsValid]} />
+                            <WebsiteInput/>
 
-                                <WebsiteInput/>
+                            <BioInput/>
 
-                                <BioInput/>
+                            <PhotoInput/>
 
-                                <PhotoInput/>
-
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Notifications Section */}
-                <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
-                    <div className="md:grid md:grid-cols-3 md:gap-6">
-                        <div className="md:col-span-1">
-                            <h3 className="text-lg font-medium leading-6 text-gray-900">Notifications</h3>
-                            <p className="mt-1 text-sm text-gray-500">Decide which communications you&apos;d like to receive
-                                and how.</p>
-                        </div>
-                        <div className="mt-5 md:mt-0 md:col-span-2">
-                            <div className="space-y-6">
-                                <EmailNotificationsFieldset/>
-                                <PushNotificationsFieldset/>
-                            </div>
+            {/* Notifications Section */}
+            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                    <div className="md:col-span-1">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">Notifications</h3>
+                        <p className="mt-1 text-sm text-gray-500">Decide which communications you&apos;d like to receive
+                            and how.</p>
+                    </div>
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="space-y-6">
+                            <EmailNotificationsFieldset/>
+                            <PushNotificationsFieldset/>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div className="sm:block md:block lg:block xl:block">
-                    <div className="">
-                        <CancelBtn/>
-                        <SaveBtn isValid={isValid}/>
-                    </div>
-
-                    <div className="mb-2 sm:mt-2 float-right">
-                        <SignOutBtn/>
-                    </div>
-
+            <div className="sm:block md:block lg:block xl:block">
+                <div className="">
+                    <CancelBtn/>
+                    <SaveBtn isValid={isValid}/>
                 </div>
 
-            </form>
+                <div className="mb-2 sm:mt-2 float-right">
+                    <SignOutBtn/>
+                </div>
+
+            </div>
+
+        </form>
     )
 }
 
 
-const  UsernameInput = props => {
+const UsernameInput = props => {
 
     // validity state passed into component as a property- used in parent to disable submit button
     const [isValid, setIsValid] = props.formValidityState;
@@ -139,11 +167,11 @@ const  UsernameInput = props => {
     const checkUsername = useCallback(
         debounce(async (username) => {
 
-            if (username.length < 3){
+            if (username.length < 3) {
                 setLoading(false);
                 setIsValid(false);
                 setErrorMessage('Username is too short');
-            } else if (username.length > 25){
+            } else if (username.length > 25) {
                 setLoading(false);
                 setIsValid(false);
                 setErrorMessage('Username is too long');
@@ -155,7 +183,7 @@ const  UsernameInput = props => {
                 setErrorMessage(docs.size > 0 ? 'Username is taken. Please choose another' : '');
             }
 
-        }, 500), [] );
+        }, 500), []);
 
 
     return (
@@ -171,7 +199,7 @@ const  UsernameInput = props => {
                         name="username"
                         id="username"
                         onChange={onChange}
-                        className={isValid? usernameClasses.valid: usernameClasses.invalid}
+                        className={isValid ? usernameClasses.valid : usernameClasses.invalid}
                         placeholder={userData?.username ? userData?.username : 'username'}
                         defaultValue={userData?.username ? userData?.username : 'username'}
                         aria-invalid="false"
@@ -428,14 +456,14 @@ function CancelBtn() {
 const SaveBtn = props => {
     const isValid = props.isValid;
     return (
-            <button
-                type="submit"
-                disabled={!isValid}
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm
+        <button
+            type="submit"
+            disabled={!isValid}
+            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm
                      font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
                       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-                Save
-            </button>
+            Save
+        </button>
     );
 }
 
