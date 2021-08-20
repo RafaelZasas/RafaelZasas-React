@@ -16,7 +16,7 @@ export const Navbar = () => {
 
     return (
         <>
-            <header className='flex items-center flex-wrap bg-blue-500 p-3'>
+            <header className='flex items-center flex-wrap bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-3'>
                 <Link href='/'>
                     <a className='inline-flex items-center p-2 mr-4 '>
                         <FontAwesomeIcon icon={faChevronLeft} color={'white'}/>
