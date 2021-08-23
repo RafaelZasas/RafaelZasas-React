@@ -40,10 +40,16 @@ export default function ResumePage({}) {
             setResume(res);
         })
 
+    /**
+     * Needed because the add event listener function can't take setWidth()
+     */
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
     }
 
+    /**
+     * Sets the width of the screen on resize so that the pdf can compute which size of doc to load
+     */
     useEffect(() => {
         window.addEventListener('resize', handleWindowSizeChange);
         return () => {
@@ -57,27 +63,6 @@ export default function ResumePage({}) {
         setWidth(window.innerWidth);
     }
 
-    const getWidth = () => {
-        switch (true) {
-            case (width < 350):
-                return 200;
-            case (width >= 350 && width < 400):
-                return 250;
-            case (width >= 400 && width < 500):
-                return 300;
-            case (width >= 500 && width < 600):
-                return 400;
-            case  (width >= 600 && width < 700):
-                return 500;
-            case  (width >= 700 && width < 900):
-                return 600;
-            case  (width >= 900 && width < 1200):
-                return 800;
-            default:
-                return 1000;
-
-        }
-    }
 
     return (
         <div>
@@ -90,11 +75,13 @@ export default function ResumePage({}) {
                             renderMode='canvas'
                             file={resume}
                             loading={loader}
+                            noData={loader}
                             onLoadSuccess={onDocumentLoadSuccess}
                         >
                             <Page
                                 pageNumber={pageNumber}
-                                width={getWidth()}
+                                width={width}
+                                scale={0.8}
                             />
                         </Document>
                         <p>Page {pageNumber} of {numPages}</p>
@@ -126,7 +113,9 @@ export default function ResumePage({}) {
     )
 }
 
-
+/**
+ * Spinner to show that the pdf is loading
+ */
 const loader = () => {
     return (
         <div className="absolute inset-y-0 flex items-center pointer-events-none">
@@ -135,6 +124,19 @@ const loader = () => {
     )
 }
 
+/**
+ * Component and Logic for sending the resume. Will prompt user to enter email with a modal if not logged in.
+ * @param params {
+ * resume: string;
+ * modal: {[open: Boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>]};
+ * toast: {
+ * {[showToast: Boolean, setShowToast: React.Dispatch<React.SetStateAction<boolean>>]},
+ * {[toastData: Boolean, setToastData: React.Dispatch<React.SetStateAction<boolean>>]}
+ *   }
+ * }
+ * }
+ * @constructor
+ */
 const SendButton = (params) => {
 
     const {user, userData} = useContext(UserContext);
@@ -199,6 +201,12 @@ const SendButton = (params) => {
         </button>
     )
 }
+
+/**
+ * Button to download resume to device
+ * @param params {resume: {string} The url of the resume to be downloaded}
+ * @constructor
+ */
 const DownloadButton = (params) => {
     return (
         <a
