@@ -44,9 +44,9 @@ const AddEmailModal = (params) => {
 
             // Some error handling to make sure users dont pull a fast one
             if (!validateEmail(email)){
-                throw new Error('Please a valid email or Login :)')
+                throw new Error(`Please a valid Email or Login :)`, )
             } else if (username.length<3){
-                throw new Error('Please a valid name or Login :)')
+                throw new Error('Please a valid Name or Login :)')
             }
 
             // queue mail for delivery
