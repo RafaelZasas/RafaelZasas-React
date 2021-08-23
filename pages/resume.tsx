@@ -4,7 +4,7 @@ import {storage, firestore} from "../lib/firebase";
 import {MailIcon} from '@heroicons/react/solid'
 import {DocumentDownloadIcon} from '@heroicons/react/outline'
 import {UserContext} from "../lib/context";
-
+import AddEmailModal from '../components/addEmailModal'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
@@ -13,7 +13,7 @@ export default function ResumePage({}) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [resume, setResume] = useState('');
-
+    const [openAddEmailModal, setOpenAddEmailModal] = useState(false);
     const [width, setWidth] = useState<number>(null);
 
     storage.refFromURL('gs://rafael-zasas.appspot.com/PDFResumeSept2021.pdf')
@@ -63,6 +63,7 @@ export default function ResumePage({}) {
 
     return (
         <div>
+            <AddEmailModal open={openAddEmailModal} setOpen={setOpenAddEmailModal}/>
             <div className="bg-white min-h-screen px-4 py-14 sm:px-6 py-16 md:grid place-items-center lg:px-8">
                 <div className="max-w-max mx-auto">
                     <main className="sm:flex sm:w-full">
@@ -83,7 +84,7 @@ export default function ResumePage({}) {
             </div>
 
             <div className='flex-row mb-6 mx-12 sm:mt-0'>
-                <SendButton resume={resume} />
+                <SendButton resume={resume} modal={{open: openAddEmailModal, setOpen: setOpenAddEmailModal}}/>
                 <DownloadButton resume={resume}/>
             </div>
 
@@ -110,7 +111,7 @@ const SendButton = (params) => {
         if (user){
             const mail = {
                 to: [user.email],
-                bcc: ['admin@rafaelzasas'],
+                bcc: ['admin@rafaelzasas.com'],
                 from: 'admin@rafaelzasas.com',
                 template: {
                     name: 'resumeRequest',
@@ -126,7 +127,7 @@ const SendButton = (params) => {
                 console.log(e)
             }
         } else {
-
+            params.modal.setOpen(true);
         }
     }
 
