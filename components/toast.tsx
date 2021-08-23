@@ -1,9 +1,23 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment } from 'react'
-import { Transition } from '@headlessui/react'
-import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/outline'
-import { XIcon } from '@heroicons/react/solid'
+import React, {Fragment} from 'react'
+import {Transition} from '@headlessui/react'
+import {CheckCircleIcon, ExclamationCircleIcon} from '@heroicons/react/outline'
+import {XIcon} from '@heroicons/react/solid'
 
+// Params =
+
+/**
+ * Displays a toast with an icon, heading and message
+ * @param params {
+ * setShow: setter;
+ * show: Boolean;
+ * toastData: {
+ *      heading:string;
+ *      body:string;
+ *      type: 'error' | 'success' }
+ *  }
+ * @constructor
+ */
 export const Toast = params => {
     return (
         <>
@@ -22,17 +36,17 @@ export const Toast = params => {
                         enterTo="translate-y-0 opacity-100 sm:translate-x-0"
                         leave="transition ease-in duration-100"
                         leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+                        leaveTo="opacity-0">
+                        <div
+                            className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
                             <div className="p-4">
                                 <div className="flex items-start">
                                     <div className="flex-shrink-0">
                                         {params.toastData.type === 'success' && (
-                                            <CheckCircleIcon className="h-6 w-6 text-green-400" aria-hidden="true" />
+                                            <CheckCircleIcon className="h-6 w-6 text-green-400" aria-hidden="true"/>
                                         )}
                                         {params.toastData.type === 'error' && (
-                                            <ExclamationCircleIcon className="h-6 w-6 text-red-400" aria-hidden="true" />
+                                            <ExclamationCircleIcon className="h-6 w-6 text-red-400" aria-hidden="true"/>
                                         )}
 
                                     </div>
@@ -45,10 +59,9 @@ export const Toast = params => {
                                             className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                             onClick={() => {
                                                 params.setShow(false);
-                                            }}
-                                        >
+                                            }}>
                                             <span className="sr-only">Close</span>
-                                            <XIcon className="h-5 w-5" aria-hidden="true" />
+                                            <XIcon className="h-5 w-5" aria-hidden="true"/>
                                         </button>
                                     </div>
                                 </div>
