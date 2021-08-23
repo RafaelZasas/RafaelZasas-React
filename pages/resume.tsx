@@ -5,16 +5,34 @@ import {MailIcon} from '@heroicons/react/solid'
 import {DocumentDownloadIcon} from '@heroicons/react/outline'
 import {UserContext} from "../lib/context";
 import AddEmailModal from '../components/addEmailModal'
+import {Toast} from "../components/toast";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 
 export default function ResumePage({}) {
 
+    /** HOOKS */
+
+        // For PDF document
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [resume, setResume] = useState('');
+
+    // For modal if user isn't signed in
     const [openAddEmailModal, setOpenAddEmailModal] = useState(false);
     const [width, setWidth] = useState<number>(null);
+
+    //  For showing toast and its data
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        heading: '',
+        body: '',
+        type: '',
+    })
+
+    /** END HOOKS */
+
 
     storage.refFromURL('gs://rafael-zasas.appspot.com/PDFResumeSept2021.pdf')
         .getDownloadURL()
@@ -63,7 +81,8 @@ export default function ResumePage({}) {
 
     return (
         <div>
-            <AddEmailModal open={openAddEmailModal} setOpen={setOpenAddEmailModal}/>
+            <AddEmailModal open={openAddEmailModal}
+                           setOpen={setOpenAddEmailModal}/>
             <div className="bg-white min-h-screen px-4 py-14 sm:px-6 py-16 md:grid place-items-center lg:px-8">
                 <div className="max-w-max mx-auto">
                     <main className="sm:flex sm:w-full">
@@ -84,11 +103,24 @@ export default function ResumePage({}) {
             </div>
 
             <div className='flex-row mb-6 mx-12 sm:mt-0'>
-                <SendButton resume={resume} modal={{open: openAddEmailModal, setOpen: setOpenAddEmailModal}}/>
+                <SendButton
+                    resume={resume}
+                    modal={{open: openAddEmailModal, setOpen: setOpenAddEmailModal}}
+                    toast={{
+                        showToast: showToast,
+                        setShowToast: setShowToast,
+                        toastData: toastData,
+                        setToastData: setToastData
+                    }}
+                />
                 <DownloadButton resume={resume}/>
             </div>
 
-
+            <Toast
+                setShow={setShowToast}
+                toastData={toastData}
+                show={showToast}
+            />
         </div>
 
     )
@@ -108,7 +140,7 @@ const SendButton = (params) => {
     const {user, userData} = useContext(UserContext);
 
     const sendResume = async () => {
-        if (user){
+        if (user) {
             const mail = {
                 to: [user.email],
                 bcc: ['admin@rafaelzasas.com'],
@@ -122,9 +154,32 @@ const SendButton = (params) => {
                 }
             }
             try {
-                await firestore.collection(`mail`).add(mail)
+                await firestore.collection(`mail`).add(mail);
+
+                // display success toast
+                params.toast.setToastData({
+                    heading: 'Resume Sent!',
+                    body: `Check your inbox for ${user.email}`,
+                    type: 'success'
+                });
+
+                params.toast.setShowToast(true);
+                setTimeout(() => {
+                    params.toast.setShowToast(false);
+                }, 3000);
+
+
             } catch (e) {
-                console.log(e)
+                console.log(e);
+                params.toast.setToastData({
+                    heading: 'Error sending resume',
+                    body: e.message,
+                    type: 'error'
+                });
+                params.toast.setShowToast(true);
+                setTimeout(() => {
+                    params.toast.setShowToast(false)
+                }, 3000);
             }
         } else {
             params.modal.setOpen(true);
