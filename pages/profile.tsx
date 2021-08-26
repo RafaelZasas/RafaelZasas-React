@@ -73,7 +73,8 @@ export default function ProfilePage({}) {
                     show={show}
                 /> </>
             {/* Form Inputs */}
-            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6
+             bg-clip-padding bg-opacity-50 backdrop-filter lg:backdrop-blur-md">
 
                 {/* Heading */}
                 <div className="w-full pb-5">
@@ -104,7 +105,8 @@ export default function ProfilePage({}) {
             </div>
 
             {/* Notifications Section */}
-            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6
+            bg-clip-padding bg-opacity-50 backdrop-filter lg:backdrop-blur-md">
                 <div className="md:grid md:grid-cols-3 md:gap-6">
                     <div className="md:col-span-1">
                         <h3 className="text-lg font-medium leading-6 text-gray-900">Notifications</h3>
@@ -122,7 +124,7 @@ export default function ProfilePage({}) {
 
             <div className="sm:block md:block lg:block xl:block">
                 <div className="">
-                    <CancelBtn/>
+                    {/*<CancelBtn/>*/}
                     <SaveBtn isValid={isValid}/>
                 </div>
 
@@ -459,7 +461,7 @@ const SaveBtn = props => {
         <button
             type="submit"
             disabled={!isValid}
-            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm
+            className="ml-1 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm
                      font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
                       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
             Save
