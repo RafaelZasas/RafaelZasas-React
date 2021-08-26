@@ -12,7 +12,7 @@ function MyApp({Component, pageProps}) {
     return (
         <UserContext.Provider
             value={userData}>
-            <div className='flex flex-col min-h-screen bg-gradient-to-tl from-blue-200 via-blue-100 via-blue- to-transparent'>
+            <div className='flex flex-col min-h-screen bg-gradient-to-tl from-blue-200 md:via-blue-100 to-transparent'>
                 <Navbar/>
                 <main className='flex-grow' >
                     <Component {...pageProps} />
