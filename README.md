@@ -9,8 +9,8 @@
 [![Build Test](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/build-test.yml)
 [![Dev Deploy](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml)
 [![Live Deployment](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml/badge.svg?branch=main)](https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml)
-
-
+![Preview deployments](https://img.shields.io/github/deployments/RafaelZasas/RafaelZasas-React/Preview?label=Preview%20Deployment&logo=Vercel&logoColor=white)
+![GitHub deployments](https://img.shields.io/github/deployments/RafaelZasas/RafaelZasas-React/Production?label=Production%20Deployment&logo=Vercel&logoColor=white)
 ### 📈 Project Stats
 ![Lines of code](https://img.shields.io/tokei/lines/github/RafaelZasas/RafaelZasas-React?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/RafaelZasas/RafaelZasas-React?style=for-the-badge)
