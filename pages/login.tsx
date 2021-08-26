@@ -1,22 +1,142 @@
 import {appleAuthProvider, auth, githubAuthProvider, googleAuthProvider, firestore} from '../lib/firebase';
 import {useRouter} from "next/router";
+import {useEffect, useState} from "react";
+import {Toast} from "../components/toast";
+import ConfirmSignUpModal from "../components/confirmSignUpMoodal";
+
+
+function validateEmail(email) {
+    const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regexp.test(email);
+}
+
+function validatePassword(password) {
+    const regexp = /^(?=.*[A-Za-z])(?=.*\d)[a-zA-Z0-9!@#$%^&*()~¥=_+}{":;'?/>.<,`\-\|\[\]]{6,50}$/;
+    return regexp.test(password);
+}
 
 export default function Login() {
+    const router = useRouter();
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('');
+    const [openConfirmSignUpModal, setOpenConfirmSignUpModal] = useState(false);
+    const [createNewUser, setCreateNewUser] = useState(false);
+
+    useEffect(() => {
+
+        const signUp = async () => {
+
+            try {
+                const token = await auth.createUserWithEmailAndPassword(email, password);
+                await token.user.sendEmailVerification();
+                // display success toast
+                setToastData({
+                    heading: 'Account Created!!',
+                    body: `Please verify your account by clicking the link that was sent to ${email}`,
+                    type: 'success'
+                })
+                setShowToast(true);
+                setTimeout(() => {
+                    setShowToast(false);
+                }, 3000);
+                await validateNewUser(token) ? await router.push('/profile') : await router.push('/');
+            } catch (e) {
+                console.log(e)
+                setToastData({
+                    heading: 'Error Creating Account',
+                    body: e.message,
+                    type: 'error'
+                })
+                setShowToast(true);
+                setTimeout(() => {
+                    setShowToast(false);
+                }, 3000);
+            }
+
+        }
+
+        createNewUser? signUp() : null;
+
+    }, [createNewUser])
+
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        heading: '',
+        body: '',
+        type: '',
+    })
+
+    const loginWithEmail = async (e) => {
+        e.preventDefault();
+        console.log(e.target.email.value, e.target.password.value)
+
+        try {
+
+            // Some error handling to make sure users dont pull a fast one
+            if (!validateEmail(e.target.email.value)) {
+                throw new Error(`Please enter a valid Email`,)
+            } else if (e.target.password.value.length < 6) {
+                throw new Error('Password must be at least 6 characters')
+            } else if (!validatePassword(e.target.password.value)) {
+                throw new Error('Password must contain at least one letter and number')
+            }
+
+            try {
+                const token = await auth.signInWithEmailAndPassword(e.target.email.value, e.target.password.value);
+                await validateNewUser(token) ? await router.push('/profile') : await router.push('/');
+            } catch (e) {
+                console.log(e)
+                const error = () => {throw new Error(e.message)}
+                e.code === 'auth/user-not-found'? setOpenConfirmSignUpModal(true): error();
+
+            }
+
+            // end success of mail delivery
+
+        } catch (e) {
+            console.log(e);
+            setToastData({
+                heading: 'Whoops',
+                body: e.message,
+                type: 'error'
+            });
+            setShowToast(true);
+            setTimeout(() => {
+                setShowToast(false)
+            }, 3000);
+        }
+
+
+    }
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <Toast
+                setShow={setShowToast}
+                toastData={toastData}
+                show={showToast}
+            />
+            <ConfirmSignUpModal
+                open = {openConfirmSignUpModal}
+                setOpen={setOpenConfirmSignUpModal}
+                details={{email: email, password: password}}
+                setCreateNewUser = {setCreateNewUser}
+            />
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-6" action="#" method="POST">
+                    <form className="space-y-6" action="#" method="POST" onSubmit={loginWithEmail}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Email address
                             </label>
                             <div className="mt-1">
                                 <input
+                                    onChange={(e) => {
+                                        setEmail(e.currentTarget.value)
+                                    }}
                                     id="email"
                                     name="email"
                                     type="email"
@@ -33,6 +153,9 @@ export default function Login() {
                             </label>
                             <div className="mt-1">
                                 <input
+                                    onChange={(e) => {
+                                        setPassword(e.currentTarget.value)
+                                    }}
                                     id="password"
                                     name="password"
                                     type="password"
