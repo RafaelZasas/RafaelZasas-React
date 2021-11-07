@@ -49,11 +49,11 @@ export default function Modal(props: ModalProps) {
                         text-left overflow-hidden shadow-xl transform transition-all">
                             <div>
                                 {props.headerImg &&
-                                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                                    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-400/75 px-2 pb-1">
                                         <Image
-                                            className="inline-block h-12 w-12 rounded-full"
-                                            width={800}
-                                            height={800}
+                                            className="inline-block rounded-full"
+                                            width={400}
+                                            height={400}
                                             src={props.headerImg} alt=" headerImg" />
                                     </div>
                                 }
