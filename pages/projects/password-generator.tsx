@@ -1,13 +1,23 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Modal from "../../components/Modal"
-
+import Button from "../../components/Button"
+import Spinner1 from "../../components/loadingSpinners/Spinner1"
 /**
  * 
  * @param param0 
  * @returns 
  */
 export default function PasswordGeneratorPage({ }) {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [passwordLength, setPasswordLength] = useState(5);
+    const [useLetters, setUseLetters] = useState(true);
+    const [useNumbers, setUseNumbers] = useState(true);
+    const [useSymbols, setUseSymbols] = useState(true);
+
+
 
     function ModalTitle() {
         return (
@@ -160,18 +170,18 @@ export default function PasswordGeneratorPage({ }) {
                         </p>
 
                         <p>
-                            I&apos;ve left all the  neccessary links below so you have no excuse to check them out.<br/>
+                            I&apos;ve left all the  neccessary links below so you have no excuse to check them out.<br />
                             Thanks for reading my little article, I hope you walk away from this learning something new.
                             If not, I&apos;d love to get a coffe with you- <abbr title="Hit Me Up">HMU</abbr>!
                         </p>
                         <div className={'flex flex-col items-center'}>
-                        <ul role="list" className={'text-left'} >
-                            <li><a target='_blank' rel='noreferrer' href="https://password-generator-ekxrzqcpba-uc.a.run.app/docs">The API itself</a></li>
-                            <li><a target='_blank' rel='noreferrer' href="https://github.com/RafaelZasas/Password-Generator">GitHub Repository</a></li>
-                            <li><a target='_blank' rel='noreferrer' href="https://fastapi.tiangolo.com/">FastAPI</a></li>
-                            <li><a target='_blank' rel='noreferrer' href="https://fastapi.tiangolo.com/">Docker</a></li>
-                            <li><a target='_blank' rel='noreferrer' href="https://cloud.google.com/run/docs">Cloud Run</a></li>
-                        </ul>
+                            <ul role="list" className={'text-left'} >
+                                <li><a target='_blank' rel='noreferrer' href="https://password-generator-ekxrzqcpba-uc.a.run.app/docs">The API itself</a></li>
+                                <li><a target='_blank' rel='noreferrer' href="https://github.com/RafaelZasas/Password-Generator">GitHub Repository</a></li>
+                                <li><a target='_blank' rel='noreferrer' href="https://fastapi.tiangolo.com/">FastAPI</a></li>
+                                <li><a target='_blank' rel='noreferrer' href="https://fastapi.tiangolo.com/">Docker</a></li>
+                                <li><a target='_blank' rel='noreferrer' href="https://cloud.google.com/run/docs">Cloud Run</a></li>
+                            </ul>
                         </div>
 
                     </div>
@@ -196,15 +206,165 @@ export default function PasswordGeneratorPage({ }) {
         )
     }
 
+
+    function HandleSubmit(e: any) {
+        e.preventDefault();
+        setShowPassword(false);
+        setLoading(true);
+
+        async function FetchData(formData) {
+            const endpoint =
+                'https://password-generator-ekxrzqcpba-uc.a.run.app/password?' +
+                `pwd_length=${formData.passwordLength}` +
+                `&use_symbols=${formData.useSymbols}` +
+                `&use_numbers=${formData.useNumbers}` +
+                `&use_letters=${formData.useLetters}`
+
+            const response = await fetch(endpoint);
+            return await response.json();
+        }
+
+        const formData = {
+            passwordLength: e.target.password_length.value,
+            useSymbols: e.target.use_symbols.checked,
+            useNumbers: e.target.use_numbers.checked,
+            useLetters: e.target.use_letters.checked,
+        }
+        setPasswordLength(formData.passwordLength);
+        setUseSymbols(formData.useSymbols);
+        setUseNumbers(formData.useNumbers);
+        setUseLetters(formData.useLetters);
+
+        console.dir(formData);
+        FetchData(formData).then(res => {
+            console.log(res);
+            setLoading(false);
+            setPassword(res.password)
+            setShowPassword(true)
+        });
+        e.target.reset();
+
+    }
+
+    const PasswordGenerator = () => {
+        return (
+            <div className="flex flex-column mx-auto mt-8">
+                <div>
+                    <form onSubmit={HandleSubmit}>
+                        <fieldset className={'text-center'}>
+                            <legend className="text-base font-medium text-gray-900">Configure Your Password</legend>
+                            <div className="mt-4 space-y-4">
+
+                                <div className="flex items-center">
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="password_length" className="font-medium text-gray-700">
+                                            Password Length
+                                        </label>
+                                    </div>
+                                    <div className="flex items-center h-auto ml-2">
+                                        <input
+                                            id="password_length"
+                                            name="password_length"
+                                            type="number"
+                                            min={1}
+                                            defaultValue={passwordLength}
+                                            className="focus:ring-blue-500 h-10 w-12 text-center md:text-left md:w-20 text-gray-800 font-semibold border-gray-300 rounded form-input"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start ml-8 md:ml-12">
+                                    <div className="h-5 flex items-center">
+                                        <input
+                                            id="use_letters"
+                                            name="use_letters"
+                                            type="checkbox"
+                                            defaultChecked={useLetters}
+                                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="use_letters" className="font-medium text-gray-700">
+                                            Use Letters
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="flex items-start ml-8 md:ml-12">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="use_numbers"
+                                            name="use_numbers"
+                                            type="checkbox"
+                                            defaultChecked={useNumbers}
+                                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="use_numbers" className="font-medium text-gray-700">
+                                            Use Numbers
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="flex items-start ml-8 md:ml-12">
+                                    <div className="flex items-center h-5">
+                                        <input
+                                            id="use_symbols"
+                                            name="use_symbols"
+                                            type="checkbox"
+                                            defaultChecked={useSymbols}
+                                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="use_symbols" className="font-medium text-gray-700">
+                                            Use Symbols
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div className={'flex justify-center my-4'}>
+                            <Button text={'Get Password'} type='submit' handleSubmit={HandleSubmit} />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )
+    }
+
+    const PasswordOutput = () => {
+        return (
+            <div className="flex flex-row my-4 justify-center">
+                {loading ? <Spinner1 /> :
+                    <div>
+                        {showPassword &&
+                            <div>
+                                <span className={'text-blue-600 text-xl font-bold mr-1'}>
+                                    Password:
+                                </span>
+                                <span className={'text-gray-700 text-base font-semibold ml-1'}>
+                                    {password}
+                                </span>
+                            </div>}
+                    </div>
+                }
+            </div>
+        );
+    }
+
     return (
-        <div className={'flex flex-col mt-4'}>
+        <div>
             <Modal open={open}
                 setOpen={setOpen}
                 header={<ModalTitle />}
                 body={<ModalBody />}
-                headerImg={'lock.png'}
+                headerImg={'lock-icon.png'}
             />
-            <TitleBar />
+            <div className={'flex flex-col mt-4 mb-6 md:mb-2- lg:mb-28'}>
+                <TitleBar />
+                <PasswordGenerator />
+                <PasswordOutput />
+            </div>
         </div>
     )
 }
