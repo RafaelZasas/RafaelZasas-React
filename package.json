@@ -6,12 +6,12 @@
     "start": "npm-run-all --parallel dev:*", 
     "dev:tailiwind": "TAILWIND_MODE=watch postcss styles/tailwind.css -o styles/main.css --watch", 
     "dev:nextjs": "next dev", 
-    "build": "next build", 
+    "build": "npm run build:css && next build", 
     "serve": "next start", 
     "lint": "next lint", 
     "export": "next export", 
     "build:css": "postcss styles/tailwind.css -o styles/main.css", 
-    "prod:build": "NODE_ENV=production npm run build:css && npm run build", 
+    "prod:build": "NODE_ENV=production npm run build", 
     "deploy": "npm run build:css && next build && next export" 
   }, 
   "dependencies": { 
