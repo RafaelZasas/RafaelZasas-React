@@ -1,14 +1,18 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {toolBarActions} from './toolbarActions';
 import {User} from '../../lib/types';
-import {EditorState, RichUtils} from 'draft-js';
+import {EditorState, Modifier, RichUtils} from 'draft-js';
 
+// todo: Fix Tab indentation to add spaces before word instead of removing the word
+// todo: hilght button if it is currently in use
 interface ToolBarProps {
   userData: User;
   editorState: EditorState;
   setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 }
 export default function Toolbar(props: ToolBarProps) {
+  const editorState = props.editorState;
+  const setEditorState = props.setEditorState;
   return (
     <div className="flex flex-row-reverse px-2 pb-2">
       {toolBarActions.map((action, index) => {
@@ -20,20 +24,37 @@ export default function Toolbar(props: ToolBarProps) {
               key={index}
               onClick={() => {
                 if (action.style) {
-                  props.setEditorState(RichUtils.toggleInlineStyle(props.editorState, action.style));
+                  if (action.style === 'code-block') {
+                    setEditorState(RichUtils.toggleCode(editorState));
+                  }
+                  setEditorState(RichUtils.toggleInlineStyle(editorState, action.style));
                 }
 
                 if (action.block) {
-                  props.setEditorState(RichUtils.toggleBlockType(props.editorState, action.block));
+                  if (action.block === 'tab') {
+                    console.log('tab');
+                    const newContentState = Modifier.replaceText(
+                      editorState.getCurrentContent(),
+                      editorState.getSelection(),
+                      '    '
+                    );
+                    setEditorState(EditorState.push(editorState, newContentState, 'insert-characters'));
+                  } else {
+                    setEditorState(RichUtils.toggleBlockType(editorState, action.block));
+                  }
                 }
+
                 if (action.link) {
-                  const linkUrl = RichUtils.getDataObjectForLinkURL(window.prompt('Add link'));
-                  const selectionState = props.editorState.getSelection();
-                  const contentStateWithEntity = props.editorState
-                    .getCurrentContent()
-                    .createEntity('LINK', 'MUTABLE', linkUrl);
-                  const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-                  props.setEditorState(RichUtils.toggleLink(props.editorState, selectionState, entityKey));
+                  const enteredLink = window.prompt('Add link');
+                  if (enteredLink) {
+                    const linkUrl = RichUtils.getDataObjectForLinkURL(enteredLink);
+                    const selectionState = editorState.getSelection();
+                    const contentStateWithEntity = editorState
+                      .getCurrentContent()
+                      .createEntity('LINK', 'MUTABLE', linkUrl);
+                    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+                    setEditorState(RichUtils.toggleLink(editorState, selectionState, entityKey));
+                  }
                 }
               }}
               className={`mx-2 h-4 w-4 cursor-pointer`}
@@ -47,10 +68,18 @@ export default function Toolbar(props: ToolBarProps) {
               key={index}
               onClick={() => {
                 if (action.style) {
-                  props.setEditorState(RichUtils.toggleInlineStyle(props.editorState, action.style));
+                  setEditorState(RichUtils.toggleInlineStyle(editorState, action.style));
                 }
-                if (action.block) {
-                  props.setEditorState(RichUtils.toggleBlockType(props.editorState, action.block));
+                if (action.block === 'tab') {
+                  console.log('tab');
+                  const newContentState = Modifier.replaceText(
+                    editorState.getCurrentContent(),
+                    editorState.getSelection(),
+                    '    '
+                  );
+                  setEditorState(EditorState.push(editorState, newContentState, 'insert-characters'));
+                } else {
+                  setEditorState(RichUtils.toggleBlockType(editorState, action.block));
                 }
               }}
               className="mx-2 h-4 w-4 cursor-pointer"
