@@ -1,7 +1,5 @@
 import React, {useContext} from 'react';
 import {
-  convertFromRaw,
-  convertToRaw,
   DraftHandleValue,
   Editor,
   EditorState,
@@ -13,28 +11,19 @@ import {
 import 'draft-js/dist/Draft.css';
 import Toolbar from './Toolbar';
 import {UserContext} from '../../lib/context';
-import EditorContent from './EditorContent';
 
-const initialState = {
-  entityMap: {},
-  blocks: [
-    {
-      text: '',
-      key: 'foo',
-      type: 'unstyled',
-      entityRanges: [],
-      depth: 1,
-      inlineStyleRanges: [],
-    },
-  ],
-};
-export default function MyEditor() {
+interface TextEditorProps {
+  comment?: boolean;
+  editorState: EditorState;
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
+}
+
+export default function TextEditor(props: TextEditorProps) {
   const editor = React.useRef(null);
-  const {user, userData} = useContext(UserContext);
+  const {userData} = useContext(UserContext);
   const {hasCommandModifier} = KeyBindingUtil;
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createWithContent(convertFromRaw(initialState))
-  );
+  const editorState = props.editorState;
+  const setEditorState = props.setEditorState;
 
   function focusEditor() {
     editor.current.focus();
@@ -63,8 +52,8 @@ export default function MyEditor() {
 
     if (e.shiftKey) {
       // TODO: FIX WHEN PR MERGED TO DRAFT JS
-      const newContentState = Modifier.removeRange(editorState.getCurrentContent(), editorState.getSelection(), '    ');
-      setEditorState(EditorState.push(editorState, newContentState, 'delete-character'));
+      // const newContentState = Modifier.removeRange(editorState.getCurrentContent(), editorState.getSelection(), '    ');
+      // setEditorState(EditorState.push(editorState, newContentState, 'delete-character'));
     } else {
       const newContentState = Modifier.replaceText(editorState.getCurrentContent(), editorState.getSelection(), '    ');
       setEditorState(EditorState.push(editorState, newContentState, 'insert-characters'));
@@ -109,13 +98,9 @@ export default function MyEditor() {
             keyBindingFn={myKeyBindingFn}
             handleKeyCommand={handleKeyCommand}
             onTab={handleTab}
-            placeholder="Blog Entry..."
+            placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
           />
         </div>
-      </div>
-      <div className="overflow-scroll-y container my-4 ">
-        <div>{JSON.stringify(convertToRaw(editorState.getCurrentContent()))}</div>
-        <EditorContent editorState={editorState} />
       </div>
     </div>
   );
