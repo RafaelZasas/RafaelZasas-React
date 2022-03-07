@@ -7,8 +7,17 @@ interface EditorContentProps {
 export default function EditorContent(props: EditorContentProps) {
   const html = convertToHTML({
     styleToHTML: (style) => {
-      if (style === 'BOLD') {
+      console.log(style);
+
+      if (style === 'code-block') {
+        return <span className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
+      }
+      if (style === 'bold') {
         return <span className="font-bold" />;
+      }
+      //   todo: Fix Tab Logic
+      if (style === 'tab') {
+        return <p className="ml-4" />;
       }
     },
     blockToHTML: (block) => {
@@ -21,15 +30,15 @@ export default function EditorContent(props: EditorContentProps) {
       if (block.type === 'header-one') {
         return <h1 className="text-4xl" />;
       }
-      if (block.type === 'TEXT-CENTER') {
+      if (block.type === 'text-center') {
         return <p className="text-center" />;
       }
 
-      if (block.type === 'TEXT-RIGHT') {
+      if (block.type === 'text-right') {
         return <p className="text-right" />;
       }
 
-      if (block.type === 'TEXT-LEFT') {
+      if (block.type === 'text-left') {
         return <p className="text-left" />;
       }
 
