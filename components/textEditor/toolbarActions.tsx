@@ -3,6 +3,7 @@ import {
   faAlignLeft,
   faAlignRight,
   faBold,
+  faCode,
   faHeading,
   faIndent,
   faItalic,
@@ -26,11 +27,12 @@ export const toolBarActions: ToolBarAction[] = [
   {
     icon: faIndent,
     adminOnly: false,
-    style: 'tab',
+    block: 'tab',
   },
   {
     icon: faOutdent,
     adminOnly: false,
+    block: 'shift-tab',
   },
   {
     icon: faListUl,
@@ -45,17 +47,22 @@ export const toolBarActions: ToolBarAction[] = [
   {
     icon: faAlignRight,
     adminOnly: false,
-    block: 'TEXT-RIGHT',
+    block: 'text-right',
   },
   {
     icon: faAlignCenter,
     adminOnly: false,
-    block: 'TEXT-CENTER',
+    block: 'text-center',
   },
   {
     icon: faAlignLeft,
     adminOnly: false,
-    block: 'TEXT-LEFT',
+    block: 'text-left',
+  },
+  {
+    icon: faCode,
+    adminOnly: true,
+    style: 'code-block',
   },
   {
     icon: faLink,
