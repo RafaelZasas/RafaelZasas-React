@@ -17,7 +17,6 @@ export default function BlogPage({}) {
           <TextEditor editorState={editorState} setEditorState={setEditorState} />
           <div className="overflow-scroll-y container my-4 ">
             {/* <div>{JSON.stringify(convertToRaw(editorState.getCurrentContent()))}</div> */}
-            <EditorContent editorState={editorState} />
           </div>
         </div>
       </div>
