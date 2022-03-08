@@ -62,7 +62,7 @@ export const toolBarActions: ToolBarAction[] = [
   {
     icon: faCode,
     adminOnly: true,
-    style: 'code-block',
+    block: 'code-block',
   },
   {
     icon: faLink,
