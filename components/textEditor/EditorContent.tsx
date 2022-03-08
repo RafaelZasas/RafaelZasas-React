@@ -7,28 +7,34 @@ interface EditorContentProps {
 export default function EditorContent(props: EditorContentProps) {
   const html = convertToHTML({
     styleToHTML: (style) => {
-      console.log(style);
-
-      if (style === 'code-block') {
-        return <span className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
-      }
-      if (style === 'bold') {
+      if (style === 'BOLD') {
         return <span className="font-bold" />;
       }
-      //   todo: Fix Tab Logic
-      if (style === 'tab') {
-        return <p className="ml-4" />;
+      if (style === 'UNDERLINE') {
+        return <span className="underline" />;
       }
     },
     blockToHTML: (block) => {
-      if (block.type === 'new-line') {
+      if (block.type === 'new-line' || block.type === 'new-block') {
+        console.log('new line');
         return <br />;
+      }
+      if (block.type === 'code-block') {
+        return <span className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
+      }
+      if (block.type === 'new-line') {
+        console.log('new line');
+        return <br />;
+      }
+      //   todo: Fix Tab Logic
+      if (block.type === 'tab') {
+        return <span className="ml-4" />;
       }
       if (block.type === 'PARAGRAPH') {
         return <p />;
       }
       if (block.type === 'header-one') {
-        return <h1 className="text-4xl" />;
+        return <p className="text-4xl" />;
       }
       if (block.type === 'text-center') {
         return <p className="text-center" />;
