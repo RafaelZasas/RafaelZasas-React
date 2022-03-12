@@ -101,7 +101,7 @@ export default function TextEditor(props: TextEditorProps) {
       <div className="flex-row">
         {selectedTab === 'edit' && (
           <div
-            className="block h-64 w-full overflow-y-scroll rounded-md rounded-tl-none 
+            className="block h-64 w-full resize overflow-y-scroll rounded-md rounded-tl-none 
             border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
             onClick={focusEditor}
           >
@@ -120,7 +120,7 @@ export default function TextEditor(props: TextEditorProps) {
         )}
         {selectedTab === 'preview' && (
           <div
-            className="block h-64 w-full overflow-y-scroll rounded-md rounded-tl-none
+            className="block h-64 w-full resize overflow-y-scroll rounded-md rounded-tl-none
            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
           >
             <EditorContent editorState={editorState} />
@@ -130,7 +130,7 @@ export default function TextEditor(props: TextEditorProps) {
         {selectedTab === 'both' && (
           <div className="grid grid-cols-2">
             <div
-              className="block h-64 w-full overflow-y-scroll rounded-md rounded-tl-none 
+              className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
             border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
               onClick={focusEditor}
             >
@@ -147,7 +147,7 @@ export default function TextEditor(props: TextEditorProps) {
               />
             </div>
             <div
-              className="block h-64 w-full overflow-y-scroll rounded-md rounded-tl-none
+              className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none
               border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
               p-3 shadow-sm backdrop-blur-xl backdrop-filter"
             >
