@@ -1,17 +1,10 @@
 import React, {useContext, useState} from 'react';
-import {
-  DraftHandleValue,
-  Editor,
-  EditorState,
-  getDefaultKeyBinding,
-  KeyBindingUtil,
-  Modifier,
-  RichUtils,
-} from 'draft-js';
+import {DraftHandleValue, Editor, EditorState, getDefaultKeyBinding, KeyBindingUtil, RichUtils} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import Toolbar from './Toolbar';
 import {UserContext} from '../../lib/context';
 import EditorContent from './EditorContent';
+import Spinner1 from '../loadingSpinners/Spinner1';
 
 interface TextEditorProps {
   comment?: boolean;
@@ -31,7 +24,12 @@ export default function TextEditor(props: TextEditorProps) {
     editor.current.focus();
   }
 
-  function myKeyBindingFn(e: React.KeyboardEvent<{}>): string | null {
+  function _onTab(e: React.KeyboardEvent<{}>) {
+    const maxDepth = 4;
+    setEditorState(RichUtils.onTab(e, editorState, maxDepth));
+  }
+
+  function _keyBindingFn(e: React.KeyboardEvent<{}>): string | null {
     if (e.key === 'b' /* `B` key */ && hasCommandModifier(e)) {
       return 'bold';
     }
@@ -43,27 +41,14 @@ export default function TextEditor(props: TextEditorProps) {
     if (e.key === 'i' /* `U` key */ && hasCommandModifier(e)) {
       return 'italic';
     }
-    if (e.key == 'Enter') {
-      return e.shiftKey || e.ctrlKey ? 'new-line' : 'new-block';
+    if (e.key == 'Enter' && e.shiftKey) {
+      return 'shift-enter';
     }
 
     return getDefaultKeyBinding(e);
   }
 
-  function handleTab(e: React.KeyboardEvent<{}>) {
-    e.preventDefault();
-
-    if (e.shiftKey) {
-      // TODO: FIX WHEN PR MERGED TO DRAFT JS
-      // const newContentState = Modifier.removeRange(editorState.getCurrentContent(), editorState.getSelection(), '    ');
-      // setEditorState(EditorState.push(editorState, newContentState, 'delete-character'));
-    } else {
-      const newContentState = Modifier.replaceText(editorState.getCurrentContent(), editorState.getSelection(), '    ');
-      setEditorState(EditorState.push(editorState, newContentState, 'insert-characters'));
-    }
-  }
-
-  function handleKeyCommand(command: string): DraftHandleValue {
+  function _handleKeyCommand(command: string): DraftHandleValue {
     switch (command) {
       case 'bold':
         setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
@@ -74,21 +59,39 @@ export default function TextEditor(props: TextEditorProps) {
       case 'italic':
         setEditorState(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
         return 'handled';
-      case 'new-line':
-        setEditorState(RichUtils.insertSoftNewline(editorState));
+
+      case 'shift-enter':
+        if (RichUtils.getCurrentBlockType(editorState) === 'code-block') {
+          setEditorState(RichUtils.toggleBlockType(editorState, 'unstyled'));
+          // setEditorState(RichUtils.toggleCode(editorState));
+        }
+        // setEditorState(RichUtils.insertSoftNewline(editorState));
         return 'handled';
-      case 'new-block':
-        const currentContent = editorState.getCurrentContent();
-        const selection = editorState.getSelection();
-        const textWithEntity = Modifier.splitBlock(currentContent, selection);
-        setEditorState(EditorState.push(editorState, textWithEntity, 'split-block'));
+
       default:
         return 'not-handled';
     }
   }
 
+  const TextEditor = () => {
+    return (
+      <Editor
+        ref={editor}
+        editorKey={'editor'}
+        editorState={editorState}
+        onChange={setEditorState}
+        spellCheck={true}
+        textAlignment={'left'}
+        keyBindingFn={_keyBindingFn}
+        handleKeyCommand={_handleKeyCommand}
+        onTab={_onTab}
+        placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
+      />
+    );
+  };
+
   return !userData ? (
-    <></>
+    <Spinner1 />
   ) : (
     <div className="flex flex-col">
       <Toolbar
@@ -97,31 +100,22 @@ export default function TextEditor(props: TextEditorProps) {
         editorState={editorState}
         selectedTab={selectedTab}
         setSelectedtab={setSelectedtab}
+        focusEditor={focusEditor}
       />
       <div className="flex-row">
         {selectedTab === 'edit' && (
           <div
-            className="block h-64 w-full resize overflow-y-scroll rounded-md rounded-tl-none 
-            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+            className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 
+            border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
             onClick={focusEditor}
           >
-            <Editor
-              ref={editor}
-              editorKey={'editor'}
-              editorState={editorState}
-              onChange={setEditorState}
-              spellCheck={false}
-              keyBindingFn={myKeyBindingFn}
-              handleKeyCommand={handleKeyCommand}
-              onTab={handleTab}
-              placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
-            />
+            <TextEditor />
           </div>
         )}
         {selectedTab === 'preview' && (
           <div
-            className="block h-64 w-full resize overflow-y-scroll rounded-md rounded-tl-none
-           border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+            className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
+           border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
           >
             <EditorContent editorState={editorState} />
           </div>
@@ -134,20 +128,10 @@ export default function TextEditor(props: TextEditorProps) {
             border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
               onClick={focusEditor}
             >
-              <Editor
-                ref={editor}
-                editorKey={'editor'}
-                editorState={editorState}
-                onChange={setEditorState}
-                spellCheck={false}
-                keyBindingFn={myKeyBindingFn}
-                handleKeyCommand={handleKeyCommand}
-                onTab={handleTab}
-                placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
-              />
+              <TextEditor />
             </div>
             <div
-              className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none
+              className="block h-64 w-full resize-y overflow-y-scroll rounded-md
               border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
               p-3 shadow-sm backdrop-blur-xl backdrop-filter"
             >
