@@ -21,6 +21,7 @@ interface ToolBarAction {
   link?: boolean;
   block?: string;
   adminOnly: boolean;
+  id?: string;
 }
 
 export const toolBarActions: ToolBarAction[] = [
@@ -38,31 +39,37 @@ export const toolBarActions: ToolBarAction[] = [
     icon: faListUl,
     adminOnly: false,
     block: 'unordered-list-item',
+    id: 'ul',
   },
   {
     icon: faListOl,
     adminOnly: false,
     block: 'ordered-list-item',
+    id: 'ol',
   },
   {
     icon: faAlignRight,
     adminOnly: false,
     block: 'text-right',
+    id: 'text-right',
   },
   {
     icon: faAlignCenter,
     adminOnly: false,
     block: 'text-center',
+    id: 'text-center',
   },
   {
     icon: faAlignLeft,
     adminOnly: false,
     block: 'text-left',
+    id: 'text-left',
   },
   {
     icon: faCode,
     adminOnly: true,
-    block: 'code-block',
+    style: 'CODE',
+    id: 'code',
   },
   {
     icon: faLink,
@@ -73,20 +80,24 @@ export const toolBarActions: ToolBarAction[] = [
     icon: faUnderline,
     adminOnly: false,
     style: 'UNDERLINE',
+    id: 'underline',
   },
   {
     icon: faItalic,
     adminOnly: false,
     style: 'ITALIC',
+    id: 'italic',
   },
   {
     icon: faBold,
     adminOnly: false,
     style: 'BOLD',
+    id: 'bold',
   },
   {
     icon: faHeading,
     adminOnly: true,
     block: 'header-one',
+    id: 'header-one',
   },
 ];
