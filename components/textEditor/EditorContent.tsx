@@ -1,5 +1,5 @@
 import {convertToHTML} from 'draft-convert';
-import {EditorState} from 'draft-js';
+import {convertToRaw, EditorState} from 'draft-js';
 
 interface EditorContentProps {
   editorState: EditorState;
@@ -13,24 +13,29 @@ export default function EditorContent(props: EditorContentProps) {
       if (style === 'UNDERLINE') {
         return <span className="underline" />;
       }
+
+      if (style === 'CODE') {
+        return <p className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
+      }
     },
     blockToHTML: (block) => {
-      if (block.type === 'new-line' || block.type === 'new-block') {
-        console.log('new line');
+      if (block.type === 'atomic') {
+        console.log('atomic');
+
         return <br />;
       }
-      if (block.type === 'code-block') {
-        return <span className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
+      if (block.type === 'new-line' || block.type === 'new-block') {
+        return <br />;
       }
+
       if (block.type === 'new-line') {
-        console.log('new line');
         return <br />;
       }
       //   todo: Fix Tab Logic
       if (block.type === 'tab') {
         return <span className="ml-4" />;
       }
-      if (block.type === 'PARAGRAPH') {
+      if (block.type === 'paragraph') {
         return <p />;
       }
       if (block.type === 'header-one') {
@@ -49,10 +54,10 @@ export default function EditorContent(props: EditorContentProps) {
       }
 
       if (block.type === 'unordered-list-item') {
-        return <li className="list-inside list-disc" />;
+        return _getUnorderedList(block.depth);
       }
       if (block.type === 'ordered-list-item') {
-        return <li className="list-inside list-decimal" />;
+        return _getOrderedList(block.depth);
       }
     },
     entityToHTML: (entity, originalText) => {
@@ -68,8 +73,85 @@ export default function EditorContent(props: EditorContentProps) {
   })(props.editorState.getCurrentContent());
 
   return (
-    <div className="container m-4 h-full w-full">
+    <div className="container m-1 h-full w-full">
       <div dangerouslySetInnerHTML={{__html: html}}></div>
+      <div>{JSON.stringify(convertToRaw(props.editorState.getCurrentContent()), null, '\t')}</div>
     </div>
   );
+}
+
+function _getOrderedList(blockDepth: number) {
+  let style: string;
+
+  switch (blockDepth) {
+    case 1:
+      style = `list-style-position: inside;
+              list-style-type: lower-alpha;
+              text-indent: 1.5rem;`;
+      break;
+    case 2:
+      style = `list-style-position: inside;
+              list-style-type: lower-roman;
+              text-indent: 3rem;`;
+      break;
+    case 3:
+      style = `list-style-position: inside;
+              list-style-type: upper-alpha;
+              text-indent: 4.5rem;`;
+      break;
+    case 4:
+      style = `list-style-position: inside;
+              list-style-type: upper-roman;
+              text-indent: 6rem;`;
+      break;
+    default:
+      style = `list-style-position: inside;
+              list-style-type: lower-decimal;`;
+  }
+
+  return {
+    start: `<li style="${style}">`,
+    end: '</li>',
+    nest: '<ol>',
+    nestStart: '<ol>',
+    nestEnd: '</ol>',
+  };
+}
+
+function _getUnorderedList(blockDepth: number) {
+  let style: string;
+
+  switch (blockDepth) {
+    case 1:
+      style = `list-style-position: inside;
+              list-style-type: circle;
+              text-indent: 1.5rem;`;
+      break;
+    case 2:
+      style = `list-style-position: inside;
+              list-style-type: square;
+              text-indent: 3rem;`;
+      break;
+    case 3:
+      style = `list-style-position: inside;
+              list-style-type: disc;
+              text-indent: 4.5rem;`;
+      break;
+    case 4:
+      style = `list-style-position: inside;
+              list-style-type: circle;
+              text-indent: 6rem;`;
+      break;
+    default:
+      style = `list-style-position: inside;
+              list-style-type: disc;`;
+  }
+
+  return {
+    start: `<li style="${style}">`,
+    end: '</li>',
+    nest: '<ul>',
+    nestStart: '<ul>',
+    nestEnd: '</ul>',
+  };
 }
