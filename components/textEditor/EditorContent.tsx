@@ -19,9 +19,7 @@ export default function EditorContent(props: EditorContentProps) {
       }
     },
     blockToHTML: (block) => {
-      if (block.type === 'atomic') {
-        console.log('atomic');
-
+      if (block.type === 'unstyled' && block.text === '') {
         return <br />;
       }
       if (block.type === 'new-line' || block.type === 'new-block') {
