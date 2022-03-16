@@ -4,7 +4,6 @@ import 'draft-js/dist/Draft.css';
 import Toolbar from './Toolbar';
 import {UserContext} from '../../lib/context';
 import EditorContent from './EditorContent';
-import Spinner1 from '../loadingSpinners/Spinner1';
 
 interface TextEditorProps {
   comment?: boolean;
