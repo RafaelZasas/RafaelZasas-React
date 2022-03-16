@@ -91,54 +91,57 @@ export default function TextEditor(props: TextEditorProps) {
   };
 
   return !userData ? (
-    <Spinner1 />
+    // This needs to be empty in the case of usage in other areas eg: comments, announcements etc.
+    <></>
   ) : (
-    <div className="flex flex-col">
-      <Toolbar
-        userData={userData}
-        setEditorState={setEditorState}
-        editorState={editorState}
-        selectedTab={selectedTab}
-        setSelectedtab={setSelectedtab}
-        focusEditor={focusEditor}
-      />
-      <div className="flex-row">
-        {selectedTab === 'edit' && (
-          <div
-            className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 
-            border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
-            onClick={focusEditor}
-          >
-            <TextEditor />
-          </div>
-        )}
-        {selectedTab === 'preview' && (
-          <div
-            className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
-           border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
-          >
-            <EditorContent editorState={editorState} />
-          </div>
-        )}
-
-        {selectedTab === 'both' && (
-          <div className="grid grid-cols-2">
+    <div className="container m-2 mx-auto h-full p-2 md:px-8">
+      <div className="flex h-full flex-col">
+        <Toolbar
+          userData={userData}
+          setEditorState={setEditorState}
+          editorState={editorState}
+          selectedTab={selectedTab}
+          setSelectedtab={setSelectedtab}
+          focusEditor={focusEditor}
+        />
+        <div className="container h-full">
+          {selectedTab === 'edit' && (
             <div
-              className="block h-64 w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
-            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+              className="h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 border-gray-300 
+            bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
               onClick={focusEditor}
             >
               <TextEditor />
             </div>
+          )}
+          {selectedTab === 'preview' && (
             <div
-              className="block h-64 w-full resize-y overflow-y-scroll rounded-md
-              border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
-              p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+              className="block h-full w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
+           border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
             >
               <EditorContent editorState={editorState} />
             </div>
-          </div>
-        )}
+          )}
+
+          {selectedTab === 'both' && (
+            <div className="grid h-full grid-cols-2">
+              <div
+                className="block h-full w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
+            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+                onClick={focusEditor}
+              >
+                <TextEditor />
+              </div>
+              <div
+                className="block h-full w-full resize-y overflow-y-scroll rounded-md
+              border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
+              p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+              >
+                <EditorContent editorState={editorState} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
