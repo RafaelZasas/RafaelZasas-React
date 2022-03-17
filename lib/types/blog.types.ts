@@ -1,14 +1,6 @@
-import { Timestamp } from "@firebase/firestore-types";
+import {Timestamp} from '@firebase/firestore-types';
 
 // Blog related interfaces
-
-// paragraph item which builds the main body of the blog post
-interface paragraph {
-  h1?: string;
-  h2?: string;
-  h3?: string;
-  body: string;
-}
 
 /**Tags to be used for filtering and sorting */
 interface blogTag {
@@ -41,7 +33,7 @@ interface BlogReply {
 export interface Blog {
   title: string;
   summary: string;
-  body: paragraph[];
+  body: string;
   tags: blogTag[];
   relatedLinks: relatedLink[];
   timestamp: Timestamp;
