@@ -33,8 +33,7 @@ export default function ComboBox(props: ComboBoxProps) {
         <div className="relative mt-1">
           <div
             className="relative z-30 w-full cursor-default overflow-hidden rounded-lg border-2 border-gray-300
-             bg-gray-100/30 bg-white text-left shadow-md hover:border-2 hover:border-blue-400
-             focus-visible:ring-white focus-visible:ring-opacity-75 sm:text-sm"
+             bg-gray-100/30 bg-white text-left shadow-md hover:border-blue-400/70 focus:border-blue-500 sm:text-sm"
           >
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900"

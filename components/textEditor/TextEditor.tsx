@@ -93,55 +93,51 @@ export default function TextEditor(props: TextEditorProps) {
     // This needs to be empty in the case of usage in other areas eg: comments, announcements etc.
     <></>
   ) : (
-    <div className="container my-2 h-full">
-      <div className="h-full flex-1 flex-col">
-        <Toolbar
-          userData={userData}
-          setEditorState={setEditorState}
-          editorState={editorState}
-          selectedTab={selectedTab}
-          setSelectedtab={setSelectedtab}
-          focusEditor={focusEditor}
-        />
-        <div className="container h-full">
-          {selectedTab === 'edit' && (
-            <div
-              className="h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 border-gray-300 
+    <div className="h-full w-full flex-1 flex-col">
+      <Toolbar
+        userData={userData}
+        setEditorState={setEditorState}
+        editorState={editorState}
+        selectedTab={selectedTab}
+        setSelectedtab={setSelectedtab}
+        focusEditor={focusEditor}
+      />
+      {selectedTab === 'edit' && (
+        <div
+          className="h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 border-gray-300 
             bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
-              onClick={focusEditor}
-            >
-              <TextEditor />
-            </div>
-          )}
-          {selectedTab === 'preview' && (
-            <div
-              className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
+          onClick={focusEditor}
+        >
+          <TextEditor />
+        </div>
+      )}
+      {selectedTab === 'preview' && (
+        <div
+          className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
            border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
-            >
-              <EditorContent editorState={editorState} />
-            </div>
-          )}
+        >
+          <EditorContent editorState={editorState} />
+        </div>
+      )}
 
-          {selectedTab === 'both' && (
-            <div className="grid h-full resize-y grid-cols-2">
-              <div
-                className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
+      {selectedTab === 'both' && (
+        <div className="grid h-full resize-y grid-cols-2">
+          <div
+            className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
             border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
-                onClick={focusEditor}
-              >
-                <TextEditor />
-              </div>
-              <div
-                className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md
+            onClick={focusEditor}
+          >
+            <TextEditor />
+          </div>
+          <div
+            className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md
               border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
               p-3 shadow-sm backdrop-blur-xl backdrop-filter"
-              >
-                <EditorContent editorState={editorState} />
-              </div>
-            </div>
-          )}
+          >
+            <EditorContent editorState={editorState} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
