@@ -1,4 +1,4 @@
-.group:hover .group-hover\:bounce{
-    transition: 0.4s ease-out;
-    transform: translateY(-15px);
+.group:hover .group-hover\:bounce {
+  transition: 0.4s ease-out;
+  transform: translateY(-15px);
 }
