@@ -93,8 +93,8 @@ export default function TextEditor(props: TextEditorProps) {
     // This needs to be empty in the case of usage in other areas eg: comments, announcements etc.
     <></>
   ) : (
-    <div className="container m-2 mx-auto h-full p-2 md:px-8">
-      <div className="flex h-full flex-col">
+    <div className="container my-2 h-full">
+      <div className="h-full flex-1 flex-col">
         <Toolbar
           userData={userData}
           setEditorState={setEditorState}
@@ -115,7 +115,7 @@ export default function TextEditor(props: TextEditorProps) {
           )}
           {selectedTab === 'preview' && (
             <div
-              className="block h-full w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
+              className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
            border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
             >
               <EditorContent editorState={editorState} />
@@ -123,16 +123,16 @@ export default function TextEditor(props: TextEditorProps) {
           )}
 
           {selectedTab === 'both' && (
-            <div className="grid h-full grid-cols-2">
+            <div className="grid h-full resize-y grid-cols-2">
               <div
-                className="block h-full w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
+                className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
             border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
                 onClick={focusEditor}
               >
                 <TextEditor />
               </div>
               <div
-                className="block h-full w-full resize-y overflow-y-scroll rounded-md
+                className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md
               border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
               p-3 shadow-sm backdrop-blur-xl backdrop-filter"
               >
