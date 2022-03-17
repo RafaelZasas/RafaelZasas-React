@@ -7,10 +7,10 @@ import DefaultErrorPage from 'next/error';
 
 export default function BlogPage({}) {
   const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
-  const {userData} = useContext(UserContext);
+  const {user, userData} = useContext(UserContext);
 
-  if (!userData) {
-    return <Spinner1 />;
+  if (!userData || !user) {
+    return !user ? <DefaultErrorPage statusCode={404} /> : <Spinner1 />;
   } else {
     return !userData?.permissions?.admin ? (
       <DefaultErrorPage statusCode={404} />

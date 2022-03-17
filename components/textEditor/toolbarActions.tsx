@@ -39,13 +39,13 @@ export const toolBarActions: ToolBarAction[] = [
     icon: faListUl,
     adminOnly: false,
     block: 'unordered-list-item',
-    id: 'ul',
+    id: 'unordered-list-item',
   },
   {
     icon: faListOl,
     adminOnly: false,
     block: 'ordered-list-item',
-    id: 'ol',
+    id: 'ordered-list-item',
   },
   {
     icon: faAlignRight,
@@ -75,6 +75,7 @@ export const toolBarActions: ToolBarAction[] = [
     icon: faLink,
     adminOnly: true,
     link: true,
+    id: 'link',
   },
   {
     icon: faUnderline,
@@ -97,7 +98,7 @@ export const toolBarActions: ToolBarAction[] = [
   {
     icon: faHeading,
     adminOnly: true,
-    block: 'header-one',
-    id: 'header-one',
+    style: 'H1',
+    id: 'h1',
   },
 ];

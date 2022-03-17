@@ -17,6 +17,11 @@ export default function EditorContent(props: EditorContentProps) {
       if (style === 'CODE') {
         return <p className="w-fit rounded-sm bg-gray-700 px-2 py-0.5 text-orange-500" />;
       }
+
+      // @ts-ignore
+      if (style === 'H1') {
+        return <p className="text-4xl" />;
+      }
     },
     blockToHTML: (block) => {
       if (block.type === 'unstyled' && block.text === '') {
@@ -36,19 +41,16 @@ export default function EditorContent(props: EditorContentProps) {
       if (block.type === 'paragraph') {
         return <p />;
       }
-      if (block.type === 'header-one') {
-        return <p className="text-4xl" />;
-      }
-      if (block.type === 'text-center') {
-        return <p className="text-center" />;
-      }
 
       if (block.type === 'text-right') {
-        return <p className="text-right" />;
+        return <div className="text-right" />;
+      }
+      if (block.type === 'text-center') {
+        return <div className="text-center" />;
       }
 
       if (block.type === 'text-left') {
-        return <p className="text-left" />;
+        return <div className="text-left" />;
       }
 
       if (block.type === 'unordered-list-item') {
@@ -60,8 +62,18 @@ export default function EditorContent(props: EditorContentProps) {
     },
     entityToHTML: (entity, originalText) => {
       if (entity.type === 'LINK') {
+        var httpsCheck = /^(http|https)/;
+        let url = entity.data.url;
+        if (!httpsCheck.test(String(entity.data.url).toLowerCase()) == true) {
+          url = 'https://' + url;
+        }
         return (
-          <a className="cursor-pointer text-blue-500 underline visited:text-purple-500" href={entity.data.url}>
+          <a
+            className="cursor-pointer text-blue-500 underline visited:text-purple-500"
+            href={url}
+            rel="noreferrer"
+            target="_blank"
+          >
             {originalText}
           </a>
         );
@@ -71,9 +83,9 @@ export default function EditorContent(props: EditorContentProps) {
   })(props.editorState.getCurrentContent());
 
   return (
-    <div className="container m-1 h-full w-full">
+    <div className="container m-2 h-full w-full">
       <div dangerouslySetInnerHTML={{__html: html}}></div>
-      {/* <div>{JSON.stringify(convertToRaw(props.editorState.getCurrentContent()), null, '\t')}</div> */}
+      <div>{JSON.stringify(convertToRaw(props.editorState.getCurrentContent()), null, '\t')}</div>
     </div>
   );
 }
@@ -110,7 +122,7 @@ function _getOrderedList(blockDepth: number) {
   return {
     start: `<li style="${style}">`,
     end: '</li>',
-    nest: '<ol>',
+    nest: '<ol style="margin-top: 8px; margin-bottom: 8px;">',
     nestStart: '<ol>',
     nestEnd: '</ol>',
   };
@@ -149,7 +161,7 @@ function _getUnorderedList(blockDepth: number) {
     start: `<li style="${style}">`,
     end: '</li>',
     nest: '<ul>',
-    nestStart: '<ul>',
+    nestStart: '<ul style="margin-top: 8px; margin-bottom: 8px;">',
     nestEnd: '</ul>',
   };
 }

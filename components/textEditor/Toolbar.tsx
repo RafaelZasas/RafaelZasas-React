@@ -92,29 +92,26 @@ export default function Toolbar(props: ToolBarProps) {
               <div key={index} className={`m-0.5 ${getSelectedActions(action) ? 'bg-blue-500/10' : 'bg-none'}`}>
                 <FontAwesomeIcon
                   onClick={() => {
-                    props.focusEditor();
+                    // props.focusEditor();
                     /**Section for Style elements: bold, italics etc */
                     if (action.style) {
                       switch (action.style) {
                         case 'CODE':
                           setEditorState(RichUtils.toggleCode(editorState));
+
+                        case 'text-center':
+                          setEditorState(RichUtils.toggleInlineStyle(editorState, 'text-center'));
+                        case 'text-right':
+                          setEditorState(RichUtils.toggleInlineStyle(editorState, 'text-right'));
+
                         default:
                           setEditorState(RichUtils.toggleInlineStyle(editorState, action.style));
                       }
                     }
 
-                    /**section for element blocks: paragraph, h1 etc */
+                    /**section for element blocks: paragraph, ul, ol etc. */
                     if (action.block) {
-                      switch (action.block) {
-                        case 'tab':
-                          // TODO: IMPLEMENT FIXED TAB PRESS
-                          break;
-                        case 'header-one':
-                          setEditorState(RichUtils.toggleBlockType(editorState, 'header-one'));
-
-                        default:
-                          setEditorState(RichUtils.toggleBlockType(editorState, action.block));
-                      }
+                      setEditorState(RichUtils.toggleBlockType(editorState, action.block));
                     }
 
                     if (action.link) {
