@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import {Combobox, Transition} from '@headlessui/react';
 import {CheckIcon, SelectorIcon} from '@heroicons/react/solid';
 
@@ -10,6 +10,7 @@ interface Item {
 interface ComboBoxProps {
   items: any[] | Item[];
   label?: string;
+  function?: Function;
 }
 
 export default function ComboBox(props: ComboBoxProps) {
@@ -26,7 +27,16 @@ export default function ComboBox(props: ComboBoxProps) {
 
   return (
     <div className="z-20 w-full">
-      <Combobox value={selected} onChange={setSelected}>
+      <Combobox
+        value={selected}
+        onChange={(item) => {
+          setSelected(item);
+
+          if (props.function) {
+            props.function(item);
+          }
+        }}
+      >
         {props.label && (
           <Combobox.Label className={'block text-sm font-medium text-gray-700'}>{props.label}</Combobox.Label>
         )}
