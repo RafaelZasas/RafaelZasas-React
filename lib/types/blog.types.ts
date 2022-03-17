@@ -27,15 +27,25 @@ interface BlogReply {
   author: Author;
   comment: string;
   timestamp: Timestamp;
+  upvotes: UserVote[];
+  downVote: UserVote[];
   replies?: BlogReply[];
 }
 
-export interface Blog {
-  title: string;
-  summary: string;
-  body: string;
-  tags: blogTag[];
-  relatedLinks: relatedLink[];
+interface UserVote {
+  userId: string;
   timestamp: Timestamp;
+}
+
+export interface Blog {
+  body: string;
+  relatedLinks: relatedLink[];
   replies?: BlogReply[];
+  upvotes: UserVote[];
+  downVote: UserVote[];
+  status: 'archived' | 'draft' | 'published';
+  summary: string;
+  tags: blogTag[];
+  timestamp: Timestamp;
+  title: string;
 }
