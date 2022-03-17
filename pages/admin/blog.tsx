@@ -1,20 +1,13 @@
 import {EditorState} from 'draft-js';
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
 import {UserContext} from '../../lib/context';
 import DefaultErrorPage from 'next/error';
 import Button from '../../components/Button';
 import ComboBox from '../../components/ComboBox';
-
-const tags = [
-  {id: 1, name: 'education'},
-  {id: 2, name: 'software'},
-  {id: 3, name: 'electronics'},
-  {id: 4, name: 'sports'},
-  {id: 5, name: 'firebase'},
-  {id: 6, name: 'react'},
-];
+import Tag from '../../components/Tag';
+import {GetTags} from '../../lib/FirestoreOperations';
 
 function TitleInput() {
   return (
@@ -60,6 +53,23 @@ function SummaryInput() {
 export default function BlogPage({}) {
   const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
   const {user, userData} = useContext(UserContext);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const tags = GetTags();
+  console.log(tags);
+
+  function AddTag(tag) {
+    if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  }
+
+  function _removeTag(tag) {
+    const res = selectedTags.filter((obj) => obj.id !== tag.id);
+    console.log(res);
+
+    setSelectedTags(res);
+  }
 
   if (!userData || !user) {
     return !user ? <DefaultErrorPage statusCode={404} /> : <Spinner1 />;
@@ -72,8 +82,14 @@ export default function BlogPage({}) {
         <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
           <TitleInput />
           <SummaryInput />
-          <div className="flex flex-row">
-            <ComboBox items={tags} label={'Tags'} />
+          <div className="flex flex-col">
+            <ComboBox items={tags} label={'Tags'} function={AddTag} />
+            <div className="my-3 flex flex-wrap space-x-2 md:flex-row">
+              {selectedTags.length > 0 &&
+                selectedTags.map((tag, index) => {
+                  return <Tag tag={tag} key={index} function={_removeTag} />;
+                })}
+            </div>
           </div>
         </div>
         <div className="z-0 flex h-3/4 w-full flex-1 flex-row">
