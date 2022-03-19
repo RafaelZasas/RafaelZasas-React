@@ -1,4 +1,4 @@
-import {Timestamp} from '@firebase/firestore-types';
+import {Timestamp} from '@firebase/firestore';
 
 // Blog related interfaces
 
@@ -37,15 +37,16 @@ interface UserVote {
   timestamp: Timestamp;
 }
 
-export interface Blog {
+export interface BlogPost {
   body: string;
-  relatedLinks: relatedLink[];
+  relatedLinks?: relatedLink[];
   replies?: BlogReply[];
-  upvotes: UserVote[];
-  downVote: UserVote[];
+  upvotes?: UserVote[];
+  downVote?: UserVote[];
   status: 'archived' | 'draft' | 'published';
   summary: string;
   tags: blogTag[];
   timestamp: Timestamp;
+  edited?: Timestamp;
   title: string;
 }
