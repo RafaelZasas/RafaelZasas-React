@@ -1,5 +1,5 @@
-import {EditorState} from 'draft-js';
-import React, {useContext, useState} from 'react';
+import {convertToRaw, EditorState} from 'draft-js';
+import React, {FormEvent, useContext, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
 import {UserContext} from '../../lib/context';
@@ -7,7 +7,9 @@ import DefaultErrorPage from 'next/error';
 import Button from '../../components/Button';
 import ComboBox from '../../components/ComboBox';
 import Tag from '../../components/Tag';
-import {GetTags} from '../../lib/FirestoreOperations';
+import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
+import {BlogPost} from '../../lib/types';
+import {serverTimestamp} from 'firebase/firestore';
 
 function TitleInput() {
   return (
@@ -21,7 +23,7 @@ function TitleInput() {
           name="title"
           autoFocus
           id="title"
-          className="block h-7 w-full rounded-md border-2 border-gray-300 bg-gray-100/30 p-2 shadow-sm
+          className="block h-9 w-full rounded-md border-2 border-gray-300 bg-gray-100/30 p-2 shadow-sm
            backdrop-blur-xl backdrop-filter hover:border-blue-400/70 focus:border-blue-500 sm:text-sm"
           placeholder="My fancy title"
         />
@@ -53,10 +55,8 @@ function SummaryInput() {
 export default function BlogPage({}) {
   const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
   const {user, userData} = useContext(UserContext);
-  const [selectedTags, setSelectedTags] = useState([]);
-
+  const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>([]);
   const tags = GetTags();
-  console.log(tags);
 
   function AddTag(tag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
@@ -71,13 +71,38 @@ export default function BlogPage({}) {
     setSelectedTags(res);
   }
 
+  function SubmitBlogPost(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    // @ts-ignore
+    const title = e.target.title.value;
+    // @ts-ignore
+    const summary = e.target.summary.value;
+
+    const postData: BlogPost = {
+      title,
+      summary,
+      tags: selectedTags,
+      status: 'draft',
+      body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+      // @ts-ignore
+      timestamp: serverTimestamp(),
+    };
+    // console.log(postData);
+    console.dir(e);
+
+    // PostBlog(postData);
+  }
+
   if (!userData || !user) {
     return !user ? <DefaultErrorPage statusCode={404} /> : <Spinner1 />;
   } else {
     return !userData?.permissions?.admin ? (
       <DefaultErrorPage statusCode={404} />
     ) : (
-      <div className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4">
+      <form
+        className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4"
+        onSubmit={SubmitBlogPost}
+      >
         <h2 className="text-center text-lg font-semibold">Add Blog Entry</h2>
         <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
           <TitleInput />
@@ -97,9 +122,9 @@ export default function BlogPage({}) {
         </div>
         <div className=" mt-2 flex flex-row justify-start space-x-4">
           <Button text="Publish" type="submit" />
-          <Button text="Save Draft" type="button" />
+          <Button text="Save Draft" type="submit" />
         </div>
-      </div>
+      </form>
     );
   }
 }

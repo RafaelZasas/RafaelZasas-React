@@ -13,6 +13,13 @@ module.exports = {
       lowerroman: 'lower-roman',
       upperroman: 'upper-roman',
     },
+    safelist: [
+      'text-2xl',
+      'text-3xl',
+      {
+        pattern: /bg-(red|emerald|blue|sky|fuchsia|yellow)-(400|500)/,
+      },
+    ],
   },
   plugins: [],
 };
