@@ -2,13 +2,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
 import {storage, firestore} from '../lib/firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
-import {MailIcon} from '@heroicons/react/solid';
 import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {DocumentDownloadIcon} from '@heroicons/react/outline';
 import {UserContext} from '../lib/context';
 import AddEmailModal from '../components/addEmailModal';
 import {Toast} from '../components/toast';
 import Button from '../components/Button';
+import Metatags from '../components/Metatags';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -34,7 +34,7 @@ export default function ResumePage({}) {
 
   /** END HOOKS */
 
-  const gsReference = ref(storage, 'gs://rafael-zasas.appspot.com/PDFResumeSept2021.pdf');
+  const gsReference = ref(storage, 'gs://rafael-zasas.appspot.com/PDF-Resume-March2022.pdf');
 
   getDownloadURL(gsReference).then((res) => {
     setResume(res);
@@ -63,7 +63,12 @@ export default function ResumePage({}) {
   }
 
   return (
-    <div>
+    <main>
+      <Metatags
+        title="Resume"
+        description="Resume for rafaelzasas which you can download or send to yourself"
+        currentURL="rafaelzasas.com/resume"
+      />
       <AddEmailModal open={openAddEmailModal} setOpen={setOpenAddEmailModal} />
       <div className="mb-4 min-h-screen place-items-center bg-white px-4 py-14 sm:px-6 md:grid md:py-16 lg:px-8">
         <div className="mx-auto max-w-max">
@@ -99,7 +104,7 @@ export default function ResumePage({}) {
       </div>
 
       <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
-    </div>
+    </main>
   );
 }
 
