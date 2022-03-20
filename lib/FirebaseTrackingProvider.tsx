@@ -13,7 +13,6 @@ export const FirebaseTrackingProvider = (props: {children: ReactNode}) => {
     setAnalytics(getAnalytics(firebaseApp));
     if (analytics) {
       setAnalyticsCollectionEnabled(analytics, true);
-      console.log('collection enabled');
     }
 
     const handleRouteChange = (url: string) => {

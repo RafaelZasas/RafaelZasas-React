@@ -1,97 +1,82 @@
 /*  ./components/Navbar.jsx     */
 import Link from 'next/link';
 import {useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons'
-import { useContext } from "react";
-import {UserContext} from '../lib/context'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import {useContext} from 'react';
+import {UserContext} from '../lib/context';
 
 export const Navbar = () => {
-    const [active, setActive] = useState(false);
-    const {user, userData} = useContext(UserContext);
+  const [active, setActive] = useState(false);
+  const {user, userData} = useContext(UserContext);
 
-    const handleClick = () => {
-        setActive(!active);
-    };
+  const handleClick = () => {
+    setActive(!active);
+  };
 
-    return (
-        <>
-            <header className='flex items-center flex-wrap bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-3'>
-                <Link href='/'>
-                    <a className='inline-flex items-center p-2 mr-4 '>
-                        <FontAwesomeIcon icon={faChevronLeft} color={'white'}/>
-                        <span className='text-xl text-white font-bold uppercase tracking-wide p-1'>
-              Rafael Zasas
-            </span>
-                        <FontAwesomeIcon icon={faChevronRight} color={'white'}/>
+  return (
+    <>
+      <header className="flex flex-wrap items-center bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-3">
+        <Link href="/">
+          <a className="mr-4 inline-flex items-center p-2 ">
+            <FontAwesomeIcon icon={faChevronLeft} color={'white'} />
+            <span className="p-1 text-xl font-bold uppercase tracking-wide text-white">Rafael Zasas</span>
+            <FontAwesomeIcon icon={faChevronRight} color={'white'} />
+          </a>
+        </Link>
+        <button
+          className=" ml-auto inline-flex rounded p-3 text-white outline-none hover:bg-blue-600 hover:text-white lg:hidden"
+          onClick={handleClick}
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        {/*Note that in this div we will use a ternary operator to decide whether or not to display the content of the div  */}
+        <div className={`${active ? '' : 'hidden'}   w-full lg:inline-flex lg:w-auto lg:flex-grow`}>
+          <div className="flex w-full flex-col items-start lg:ml-auto lg:inline-flex lg:h-auto  lg:w-auto lg:flex-row lg:items-center">
+            <Link href="/">
+              <a className="w-full items-center justify-center rounded px-3 py-2 font-bold text-white hover:bg-blue-700 hover:text-white lg:inline-flex lg:w-auto ">
+                Home
+              </a>
+            </Link>
+            <Link href="/about">
+              <a className="w-full items-center justify-center rounded px-3 py-2 font-bold text-white hover:bg-blue-700 hover:text-white lg:inline-flex lg:w-auto">
+                About
+              </a>
+            </Link>
+            <Link href="/contact">
+              <a className="w-full items-center justify-center rounded px-3 py-2 font-bold text-white hover:bg-blue-700 hover:text-white lg:inline-flex lg:w-auto">
+                Contact
+              </a>
+            </Link>
 
-                    </a>
+            {userData && (
+              <>
+                <Link href="/profile">
+                  <a className="w-full items-center justify-center rounded px-3 py-2 font-bold text-white hover:bg-blue-700 hover:text-white lg:inline-flex lg:w-auto">
+                    Profile
+                  </a>
                 </Link>
-                <button
-                    className=' inline-flex p-3 hover:bg-blue-600 rounded lg:hidden text-white ml-auto hover:text-white outline-none'
-                    onClick={handleClick}
-                >
-                    <svg
-                        className='w-6 h-6'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'
-                        xmlns='http://www.w3.org/2000/svg'
-                    >
-                        <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth={2}
-                            d='M4 6h16M4 12h16M4 18h16'
-                        />
-                    </svg>
-                </button>
-                {/*Note that in this div we will use a ternary operator to decide whether or not to display the content of the div  */}
-                <div
-                    className={`${
-                        active ? '' : 'hidden'
-                    }   w-full lg:inline-flex lg:flex-grow lg:w-auto`}
-                >
-                    <div
-                        className='lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto'>
-                        <Link href='/'>
-                            <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white '>
-                                Home
-                            </a>
-                        </Link>
-                        <Link href='/about'>
-                            <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
-                                About
-                            </a>
-                        </Link>
-                        <Link href='/contact'>
-                            <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
-                                Contact
-                            </a>
-                        </Link>
+              </>
+            )}
 
-                        {userData?.username && (
-                            <>
-                                <Link href='/profile'>
-                                    <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
-                                        Profile
-                                    </a>
-                                </Link>
-                            </>
-                        )}
-
-                        {!userData?.username && (
-                            <Link href='/login'>
-                                <a className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-blue-700 hover:text-white'>
-                                    Login
-                                </a>
-                            </Link>
-                        )}
-
-
-                    </div>
-                </div>
-            </header>
-        </>
-    );
+            {!user && (
+              <Link href="/login">
+                <a className="w-full items-center justify-center rounded px-3 py-2 font-bold text-white hover:bg-blue-700 hover:text-white lg:inline-flex lg:w-auto">
+                  Login
+                </a>
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+    </>
+  );
 };

@@ -1,9 +1,11 @@
 import {appleAuthProvider, auth, githubAuthProvider, googleAuthProvider, firestore} from '../lib/firebase';
 import {useRouter} from 'next/router';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {Toast} from '../components/toast';
 import ConfirmSignUpModal from '../components/confirmSignUpMoodal';
 import Metatags from '../components/Metatags';
+import {FirebaseContext} from '../lib/FirebaseTrackingProvider';
+import {logEvent} from 'firebase/analytics';
 
 function validateEmail(email) {
   const regexp =
@@ -22,9 +24,10 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [openConfirmSignUpModal, setOpenConfirmSignUpModal] = useState(false);
   const [createNewUser, setCreateNewUser] = useState(false);
+  const analytics = useContext(FirebaseContext);
 
   useEffect(() => {
-    const signUp = async () => {
+    const SignUp = async () => {
       try {
         const token = await auth.createUserWithEmailAndPassword(email, password);
         await token.user.sendEmailVerification();
@@ -38,7 +41,7 @@ export default function Login() {
         setTimeout(() => {
           setShowToast(false);
         }, 3000);
-        (await validateNewUser(token)) ? await router.push('/profile') : await router.push('/');
+        (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
       } catch (e) {
         console.log(e);
         setToastData({
@@ -53,7 +56,7 @@ export default function Login() {
       }
     };
 
-    createNewUser ? signUp() : null;
+    createNewUser ? SignUp() : null;
   }, [createNewUser]);
 
   const [showToast, setShowToast] = useState(false);
@@ -65,7 +68,6 @@ export default function Login() {
 
   const loginWithEmail = async (e) => {
     e.preventDefault();
-    console.log(e.target.email.value, e.target.password.value);
 
     try {
       // Some error handling to make sure users dont pull a fast one
@@ -79,7 +81,7 @@ export default function Login() {
 
       try {
         const token = await auth.signInWithEmailAndPassword(e.target.email.value, e.target.password.value);
-        (await validateNewUser(token)) ? await router.push('/profile') : await router.push('/');
+        (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
       } catch (e) {
         console.log(e);
         const error = () => {
@@ -217,9 +219,11 @@ export default function Login() {
 
 function SignInWithGoogleButton() {
   const router = useRouter();
+  const analytics = useContext(FirebaseContext);
+
   const signInWithApple = async () => {
     const token = await auth.signInWithPopup(googleAuthProvider);
-    (await validateNewUser(token)) ? await router.push('/profile') : await router.push('/');
+    (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
   return (
@@ -263,9 +267,11 @@ function SignInWithGoogleButton() {
 
 function SignInWithGitHubButton() {
   const router = useRouter();
+  const analytics = useContext(FirebaseContext);
+
   const signInWithGitHub = async () => {
     const token = await auth.signInWithPopup(githubAuthProvider);
-    (await validateNewUser(token)) ? await router.push('/profile') : await router.push('/');
+    (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
   return (
@@ -289,9 +295,11 @@ function SignInWithGitHubButton() {
 
 function SignInWithAppleButton() {
   const router = useRouter();
+  const analytics = useContext(FirebaseContext);
+
   const signInWithApple = async () => {
     const token = await auth.signInWithPopup(appleAuthProvider);
-    (await validateNewUser(token)) ? await router.push('/profile') : await router.push('/');
+    (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
   return (
@@ -313,7 +321,7 @@ function SignInWithAppleButton() {
  * Adds default user data into firestore if user is signing in for the first time
  * @param token Firebase token provided on completion of sign in
  */
-async function validateNewUser(token) {
+async function ValidateNewUser(token, analytics) {
   const userRef = firestore.doc(`users/${token.user.uid}`);
   const userData = await userRef.get();
 
@@ -334,6 +342,16 @@ async function validateNewUser(token) {
       },
     };
     await userRef.set(data, {merge: true});
+    logEvent(analytics, 'sign_up', {
+      uid: data.uid,
+      email: data.email,
+    });
     return true;
-  } else return false;
+  } else {
+    logEvent(analytics, 'login', {
+      uid: userData?.data()?.uid,
+      email: userData?.data()?.email,
+    });
+    return false;
+  }
 }
