@@ -1,5 +1,3 @@
-const {url} = require('inspector');
-
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class', // or 'media' or 'class'
@@ -15,6 +13,13 @@ module.exports = {
       lowerroman: 'lower-roman',
       upperroman: 'upper-roman',
     },
+    safelist: [
+      'text-2xl',
+      'text-3xl',
+      {
+        pattern: /bg-(red|emerald|blue|sky|fuchsia|yellow)-(400|500)/,
+      },
+    ],
   },
   plugins: [],
 };
