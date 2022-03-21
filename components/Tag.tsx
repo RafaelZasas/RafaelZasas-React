@@ -19,7 +19,10 @@ export default function Tag(props: TagProps) {
   const classes = ` inline-flex cursor-pointer items-center rounded-full border-2 border-slate-400/40
         bg-opacity-80 px-2.5 py-0.5 text-sm font-medium text-gray-200 hover:bg-opacity-100 md:mt-2 lg:mt-0`;
   return (
-    <div onClick={() => props.function(props.tag)} className={`${classes} ${_getBackground(props.tag.color)}`}>
+    <div
+      onClick={() => props.function && props.function(props.tag)}
+      className={`${classes} ${_getBackground(props.tag.color)}`}
+    >
       {props.tag.name}
     </div>
   );
