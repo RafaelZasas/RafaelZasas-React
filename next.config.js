@@ -1,22 +1,18 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    loader: 'imgix',
-    path: 'https://rafaelzasas.imgix.net'
+    domains: ['firebasestorage.googleapis.com', 'assets.vercel.com', 'picsum.photos'],
+    formats: ['image/avif', 'image/webp'],
   },
-  exportPathMap: async function(
-      defaultPathMap,
-      {dev, dir,outDir, distDir,buildId}
-  ){
+  exportPathMap: async function (defaultPathMap, {dev, dir, outDir, distDir, buildId}) {
     return {
-      '/': { page: '/' },
-      '/about': { page: '/about' },
-      '/contact': { page: '/contact' },
-      '/login': { page: '/login' },
-      '/projects': { page: '/projects' },
-      '/resume': { page: '/resume' },
-      '/profile': { page: '/profile' }
-    }
+      '/': {page: '/'},
+      '/about': {page: '/about'},
+      '/contact': {page: '/contact'},
+      '/login': {page: '/login'},
+      '/projects': {page: '/projects'},
+      '/resume': {page: '/resume'},
+      '/profile': {page: '/profile'},
+    };
   },
-}
-
+};
