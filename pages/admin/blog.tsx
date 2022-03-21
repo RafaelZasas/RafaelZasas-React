@@ -1,4 +1,4 @@
-import {convertToRaw, EditorState} from 'draft-js';
+import {ContentState, convertToRaw, EditorState} from 'draft-js';
 import React, {FormEvent, useContext, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
@@ -10,6 +10,8 @@ import Tag from '../../components/Tag';
 import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
 import {BlogPost} from '../../lib/types';
 import {serverTimestamp} from 'firebase/firestore';
+import {Toast} from '../../components/toast';
+import Metatags from '../../components/Metatags';
 
 function TitleInput() {
   return (
@@ -56,7 +58,14 @@ export default function BlogPage({}) {
   const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
   const {user, userData} = useContext(UserContext);
   const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>([]);
+  const [isDraft, setIsDraft] = useState(true);
   const tags = GetTags();
+  const [showToast, setShowToast] = useState(false);
+  const [toastData, setToastData] = useState({
+    heading: '',
+    body: '',
+    type: '',
+  });
 
   function AddTag(tag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
@@ -78,19 +87,46 @@ export default function BlogPage({}) {
     // @ts-ignore
     const summary = e.target.summary.value;
 
+    const wordCount = editorState.getCurrentContent().getPlainText('\u0001').trim().split(/\s+/).length;
+    const readingTime = (wordCount / 200 + 1).toFixed(0);
+
     const postData: BlogPost = {
       title,
       summary,
       tags: selectedTags,
-      status: 'draft',
+      status: isDraft ? 'draft' : 'published',
       body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-      // @ts-ignore
-      timestamp: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      readingTime: `${readingTime} min read`,
     };
-    // console.log(postData);
-    console.dir(e);
 
-    // PostBlog(postData);
+    try {
+      PostBlog(postData);
+
+      setToastData({
+        heading: 'Success',
+        body: `Blog was ${isDraft ? 'saved as draft' : 'published'}`,
+        type: 'success',
+      });
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        // reset the form
+        // @ts-ignore
+        e.target.reset();
+        // reset the editor
+        setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
+      }, 3000);
+    } catch (error) {
+      setToastData({
+        heading: 'Error posting blog',
+        body: error.message,
+        type: 'error',
+      });
+      setShowToast(true);
+    }
+
+    setIsDraft(true);
   }
 
   if (!userData || !user) {
@@ -99,32 +135,40 @@ export default function BlogPage({}) {
     return !userData?.permissions?.admin ? (
       <DefaultErrorPage statusCode={404} />
     ) : (
-      <form
-        className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4"
-        onSubmit={SubmitBlogPost}
-      >
-        <h2 className="text-center text-lg font-semibold">Add Blog Entry</h2>
-        <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
-          <TitleInput />
-          <SummaryInput />
-          <div className="flex flex-col">
-            <ComboBox items={tags} label={'Tags'} function={AddTag} />
-            <div className="my-3 flex flex-wrap space-x-2 md:flex-row">
-              {selectedTags.length > 0 &&
-                selectedTags.map((tag, index) => {
-                  return <Tag tag={tag} key={index} function={_removeTag} />;
-                })}
+      <main>
+        <Metatags
+          title="Admin Blog Management"
+          description="Shhh. This page is a secret"
+          currentURL="rafaelzasas.com/admin/blog"
+        />
+        <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
+        <form
+          className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4"
+          onSubmit={SubmitBlogPost}
+        >
+          <h2 className="text-center text-lg font-semibold">Add Blog Entry</h2>
+          <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
+            <TitleInput />
+            <SummaryInput />
+            <div className="flex flex-col">
+              <ComboBox items={tags} label={'Tags'} function={AddTag} />
+              <div className="my-3 flex flex-wrap space-x-2 md:flex-row">
+                {selectedTags.length > 0 &&
+                  selectedTags.map((tag, index) => {
+                    return <Tag tag={tag} key={index} function={_removeTag} />;
+                  })}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="z-0 flex h-3/4 w-full flex-1 flex-row">
-          <TextEditor editorState={editorState} setEditorState={setEditorState} />
-        </div>
-        <div className=" mt-2 flex flex-row justify-start space-x-4">
-          <Button text="Publish" type="submit" />
-          <Button text="Save Draft" type="submit" />
-        </div>
-      </form>
+          <div className="z-0 flex h-3/4 w-full flex-1 flex-row">
+            <TextEditor editorState={editorState} setEditorState={setEditorState} />
+          </div>
+          <div className=" mt-2 flex flex-row justify-start space-x-4">
+            <Button text="Publish" type="submit" function={() => setIsDraft(false)} />
+            <Button text="Save Draft" type="submit" />
+          </div>
+        </form>
+      </main>
     );
   }
 }
