@@ -39,3 +39,20 @@ export const GetBlogPosts = async () => {
   });
   return posts;
 };
+
+export const GetBlogPost = async (postId: string) => {
+  const postRef = firestore.collection('blogs').doc(postId);
+  const post = await postRef.get();
+  const data: BlogPost = post.data() as BlogPost;
+
+  if (post.exists && 'seconds' in data.createdAt) {
+    return {
+      ...data,
+      id: post.id,
+      createdAt: data?.createdAt?.seconds || 0,
+      updatedAt: data?.updatedAt?.seconds || 0,
+    };
+  } else {
+    return null;
+  }
+};
