@@ -5,11 +5,11 @@ import {GetImage} from '../lib/CloudStorageOperations';
 export async function getServerSideProps(context) {
   let cards = [
     {
-      title: 'Original Website',
-      summary: 'Take a look at a mirror image of this website built using Angular',
-      source: await GetImage('card-tiles/angular-logo.png'),
+      title: 'Blog',
+      summary: 'Take a look, stay a while.',
+      source: await GetImage('card-tiles/blog.png'),
       alt: 'Angular logo',
-      url: 'https://rafaelzasas.com',
+      url: '/blog',
     },
     {
       title: 'GitHub',
