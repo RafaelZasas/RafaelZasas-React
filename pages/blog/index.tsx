@@ -24,8 +24,6 @@ interface BlogPageProps {
 }
 
 export default function BlogPage(props: BlogPageProps) {
-  console.log(props);
-
   return (
     <main>
       <Metatags title="Blog" description="Browse my latest blog posts!" currentURL="rafaelzasas.com/blog" />
@@ -40,7 +38,7 @@ export default function BlogPage(props: BlogPageProps) {
               A collaborative space for me to share ideas and hear your opinion on them.
             </p>
           </div>
-          <div className="mx-auto mt-12 grid max-w-lg gap-5 md:grid-cols-3 lg:max-w-none xl:grid-cols-4">
+          <div className="mx-auto mt-12 grid max-w-lg grid-cols-1 gap-5 md:max-w-none md:grid-cols-2 lg:max-w-none lg:grid-cols-3 xl:grid-cols-4">
             {props.posts.map((post) => {
               const createdAt =
                 typeof post?.createdAt === 'number' ? dayjs.unix(post.createdAt).format('MMM DD YYYY HH:mm') : 'Error';
