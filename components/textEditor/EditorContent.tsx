@@ -83,7 +83,7 @@ export default function EditorContent(props: EditorContentProps) {
   })(props.editorState.getCurrentContent());
 
   return (
-    <div className="container m-2 h-full w-full">
+    <div className="container h-full w-full">
       <div dangerouslySetInnerHTML={{__html: html}}></div>
       {/* <div>{JSON.stringify(convertToRaw(props.editorState.getCurrentContent()), null, '\t')}</div> */}
     </div>
