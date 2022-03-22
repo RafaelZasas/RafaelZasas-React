@@ -51,7 +51,15 @@ export default function BlogPostPage(props: BlogPostProps) {
   const editorState = EditorState.createWithContent(contentState);
   return (
     <main>
-      <Metatags />
+      <Metatags
+        title={props.post.title}
+        description={props.post.summary}
+        image={
+          props.post.displayImage ??
+          'https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/profile-photo.jpg?alt=media&token=6d133b36-eb83-4bf3-a58d-317bc1eeaf2a'
+        }
+        currentURL={`rafaelzasas.com/blog/${props.path}`}
+      />
       <div className="xl-px-8 relative mx-4 overflow-hidden py-10 md:px-6 lg:px-6">
         <div className="m-0 mx-auto max-w-prose font-roboto text-lg font-normal text-slate-800">
           <EditorContent editorState={editorState} />
