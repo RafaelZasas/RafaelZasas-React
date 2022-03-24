@@ -49,3 +49,4 @@ yarn-error.log*
 node_modules/
 
 styles/main.css
+firebase-debug.log
