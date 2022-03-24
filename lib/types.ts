@@ -1,4 +1,4 @@
-export * from "./types/blog.types";
+export * from './types/blog.types';
 
 export interface User {
   // describes the data that a user is expected expected to contain
@@ -13,9 +13,10 @@ export interface User {
     user: boolean;
     edit: boolean;
     admin: boolean;
+    level?: number;
   };
   communications?: {
-    email: { comments: boolean; projects: boolean; updates: boolean };
-    push: { comments: boolean; projects: boolean; updates: boolean };
+    email: {comments: boolean; projects: boolean; updates: boolean};
+    push: {comments: boolean; projects: boolean; updates: boolean};
   };
 }
