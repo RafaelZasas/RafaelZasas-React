@@ -22,9 +22,16 @@ service cloud.firestore {
       allow write: if isAdmin(request);
     }
 
-    match /blogs/{doc=**}{
+    match /blogs/{blogId}{
       allow read;
       allow write: if isAdmin(request);
+
+      match /comments/{commentId}{
+        allow read;
+        allow create: if isAuthenticated(request);
+        allow update: if isOwner(commentId) || isAdmin(request);
+        allow delete: if isAdmin(request);
+      }
     }
     
     match /tags/{doc=**}{
