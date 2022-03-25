@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {db} from './firebase';
-import {BlogPost, UserData} from './types';
+import {BlogComment, BlogPost, UserData} from './types';
 import {
   collection,
   where,
@@ -13,7 +13,9 @@ import {
   doc,
   getDoc,
   updateDoc,
+  setDoc,
 } from 'firebase/firestore';
+import {Timestamp} from '@google-cloud/firestore';
 
 export const GetTags = () => {
   const [tags, setTags] = useState([]);
@@ -42,14 +44,14 @@ export const GetBlogPosts = async () => {
   try {
     const posts = (await getDocs(postRef)).docs.map((doc) => {
       const data: BlogPost = doc.data() as BlogPost;
-      if ('seconds' in data.createdAt) {
-        return {
-          ...data,
-          id: doc.id,
-          createdAt: data?.createdAt?.seconds || 0,
-          updatedAt: data?.updatedAt?.seconds || 0,
-        };
-      }
+      const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+      const createdAt: Timestamp = data?.createdAt as Timestamp;
+      return {
+        ...data,
+        id: doc.id,
+        createdAt: createdAt?.seconds || 0,
+        updatedAt: updatedAt?.seconds || 0,
+      };
     });
     return posts;
   } catch (error) {
@@ -62,17 +64,36 @@ export const GetBlogPost = async (postId: string) => {
   const postRef = doc(db, `blogs/${postId}`);
   const post = await getDoc(postRef);
   const data: BlogPost = post.data() as BlogPost;
+  const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+  const createdAt: Timestamp = data?.createdAt as Timestamp;
+  return {
+    ...data,
+    id: post.id,
+    createdAt: createdAt?.seconds || 0,
+    updatedAt: updatedAt?.seconds || 0,
+  };
+};
 
-  if (post.exists && 'seconds' in data.createdAt) {
+export const addBlogComment = async (blogId: string, comment: BlogComment) => {
+  const blogCommentRef = doc(db, `blogs/${blogId}/comments/${comment.author.uid}`);
+  await setDoc(blogCommentRef, comment);
+};
+
+export const getBlogComments = async (blogId: string) => {
+  const blogCommentsRef = collection(db, `blogs/${blogId}/comments`);
+  const comments = (await getDocs(blogCommentsRef)).docs.map((doc) => {
+    const data = doc.data() as BlogComment;
+    const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+    const createdAt: Timestamp = data?.createdAt as Timestamp;
     return {
       ...data,
-      id: post.id,
-      createdAt: data?.createdAt?.seconds || 0,
-      updatedAt: data?.updatedAt?.seconds || 0,
+      id: doc.id,
+      createdAt: createdAt?.seconds || 0,
+      updatedAt: updatedAt?.seconds || 0,
     };
-  } else {
-    return null;
-  }
+  });
+
+  return comments;
 };
 
 export const GetAllUsers = async (): Promise<UserData[]> => {
@@ -89,10 +110,10 @@ export const getUser = async (uid: string): Promise<UserData> => {
 
 export const getUsersByField = async (field: string, fieldValue: string): Promise<UserData[]> => {
   const userRef = query(collection(db, `users`), where(field, '==', fieldValue), limit(1));
-  const user = (await getDocs(userRef)).docs.map((user) => {
+  const users = (await getDocs(userRef)).docs.map((user) => {
     return {uid: user.id, ...(user.data() as UserData)};
   });
-  return user;
+  return users;
 };
 
 export const updateUser = async (uid: string, data) => {
