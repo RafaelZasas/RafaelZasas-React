@@ -1,24 +1,25 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, {Fragment} from 'react';
+import React, {Dispatch, Fragment, SetStateAction} from 'react';
 import {Transition} from '@headlessui/react';
 import {CheckCircleIcon, ExclamationCircleIcon} from '@heroicons/react/outline';
 import {XIcon} from '@heroicons/react/solid';
 
-// Params =
+export interface ToastData {
+  heading: string;
+  body: string;
+  type: 'error' | 'success';
+}
 
+interface ToastProps {
+  setShow: Dispatch<SetStateAction<boolean>>;
+  show: boolean;
+  toastData: ToastData;
+}
 /**
  * Displays a toast with an icon, heading and message
- * @param params {
- * setShow: setter;
- * show: Boolean;
- * toastData: {
- *      heading:string;
- *      body:string;
- *      type: 'error' | 'success' }
- *  }
- * @constructor
+ * @param {ToastProps} props
  */
-export const Toast = (params) => {
+export const Toast = (props: ToastProps) => {
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
@@ -29,7 +30,7 @@ export const Toast = (params) => {
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
           <Transition
-            show={params.show}
+            show={props.show}
             as={Fragment}
             enter="transform ease-out duration-300 transition"
             enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -42,22 +43,22 @@ export const Toast = (params) => {
               <div className="p-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    {params.toastData.type === 'success' && (
+                    {props.toastData?.type === 'success' && (
                       <CheckCircleIcon className="h-6 w-6 text-green-400" aria-hidden="true" />
                     )}
-                    {params.toastData.type === 'error' && (
+                    {props.toastData?.type === 'error' && (
                       <ExclamationCircleIcon className="h-6 w-6 text-red-400" aria-hidden="true" />
                     )}
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">{params.toastData.heading}</p>
-                    <p className="mt-1 text-sm text-gray-500">{params.toastData.body}</p>
+                    <p className="text-sm font-medium text-gray-900">{props.toastData?.heading}</p>
+                    <p className="mt-1 text-sm text-gray-500">{props.toastData?.body}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
                       className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
-                        params.setShow(false);
+                        props.setShow(false);
                       }}
                     >
                       <span className="sr-only">Close</span>

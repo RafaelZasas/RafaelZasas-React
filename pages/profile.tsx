@@ -4,7 +4,7 @@ import {ExclamationCircleIcon} from '@heroicons/react/solid';
 import {auth} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import debounce from 'lodash.debounce';
-import {Toast} from '../components/toast';
+import {Toast, ToastData} from '../components/toast';
 import Metatags from '../components/Metatags';
 import {getUsersByField, updateUser} from '../lib/FirestoreOperations';
 
@@ -12,11 +12,7 @@ export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
   const [isValid, setIsValid] = useState(true);
   const [show, setShow] = useState(false);
-  const [toastData, setToastData] = useState({
-    heading: null,
-    body: null,
-    type: null,
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   const onSubmit = async (e) => {
     e.preventDefault();

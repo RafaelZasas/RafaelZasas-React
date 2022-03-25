@@ -6,7 +6,7 @@ import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {DocumentDownloadIcon} from '@heroicons/react/outline';
 import {UserContext} from '../lib/context';
 import AddEmailModal from '../components/addEmailModal';
-import {Toast} from '../components/toast';
+import {Toast, ToastData} from '../components/toast';
 import Button from '../components/Button';
 import Metatags from '../components/Metatags';
 import {addMail} from '../lib/FirestoreOperations';
@@ -27,11 +27,7 @@ export default function ResumePage({}) {
 
   //  For showing toast and its data
   const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   /** END HOOKS */
 

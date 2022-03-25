@@ -1,7 +1,7 @@
 import {appleAuthProvider, githubAuthProvider, auth, googleAuthProvider} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import {useContext, useEffect, useState} from 'react';
-import {Toast} from '../components/toast';
+import {Toast, ToastData} from '../components/toast';
 import ConfirmSignUpModal from '../components/confirmSignUpMoodal';
 import Metatags from '../components/Metatags';
 import {FirebaseContext} from '../lib/FirebaseTrackingProvider';
@@ -63,11 +63,7 @@ export default function Login() {
   }, [createNewUser]);
 
   const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   const loginWithEmail = async (e) => {
     e.preventDefault();
@@ -227,7 +223,7 @@ function SignInWithGoogleButton() {
   const signInWithApple = async () => {
     const token = await signInWithPopup(auth, googleAuthProvider);
     // const token = await auth.signInWithPopup(googleAuthProvider);
-    (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
+    (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : router.back();
   };
 
   return (

@@ -10,7 +10,7 @@ import Tag from '../../components/Tag';
 import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
 import {BlogPost} from '../../lib/types';
 import {serverTimestamp} from 'firebase/firestore';
-import {Toast} from '../../components/toast';
+import {Toast, ToastData} from '../../components/toast';
 import Metatags from '../../components/Metatags';
 
 function TitleInput() {
@@ -55,17 +55,13 @@ function SummaryInput() {
 }
 
 export default function BlogPage({}) {
-  const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const {user, userData} = useContext(UserContext);
   const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>([]);
   const [isDraft, setIsDraft] = useState(true);
   const tags = GetTags();
   const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   function AddTag(tag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {

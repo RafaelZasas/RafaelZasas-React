@@ -2,7 +2,7 @@ import {Fragment, useContext, useEffect, useState} from 'react';
 import {Dialog, Transition} from '@headlessui/react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faMailBulk, faPaperPlane} from '@fortawesome/free-solid-svg-icons';
-import {Toast} from './toast';
+import {Toast, ToastData} from './toast';
 import {addMail} from '../lib/FirestoreOperations';
 
 function validateEmail(email) {
@@ -20,11 +20,7 @@ const AddEmailModal = (params) => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
 
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   const onSubmit = async () => {
     const mail = {
