@@ -8,8 +8,8 @@ export interface UserData {
   username?: string;
   website?: string;
   permissions: {
-    user: boolean;
-    edit: boolean;
+    user?: boolean;
+    edit?: boolean;
     admin: boolean;
     level?: number;
   };

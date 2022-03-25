@@ -25,13 +25,14 @@ interface Author {
 }
 
 /**Replies to blog posts  */
-interface BlogComment {
+export interface BlogComment {
   author: Author;
-  comment: string;
+  body: string;
+  id: string;
   createdAt: Timestamp | FieldValue;
   updatedAt?: Timestamp | FieldValue;
-  upvotes: UserVote[];
-  downVote: UserVote[];
+  upVotes: UserVote[];
+  downVotes: UserVote[];
   replies?: BlogComment[];
 }
 
