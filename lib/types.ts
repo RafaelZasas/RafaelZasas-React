@@ -1,6 +1,6 @@
 export * from './types/blog.types';
 
-export interface User {
+export interface UserData {
   // describes the data that a user is expected expected to contain
   uid: string;
   bio?: string;

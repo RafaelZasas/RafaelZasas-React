@@ -1,4 +1,4 @@
-import {User} from '../lib/types';
+import {UserData} from '../lib/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -41,7 +41,7 @@ const VoteSection = (props: VoteSectionProps) => {
   );
 };
 
-const ReputationSection = (props: {user: User}) => {
+const ReputationSection = (props: {user: UserData}) => {
   let reputation = '';
   if (props.user?.permissions?.admin) {
     reputation = 'admin';
@@ -52,7 +52,7 @@ const ReputationSection = (props: {user: User}) => {
   return <p className="my-0 px-1 text-xs text-slate-500">Reputation: {reputation}</p>;
 };
 
-const UserSection = (props: {user: User}) => {
+const UserSection = (props: {user: UserData}) => {
   return (
     <div className="grid grid-cols-1">
       <p className="text-xs text-slate-500">Replied Mar 22 2021 at 14:23</p>
@@ -93,7 +93,7 @@ interface BlogCommentProps {
   upVotes: number;
   downVotes: number;
   content: string;
-  user: User;
+  user: UserData;
 }
 
 export default function BlogComment(props: BlogCommentProps) {
@@ -105,6 +105,7 @@ export default function BlogComment(props: BlogCommentProps) {
       </div>
       <div className="grid max-h-16 grid-cols-2">
         <div className="mx-2 flex flex-row items-start justify-start space-x-2 text-base text-slate-500">
+          <p className="cursor-pointer">reply</p>
           <p className="cursor-pointer">edit</p>
           <p className="cursor-pointer">flag</p>
         </div>
