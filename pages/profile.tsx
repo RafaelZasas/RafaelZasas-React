@@ -4,9 +4,9 @@ import {ExclamationCircleIcon} from '@heroicons/react/solid';
 import {auth} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import debounce from 'lodash.debounce';
-import {firestore} from '../lib/firebase';
 import {Toast} from '../components/toast';
 import Metatags from '../components/Metatags';
+import {getUsersByField, updateUser} from '../lib/FirestoreOperations';
 
 export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
@@ -38,7 +38,7 @@ export default function ProfilePage({}) {
       },
     };
     try {
-      await firestore.doc(`users/${user.uid}`).update(formData);
+      await updateUser(user.uid, formData);
       setToastData({
         heading: 'Success!',
         body: 'Your profile and preferences have been saved.',
@@ -171,10 +171,10 @@ const UsernameInput = (props) => {
         setIsValid(false);
         setErrorMessage('Username is too long');
       } else {
-        const docs = await firestore.collection(`users`).where('username', '==', username).get();
-        setIsValid(docs.size == 0);
+        const docs = await getUsersByField('username', username);
+        setIsValid(docs.length == 0);
         setLoading(false);
-        setErrorMessage(docs.size > 0 ? 'Username is taken. Please choose another' : '');
+        setErrorMessage(docs.length > 0 ? 'Username is taken. Please choose another' : '');
       }
     }, 500),
     []

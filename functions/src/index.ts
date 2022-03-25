@@ -1,9 +1,47 @@
-import * as functions from "firebase-functions";
+import {auth, firestore, initializeApp} from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import {log} from 'firebase-functions/lib/logger';
+import {Permissions} from './types';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+const firebaseApp = initializeApp();
+const db = firestore(firebaseApp);
+
+interface GivePermissionsParams {
+  uid: string;
+  email: string;
+  newPermissions: Permissions;
+}
+
+/**
+ * Callable function to give a user new permissions in the form
+ * of custom claims and firestore properties
+ */
+exports.addPermissions = functions.https.onCall(async (data: GivePermissionsParams, context) => {
+  if (!context.auth?.token.admin) {
+    return {
+      error: 'User must be an Admin to update permissions.' + 'Request not authorized.',
+    };
+  }
+  return grantPermission(data.uid, data.newPermissions).then(() => {
+    log(`Successfully updated permissions for ${data.email}`);
+    return {
+      result: `Successfully updated permissions for ${data.email}`,
+    };
+  });
 });
+
+/**
+ * Adds a given custom claim to the user
+ * @param {string} uid user ID for the user who is being given permissions
+ * @param {Record<string, boolean>} newPermissions The new claim being set.
+ * @param {any} auth
+ * @param {FirebaseFirestore.Firestore} db Firestore database instance
+ */
+async function grantPermission(uid: string, newPermissions: Permissions): Promise<void> {
+  const user = await auth().getUser(uid);
+  log(`User Current Claims:${JSON.stringify(user.customClaims)}`);
+  const newClaims = {...user.customClaims, ...newPermissions};
+  log(`User New Claims:${JSON.stringify(newClaims)}`);
+  await db.doc(`users/${uid}`).update(newClaims);
+  return await auth().setCustomUserClaims(uid, newClaims);
+}

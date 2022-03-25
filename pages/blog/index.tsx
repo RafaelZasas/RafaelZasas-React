@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Tag from '../../components/Tag';
 import {GetBlogPosts} from '../../lib/FirestoreOperations';
-import {BlogPost, User} from '../../lib/types';
+import {BlogPost, UserData} from '../../lib/types';
 import {default as dayjs} from 'dayjs';
 import {UserInfo} from '@firebase/auth-types';
 import Metatags from '../../components/Metatags';
@@ -20,7 +20,7 @@ interface extendedBlogPosts extends BlogPost {
 }
 interface BlogPageProps {
   posts: extendedBlogPosts[];
-  userProps: {user: UserInfo; userData: User};
+  userProps: {user: UserInfo; userData: UserData};
 }
 
 export default function BlogPage(props: BlogPageProps) {

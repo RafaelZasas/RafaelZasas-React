@@ -3,38 +3,53 @@ service cloud.firestore {
   match /databases/{database}/documents {
   
     match /Feedback/{document} {
-      allow read, create;
-      allow delete:  if isAdmin();
+      allow read;
+      allow create: if isAuthenticated(request);
+      allow delete:  if isAdmin(request);
+
         match /replies/{reply=**} {
-        	allow read, create;
-      		allow delete: if isAdmin() || isOwner(
+        	allow read;
+          allow create: if isAuthenticated(request);
+      		allow delete: if isAdmin(request) || isOwner(
           get(/databases/$(database)/documents/Feedback/$(document)/replies/$(reply)).data.user
           );
     	}
     }
     
     
+    match /mail/{doc=**}{
+      allow read;
+      allow write: if isAdmin(request);
+    }
+
+    match /blogs/{doc=**}{
+      allow read;
+      allow write: if isAdmin(request);
+    }
     
-    match /PeerAdvising/{anything=**} {
-      allow read, write;
+    match /tags/{doc=**}{
+    allow read;
+    allow write: if isAdmin(request);
     }
 
     match /users/{userID} {
-     allow write: if isOwner(userID) || isAdmin();
+     allow write: if isOwner(userID) || isAdmin(request);
      allow read;
     }
     
     // reusable function to determine document ownership
-    
     function isOwner(userID){
     	return request.auth.uid == userID;
     }
+
+    function isAuthenticated(request){
+      return request.auth != null;
+    }
     
-      // Allow the user permissions if their user document has the
-      // 'admin' field set to 'true'
-      // Note* that the document data can only be accessed after the .data field
-    function isAdmin() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.permissions.admin == true;
+    // Note* that the document data can only be accessed after the .data field
+    function isAdmin(request) {
+     return request.auth.token.admin
+      // return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.permissions.admin == true;
     }
     
   }

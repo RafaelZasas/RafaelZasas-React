@@ -1,4 +1,4 @@
-import {appleAuthProvider, auth, githubAuthProvider, googleAuthProvider, firestore} from '../lib/firebase';
+import {appleAuthProvider, githubAuthProvider, auth, googleAuthProvider} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import {useContext, useEffect, useState} from 'react';
 import {Toast} from '../components/toast';
@@ -6,6 +6,9 @@ import ConfirmSignUpModal from '../components/confirmSignUpMoodal';
 import Metatags from '../components/Metatags';
 import {FirebaseContext} from '../lib/FirebaseTrackingProvider';
 import {logEvent} from 'firebase/analytics';
+import {signInWithPopup} from '@firebase/auth';
+import {getUser, updateUser} from '../lib/FirestoreOperations';
+import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from 'firebase/auth';
 
 function validateEmail(email) {
   const regexp =
@@ -29,8 +32,8 @@ export default function Login() {
   useEffect(() => {
     const SignUp = async () => {
       try {
-        const token = await auth.createUserWithEmailAndPassword(email, password);
-        await token.user.sendEmailVerification();
+        const token = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(token.user);
         // display success toast
         setToastData({
           heading: 'Account Created!!',
@@ -80,7 +83,7 @@ export default function Login() {
       }
 
       try {
-        const token = await auth.signInWithEmailAndPassword(e.target.email.value, e.target.password.value);
+        const token = await signInWithEmailAndPassword(auth, e.target.email.value, e.target.password.value);
         (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
       } catch (e) {
         console.log(e);
@@ -222,7 +225,8 @@ function SignInWithGoogleButton() {
   const analytics = useContext(FirebaseContext);
 
   const signInWithApple = async () => {
-    const token = await auth.signInWithPopup(googleAuthProvider);
+    const token = await signInWithPopup(auth, googleAuthProvider);
+    // const token = await auth.signInWithPopup(googleAuthProvider);
     (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
@@ -270,7 +274,8 @@ function SignInWithGitHubButton() {
   const analytics = useContext(FirebaseContext);
 
   const signInWithGitHub = async () => {
-    const token = await auth.signInWithPopup(githubAuthProvider);
+    const token = await signInWithPopup(auth, githubAuthProvider);
+    console.dir(token);
     (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
@@ -298,7 +303,7 @@ function SignInWithAppleButton() {
   const analytics = useContext(FirebaseContext);
 
   const signInWithApple = async () => {
-    const token = await auth.signInWithPopup(appleAuthProvider);
+    const token = await signInWithPopup(auth, appleAuthProvider);
     (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
   };
 
@@ -322,10 +327,9 @@ function SignInWithAppleButton() {
  * @param token Firebase token provided on completion of sign in
  */
 async function ValidateNewUser(token, analytics) {
-  const userRef = firestore.doc(`users/${token.user.uid}`);
-  const userData = await userRef.get();
+  const userData = await getUser(token.user.uid);
 
-  if (!userData.data()) {
+  if (!userData) {
     const data = {
       uid: token.user.uid,
       email: token.user.email,
@@ -341,7 +345,7 @@ async function ValidateNewUser(token, analytics) {
         push: {comments: false, projects: false, updates: false},
       },
     };
-    await userRef.set(data, {merge: true});
+    await updateUser(data.uid, data);
     logEvent(analytics, 'sign_up', {
       uid: data.uid,
       email: data.email,
@@ -349,8 +353,8 @@ async function ValidateNewUser(token, analytics) {
     return true;
   } else {
     logEvent(analytics, 'login', {
-      uid: userData?.data()?.uid,
-      email: userData?.data()?.email,
+      uid: userData?.uid,
+      email: userData?.email,
     });
     return false;
   }

@@ -2,7 +2,7 @@ import {convertFromRaw, EditorState} from 'draft-js';
 import Metatags from '../../components/Metatags';
 import EditorContent from '../../components/textEditor/EditorContent';
 import {GetBlogPost, GetBlogPosts} from '../../lib/FirestoreOperations';
-import {BlogPost, User} from '../../lib/types';
+import {BlogPost, UserData} from '../../lib/types';
 import {UserInfo} from '@firebase/auth-types';
 import BlogComment from '../../components/BlogComment';
 
@@ -44,7 +44,7 @@ export async function getStaticPaths() {
 interface BlogPostProps {
   path: string;
   post: BlogPost;
-  userProps: {user: UserInfo; userData: User};
+  userProps: {user: UserInfo; userData: UserData};
 }
 
 export default function BlogPostPage(props: BlogPostProps) {
@@ -137,7 +137,7 @@ export default function BlogPostPage(props: BlogPostProps) {
               <p className="justify-self-start">Comments</p>
               <p className="mr-2 justify-self-end">Order by</p>
             </div>
-            <div className="my-2 grid max-h-screen grid-cols-1 divide-y divide-stone-300 overflow-y-scroll md:max-h-60">
+            <div className="my-2 grid max-h-screen grid-cols-1 divide-y divide-stone-300 overflow-y-scroll md:max-h-[30rem] lg:max-h-[40rem]">
               {comments.map((comment, index) => {
                 return (
                   <BlogComment

@@ -1,12 +1,12 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {toolBarActions} from './toolbarActions';
-import {User} from '../../lib/types';
+import {UserData} from '../../lib/types';
 import {EditorState, RichUtils} from 'draft-js';
 import React, {Dispatch, SetStateAction} from 'react';
 
 // todo: Fix Tab indentation to add spaces before word instead of removing the word
 interface ToolBarProps {
-  userData: User;
+  userData: UserData;
   editorState: EditorState;
   setEditorState: Dispatch<SetStateAction<EditorState>>;
   selectedTab: 'edit' | 'preview' | 'both';
