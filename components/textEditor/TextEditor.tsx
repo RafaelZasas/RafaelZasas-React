@@ -6,7 +6,7 @@ import {UserContext} from '../../lib/context';
 import EditorContent from './EditorContent';
 
 interface TextEditorProps {
-  comment?: boolean;
+  placeholder?: string;
   editorState: EditorState;
   setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 }
@@ -84,7 +84,7 @@ export default function TextEditor(props: TextEditorProps) {
         keyBindingFn={_keyBindingFn}
         handleKeyCommand={_handleKeyCommand}
         onTab={_onTab}
-        placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
+        placeholder={props.placeholder ?? 'Blog Entry...'}
       />
     );
   };

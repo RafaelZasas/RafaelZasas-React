@@ -17,8 +17,8 @@ export default function CustomImage(props: CustomImageProps) {
       loader={customLoader}
       src={props.src}
       alt={props.alt}
-      width={40}
-      height={40}
+      width={props.width}
+      height={props.height}
       className={props.className ?? 'pointer-events-none object-cover'}
     />
   );
