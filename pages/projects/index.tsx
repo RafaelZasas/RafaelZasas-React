@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import CustomImage from '../../components/Image';
 import Metatags from '../../components/Metatags';
 
 const projects = [
@@ -31,7 +31,7 @@ export default function ProjectsPage({}) {
                 >
                   <div className="flex flex-col">
                     <h2 className={'text-center text-xl font-semibold'}>{project.title}</h2>
-                    <Image className="mx-auto" width={300} height={300} src={project.img} alt=" headerImg" />
+                    <CustomImage className="mx-auto" width={300} height={300} src={project.img} alt=" headerImg" />
                   </div>
                 </a>
               </Link>

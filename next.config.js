@@ -1,7 +1,14 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['firebasestorage.googleapis.com', 'assets.vercel.com', 'picsum.photos', 'lh3.googleusercontent.com'],
+    domains: [
+      'firebasestorage.googleapis.com',
+      'assets.vercel.com',
+      'picsum.photos',
+      'lh3.googleusercontent.com',
+      'lh6.googleusercontent.com',
+      'avatars.githubusercontent.com',
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   exportPathMap: async function (defaultPathMap, {dev, dir, outDir, distDir, buildId}) {

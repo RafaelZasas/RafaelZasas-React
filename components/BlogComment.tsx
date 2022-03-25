@@ -1,6 +1,6 @@
 import {UserData} from '../lib/types';
-import Image from 'next/image';
 import Link from 'next/link';
+import CustomImage from './Image';
 
 const UpVoteIcon = () => {
   return (
@@ -59,13 +59,12 @@ const UserSection = (props: {user: UserData}) => {
       <div className="flex flex-row">
         <div className="justify-right">
           {props.user?.profilePhoto || props.user?.photoURL ? (
-            <Image
-              loader={customLoader}
+            <CustomImage
               src={props.user?.profilePhoto ?? props.user?.photoURL}
               alt={props.user?.username}
               width={40}
               height={40}
-              className="group-hover:bounce pointer-events-none object-cover"
+              className="pointer-events-none object-cover"
             />
           ) : (
             <svg className="h-20 w-20 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -116,7 +115,3 @@ export default function BlogComment(props: BlogCommentProps) {
     </div>
   );
 }
-
-const customLoader = ({src, width, quality}) => {
-  return `${src}?w=${width}&q=${quality || 75}`;
-};
