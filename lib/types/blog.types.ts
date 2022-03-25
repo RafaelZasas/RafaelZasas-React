@@ -20,16 +20,19 @@ interface Author {
   username?: string;
   email: string;
   uid: string;
+  permissions: {admin: boolean; level: number};
+  profilePhoto?: string;
 }
 
 /**Replies to blog posts  */
-interface BlogReply {
+interface BlogComment {
   author: Author;
   comment: string;
-  timestamp: Timestamp;
+  createdAt: Timestamp | FieldValue;
+  updatedAt?: Timestamp | FieldValue;
   upvotes: UserVote[];
   downVote: UserVote[];
-  replies?: BlogReply[];
+  replies?: BlogComment[];
 }
 
 interface UserVote {
@@ -41,14 +44,14 @@ export interface BlogPost {
   body: string;
   displayImage?: string;
   relatedLinks?: relatedLink[];
-  replies?: BlogReply[];
+  replies?: BlogComment[];
   upvotes?: UserVote[];
   downVote?: UserVote[];
   status: 'archived' | 'draft' | 'published';
   summary: string;
   tags?: blogTag[];
   createdAt: Timestamp | FieldValue;
-  updatedAt?: Timestamp;
+  updatedAt?: Timestamp | FieldValue;
   edited?: Timestamp;
   title: string;
   readingTime: string;
