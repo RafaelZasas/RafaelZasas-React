@@ -50,3 +50,7 @@ node_modules/
 
 styles/main.css
 firebase-debug.log
+
+firestore-debug.log
+
+ui-debug.log
