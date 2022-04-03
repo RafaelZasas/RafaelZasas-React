@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faMailBulk, faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import Router from 'next/router';
 import {UserContext} from '../lib/context';
-import {Toast} from '../components/toast';
+import {Toast, ToastData} from '../components/toast';
 import {addMail} from '../lib/FirestoreOperations';
 
 export default function ContactModal() {
@@ -15,11 +15,7 @@ export default function ContactModal() {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
 
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   // this will route user back once they click out
   useEffect(() => {
