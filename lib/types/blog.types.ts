@@ -29,8 +29,8 @@ export interface BlogComment {
   author: Author;
   body: string;
   id: string;
-  createdAt: Timestamp | FieldValue;
-  updatedAt?: Timestamp | FieldValue;
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt?: Timestamp | FieldValue | number;
   upVotes: UserVote[];
   downVotes: UserVote[];
   replies?: BlogComment[];
@@ -42,6 +42,7 @@ interface UserVote {
 }
 
 export interface BlogPost {
+  id?: string;
   body: string;
   displayImage?: string;
   relatedLinks?: relatedLink[];
@@ -51,8 +52,8 @@ export interface BlogPost {
   status: 'archived' | 'draft' | 'published';
   summary: string;
   tags?: blogTag[];
-  createdAt: Timestamp | FieldValue;
-  updatedAt?: Timestamp | FieldValue;
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt?: Timestamp | FieldValue | number;
   edited?: Timestamp;
   title: string;
   readingTime: string;

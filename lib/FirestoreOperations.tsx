@@ -74,6 +74,27 @@ export const GetBlogPost = async (postId: string) => {
   };
 };
 
+export const GetBlogPost$ = (postId: string): BlogPost => {
+  const [post, setPost] = useState<BlogPost>();
+  const postRef = doc(db, `blogs/${postId}`);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(postRef, (post) => {
+      const data: BlogPost = post.data() as BlogPost;
+      const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+      const createdAt: Timestamp = data?.createdAt as Timestamp;
+      setPost({
+        ...data,
+        id: post.id,
+        createdAt: createdAt?.seconds || 0,
+        updatedAt: updatedAt?.seconds || 0,
+      });
+    });
+    return () => unsubscribe();
+  }, [postRef]);
+  return post;
+};
+
 export const addBlogComment = async (blogId: string, comment: BlogComment) => {
   const blogCommentRef = doc(db, `blogs/${blogId}/comments/${comment.author.uid}`);
   await setDoc(blogCommentRef, comment);
@@ -92,6 +113,32 @@ export const getBlogComments = async (blogId: string) => {
       updatedAt: updatedAt?.seconds || 0,
     };
   });
+
+  return comments;
+};
+
+export const GetBlogComments$ = (blogId: string) => {
+  const [comments, setComments] = useState<BlogComment[]>();
+  const blogCommentsRef = collection(db, `blogs/${blogId}/comments`);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(blogCommentsRef, (post) => {
+      const comments: BlogComment[] = [];
+      post.docs.map((doc) => {
+        const data = doc.data() as BlogComment;
+        const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+        const createdAt: Timestamp = data?.createdAt as Timestamp;
+        comments.push({
+          ...data,
+          id: doc.id,
+          createdAt: createdAt?.seconds || 0,
+          updatedAt: updatedAt?.seconds || 0,
+        });
+      });
+      setComments(comments);
+    });
+    return () => unsubscribe();
+  }, [blogCommentsRef]);
 
   return comments;
 };

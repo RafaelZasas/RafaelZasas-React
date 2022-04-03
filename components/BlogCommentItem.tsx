@@ -5,8 +5,24 @@ import EditorContent from './textEditor/EditorContent';
 import {convertFromRaw, EditorState} from 'draft-js';
 
 const UpVoteIcon = () => {
+  const ToolTip = () => {
+    return (
+      <div
+        id="tooltip-default"
+        role="tooltip"
+        className="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 py-2 px-3 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
+      >
+        Tooltip content
+        <div className="tooltip-arrow" data-popper-arrow></div>
+      </div>
+    );
+  };
   return (
-    <div className="mx-auto flex cursor-pointer items-center justify-center text-center">
+    <div
+      data-tooltip-target="tooltip-default"
+      className="mx-auto flex cursor-pointer items-center justify-center text-center"
+    >
+      <ToolTip />
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="24" height="24" fill="currentColor">
         <path
           d="M9.39 265.4l127.1-128C143.6 131.1 151.8 128 160 128s16.38 3.125 22.63 9.375l127.1 128c9.156

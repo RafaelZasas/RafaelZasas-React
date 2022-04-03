@@ -1,7 +1,14 @@
 import {ContentState, convertFromRaw, convertToRaw, EditorState} from 'draft-js';
 import Metatags from '../../components/Metatags';
 import EditorContent from '../../components/textEditor/EditorContent';
-import {addBlogComment, getBlogComments, GetBlogPost, GetBlogPosts} from '../../lib/FirestoreOperations';
+import {
+  addBlogComment,
+  getBlogComments,
+  GetBlogComments$,
+  GetBlogPost,
+  GetBlogPost$,
+  GetBlogPosts,
+} from '../../lib/FirestoreOperations';
 import {BlogComment, BlogPost, UserData} from '../../lib/types';
 import {UserInfo} from '@firebase/auth-types';
 import TextEditor from '../../components/textEditor/TextEditor';
@@ -14,17 +21,15 @@ import Link from 'next/link';
 import BlogCommentItem from '../../components/BlogCommentItem';
 
 export async function getStaticProps({params}) {
-  console.log(params);
-
   const {slug} = params;
 
   const post = await GetBlogPost(slug);
   const comments = await getBlogComments(slug);
 
-  const path = post?.id ?? 'not-found';
+  const postId = post?.id ?? 'not-found';
 
   return {
-    props: {post, path, comments},
+    props: {post, postId, comments},
     revalidate: 5000,
   };
 }
@@ -45,25 +50,29 @@ export async function getStaticPaths() {
     //   { params: { slug }}
     // ],
     paths,
-    fallback: 'blocking',
+    fallback: 'blocking', // This tells next to use regular db calls then cache as opposed to failing
   };
 }
 
 interface BlogPostProps {
-  path: string;
+  postId: string;
   post: BlogPost;
   comments: BlogComment[];
   userProps: {user: UserInfo; userData: UserData};
 }
 
 export default function BlogPostPage(props: BlogPostProps) {
-  const contentState = convertFromRaw(JSON.parse(props.post.body));
+  // const realtimePost = GetBlogPost$(props.postId);
+  const realtimeComments = GetBlogComments$(props.postId);
+  const comments = realtimeComments || props.comments;
+  const post = props.post;
+  const contentState = convertFromRaw(JSON.parse(post.body));
   const editorState = EditorState.createWithContent(contentState);
   const [showCommentEditor, setShowCommentEditor] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastData, setToastData] = useState<ToastData>();
 
-  const usersComment = props.comments.filter((comment) => comment.id === props.userProps?.user?.uid);
+  const usersComment = comments.filter((comment) => comment.id === props.userProps?.user?.uid);
 
   return (
     <main>
@@ -74,12 +83,12 @@ export default function BlogPostPage(props: BlogPostProps) {
           props.post.displayImage ??
           'https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/profile-photo.jpg?alt=media&token=6d133b36-eb83-4bf3-a58d-317bc1eeaf2a'
         }
-        currentURL={`rafaelzasas.com/blog/${props.path}`}
+        currentURL={`rafaelzasas.com/blog/${props.postId}`}
       />
       <Toast setShow={setShowToast} show={showToast} toastData={toastData} />
-      <div className="xl-px-8 relative mx-4 overflow-hidden pt-10 pb-4 font-roboto font-normal md:px-6 lg:px-6">
+      <div className="xl-px-8 relative overflow-hidden pt-10 pb-4 font-roboto font-normal text-slate-800 dark:bg-gray-800 dark:text-white md:px-6 lg:px-6">
         <div className="flex flex-col space-y-4 divide-y divide-slate-900">
-          <div className="m-0 mx-auto max-w-prose text-lg text-slate-800">
+          <div className="m-0 mx-auto max-w-prose text-lg ">
             <EditorContent editorState={editorState} />
           </div>
           {/* Comment Section */}
@@ -90,15 +99,15 @@ export default function BlogPostPage(props: BlogPostProps) {
               <p className="mr-2 justify-self-end">Order by</p>
             </div>
             {/* Second row in col - Actual scrollable comments section */}
-            {props.comments?.length > 0 && (
+            {comments?.length > 0 && (
               <div className="my-2 grid max-h-screen grid-cols-1 divide-y divide-stone-300 overflow-y-scroll md:max-h-[30rem] lg:max-h-[40rem]">
-                {props.comments.map((comment, index) => {
+                {comments.map((comment, index) => {
                   return <BlogCommentItem comment={comment} user={props.userProps.userData} key={index} />;
                 })}
               </div>
             )}
 
-            {(!props.comments || props.comments?.length === 0) && (
+            {(!comments || comments?.length === 0) && (
               <p className="mt-6 text-slate-500">No comments have been added yet</p>
             )}
             {/* Third row in col - text to add comment or comment editor section */}
@@ -126,7 +135,7 @@ export default function BlogPostPage(props: BlogPostProps) {
                   usersComment={usersComment.length === 0 ? null : usersComment[0]}
                   setShowCommentEditor={setShowCommentEditor}
                   toast={{setShowToast, setToastData}}
-                  blogId={props.path}
+                  blogId={props.postId}
                 />
               )}
             </div>
