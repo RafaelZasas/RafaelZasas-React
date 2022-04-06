@@ -1,6 +1,5 @@
 import {auth, firestore, initializeApp} from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import {log} from 'firebase-functions/lib/logger';
 import {Permissions} from './types';
 
 const firebaseApp = initializeApp();
@@ -18,12 +17,10 @@ interface GivePermissionsParams {
  */
 exports.addPermissions = functions.https.onCall(async (data: GivePermissionsParams, context) => {
   if (!context.auth?.token.admin) {
-    return {
-      error: 'User must be an Admin to update permissions.' + 'Request not authorized.',
-    };
+    throw new functions.https.HttpsError('permission-denied', 'User must be an Admin to update permissions');
   }
   return grantPermission(data.uid, data.newPermissions).then(() => {
-    log(`Successfully updated permissions for ${data.email}`);
+    functions.logger.log(`Successfully updated permissions for ${data.email}`);
     return {
       result: `Successfully updated permissions for ${data.email}`,
     };
@@ -39,9 +36,25 @@ exports.addPermissions = functions.https.onCall(async (data: GivePermissionsPara
  */
 async function grantPermission(uid: string, newPermissions: Permissions): Promise<void> {
   const user = await auth().getUser(uid);
-  log(`User Current Claims:${JSON.stringify(user.customClaims)}`);
+  functions.logger.log(`User Current Claims:${JSON.stringify(user.customClaims)}`);
   const newClaims = {...user.customClaims, ...newPermissions};
-  log(`User New Claims:${JSON.stringify(newClaims)}`);
+  functions.logger.log(`User New Claims:${JSON.stringify(newClaims)}`);
   await db.doc(`users/${uid}`).update(newClaims);
   return await auth().setCustomUserClaims(uid, newClaims);
 }
+
+exports.deleteBlogCommentData = functions.firestore
+  .document('blogs/{postId}/comments/{commentId}')
+  .onDelete(async (snap, context) => {
+    const postId = context.params.postId;
+    const commentId = context.params.commentId;
+    const batch = db.batch();
+
+    // delete blog comment replies
+    const commentRepliesRef = db.collection(`blogs/${postId}/comments/${commentId}/replies`);
+    (await commentRepliesRef.get()).docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    return batch.commit();
+  });
