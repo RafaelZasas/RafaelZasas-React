@@ -1,21 +1,23 @@
-import {Fragment, useState} from 'react';
+import {Dispatch, Fragment, SetStateAction, useState} from 'react';
 import {Dialog, Transition} from '@headlessui/react';
 import {ReactJSXElement} from '@emotion/react/types/jsx-namespace';
 import CustomImage from './Image';
+import Button from './Button';
 
 interface ModalProps {
   header: string | ReactJSXElement;
   body: string | ReactJSXElement;
-  setOpen: (value: boolean) => void;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   open: boolean;
   headerImg?: string;
+  confirmFunction?: Function;
 }
 
 export default function Modal(props: ModalProps) {
   return (
     <Transition.Root show={props.open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 z-10 overflow-y-scroll" onClose={props.setOpen}>
-        <div className="flex min-h-screen items-start justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="mx-auto flex min-h-screen w-fit items-start justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -66,16 +68,12 @@ export default function Modal(props: ModalProps) {
                   <div className="mt-2">{props.body}</div>
                 </div>
               </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600/75 px-4 py-2 
-                                    text-base font-medium text-white shadow-sm hover:bg-blue-600
-                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:text-sm"
-                  onClick={() => props.setOpen(false)}
-                >
-                  Close
-                </button>
+              <div className="mt-5 flex flex-row justify-center space-x-2 sm:mt-6">
+                {props.confirmFunction && (
+                  <Button text="Confirm" function={props.confirmFunction} type="button" buttonStyle="danger" />
+                )}
+
+                <Button text="Close" function={() => props.setOpen(false)} />
               </div>
             </div>
           </Transition.Child>
