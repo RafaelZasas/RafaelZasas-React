@@ -8,7 +8,7 @@ import Button from '../../components/Button';
 import ComboBox from '../../components/ComboBox';
 import Tag from '../../components/Tag';
 import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
-import {BlogPost} from '../../lib/types';
+import {BlogPost, BlogTag} from '../../lib/types';
 import {serverTimestamp} from 'firebase/firestore';
 import {Toast, ToastData} from '../../components/toast';
 import Metatags from '../../components/Metatags';
@@ -63,13 +63,13 @@ export default function BlogPage({}) {
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState<ToastData>();
 
-  function AddTag(tag) {
+  function AddTag(tag: BlogTag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
       setSelectedTags([...selectedTags, tag]);
     }
   }
 
-  function _removeTag(tag) {
+  function _removeTag(tag: BlogTag) {
     const res = selectedTags.filter((obj) => obj.id !== tag.id);
     console.log(res);
 
@@ -94,6 +94,8 @@ export default function BlogPage({}) {
       body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
       createdAt: serverTimestamp(),
       readingTime: `${readingTime} min read`,
+      upVotes: [],
+      downVotes: [],
     };
 
     try {
