@@ -26,10 +26,9 @@ service cloud.firestore {
       allow read;
       allow write: if isAdmin(request);
 
-      match /comments/{commentId}{
+      match /comments/{commentId=**}{
         allow read;
-        allow create: if isAuthenticated(request);
-        allow update: if isOwner(commentId) || isAdmin(request);
+        allow write: if isAuthenticated(request);
         allow delete: if isAdmin(request);
       }
     }
