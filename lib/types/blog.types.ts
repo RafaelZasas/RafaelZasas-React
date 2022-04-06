@@ -2,7 +2,7 @@
 import {Timestamp, FieldValue} from '@firebase/firestore-types';
 
 /**Tags to be used for filtering and sorting */
-interface blogTag {
+export interface BlogTag {
   color: string;
   id: string;
   name: string;
@@ -46,7 +46,7 @@ export interface BlogPost {
   downVotes: string[];
   status: 'archived' | 'draft' | 'published';
   summary: string;
-  tags?: blogTag[];
+  tags?: BlogTag[];
   createdAt: Timestamp | FieldValue | number;
   updatedAt?: Timestamp | FieldValue | number;
   edited?: Timestamp;
