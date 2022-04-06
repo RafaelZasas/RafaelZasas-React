@@ -6,7 +6,6 @@ import {
   getBlogComments,
   GetBlogComments$,
   GetBlogPost,
-  GetBlogPost$,
   GetBlogPosts,
 } from '../../lib/FirestoreOperations';
 import {BlogComment, BlogPost, UserData} from '../../lib/types';
@@ -15,7 +14,7 @@ import TextEditor from '../../components/textEditor/TextEditor';
 import {Dispatch, SetStateAction, useState} from 'react';
 import Button from '../../components/Button';
 import {serverTimestamp} from 'firebase/firestore';
-import {faFeather, faReply} from '@fortawesome/free-solid-svg-icons';
+import {faFeather} from '@fortawesome/free-solid-svg-icons';
 import {Toast, ToastData} from '../../components/toast';
 import Link from 'next/link';
 import BlogCommentItem from '../../components/BlogCommentItem';
@@ -62,16 +61,14 @@ interface BlogPostProps {
 }
 
 export default function BlogPostPage(props: BlogPostProps) {
-  // const realtimePost = GetBlogPost$(props.postId);
-  const realtimeComments = GetBlogComments$(props.postId);
-  const comments = realtimeComments || props.comments;
   const post = props.post;
   const contentState = convertFromRaw(JSON.parse(post.body));
   const editorState = EditorState.createWithContent(contentState);
+  const realtimeComments: BlogComment[] = GetBlogComments$(props.postId);
+  const comments = realtimeComments || props.comments;
   const [showCommentEditor, setShowCommentEditor] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastData, setToastData] = useState<ToastData>();
-
   const usersComment = comments.filter((comment) => comment.id === props.userProps?.user?.uid);
 
   return (
@@ -86,7 +83,7 @@ export default function BlogPostPage(props: BlogPostProps) {
         currentURL={`rafaelzasas.com/blog/${props.postId}`}
       />
       <Toast setShow={setShowToast} show={showToast} toastData={toastData} />
-      <div className="xl-px-8 relative overflow-hidden pt-10 pb-4 font-roboto font-normal text-slate-800 dark:bg-gray-800 dark:text-white md:px-6 lg:px-6">
+      <div className="relative overflow-hidden px-3 pt-10 pb-4 font-roboto font-normal text-slate-800 dark:bg-gray-800 dark:text-slate-200 md:px-6 lg:px-6 xl:px-8">
         <div className="flex flex-col space-y-4 divide-y divide-slate-900">
           <div className="m-0 mx-auto max-w-prose text-lg ">
             <EditorContent editorState={editorState} />
@@ -96,20 +93,26 @@ export default function BlogPostPage(props: BlogPostProps) {
             {/* First row in column - Comments title and order by menu */}
             <div className="my-2 grid grid-cols-2">
               <p className="justify-self-start">Comments</p>
-              <p className="mr-2 justify-self-end">Order by</p>
+              {/* <p className="mr-2 justify-self-end">Order by</p> */}
             </div>
             {/* Second row in col - Actual scrollable comments section */}
-            {comments?.length > 0 && (
+            {comments && comments?.length > 0 ? (
               <div className="my-2 grid max-h-screen grid-cols-1 divide-y divide-stone-300 overflow-y-scroll md:max-h-[30rem] lg:max-h-[40rem]">
                 {comments.map((comment, index) => {
-                  return <BlogCommentItem comment={comment} user={props.userProps.userData} key={index} />;
+                  return (
+                    <BlogCommentItem
+                      comment={comment}
+                      user={props.userProps.userData}
+                      key={index}
+                      postId={props.postId}
+                    />
+                  );
                 })}
               </div>
-            )}
-
-            {(!comments || comments?.length === 0) && (
+            ) : (
               <p className="mt-6 text-slate-500">No comments have been added yet</p>
             )}
+
             {/* Third row in col - text to add comment or comment editor section */}
             <div className="my-6 flex flex-row md:my-2">
               {!props.userProps.user ? (
@@ -158,7 +161,7 @@ interface AddCommentSectionProps {
 }
 
 const AddCommentSection = (props: AddCommentSectionProps) => {
-  const [editorState, setEditorState] = useState(() => {
+  const [editorState, setEditorState] = useState<EditorState>(() => {
     if (props.usersComment) {
       const contentState = convertFromRaw(JSON.parse(props.usersComment.body));
 
@@ -173,7 +176,7 @@ const AddCommentSection = (props: AddCommentSectionProps) => {
     const wordCount = editorState.getCurrentContent().getPlainText('\u0001').trim().split(/\s+/).length;
 
     if (wordCount >= 10) {
-      const comment: BlogComment = {
+      const comment: Partial<BlogComment> = {
         author: {
           email: props.user.email,
           permissions: {admin: props.user.permissions.admin, level: props.user.permissions.level ?? 0},
@@ -183,11 +186,12 @@ const AddCommentSection = (props: AddCommentSectionProps) => {
         },
         id: props.user.uid,
         body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-        createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        upVotes: [],
-        downVotes: [],
       };
+
+      if (!props.usersComment) {
+        comment.createdAt = serverTimestamp();
+      }
 
       try {
         await addBlogComment(props.blogId, comment);
