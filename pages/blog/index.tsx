@@ -40,8 +40,10 @@ export default function BlogPage(props: BlogPageProps) {
           </div>
           <div className="mx-auto mt-12 grid max-w-lg grid-cols-1 gap-5 md:max-w-none md:grid-cols-2 lg:max-w-none lg:grid-cols-3 xl:grid-cols-4">
             {props.posts.map((post) => {
-              const createdAt =
-                typeof post?.createdAt === 'number' ? dayjs.unix(post.createdAt).format('MMM DD YYYY HH:mm') : 'Error';
+              const createdAtDate =
+                typeof post?.createdAt === 'number' ? dayjs.unix(post.createdAt).format('MMM DD YYYY') : 'Error';
+              const createdAtTime =
+                typeof post?.createdAt === 'number' ? dayjs.unix(post.createdAt).format('HH:mm') : 'Error';
 
               if (
                 (post.status === 'draft' && props.userProps?.userData?.permissions?.admin) ||
@@ -90,7 +92,9 @@ export default function BlogPage(props: BlogPageProps) {
                         </div>
                         <div className="mt-6 flex items-center">
                           <div className="flex space-x-1 text-sm text-gray-500">
-                            <time dateTime={createdAt.toString()}>{createdAt}</time>
+                            <time dateTime={createdAtDate.toString()}>
+                              {createdAtDate} at {createdAtTime}
+                            </time>
                             <span aria-hidden="true">&middot;</span>
                             <span>{post.readingTime}</span>
                           </div>
