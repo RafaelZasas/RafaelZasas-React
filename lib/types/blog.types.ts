@@ -1,6 +1,5 @@
+/** Blog related interfaces */
 import {Timestamp, FieldValue} from '@firebase/firestore-types';
-
-// Blog related interfaces
 
 /**Tags to be used for filtering and sorting */
 interface blogTag {
@@ -24,31 +23,27 @@ interface Author {
   profilePhoto?: string;
 }
 
-/**Replies to blog posts  */
+/** Comments on blog posts  */
 export interface BlogComment {
   author: Author;
   body: string;
   id: string;
   createdAt: Timestamp | FieldValue | number;
   updatedAt?: Timestamp | FieldValue | number;
-  upVotes: UserVote[];
-  downVotes: UserVote[];
+  upVotes: string[];
+  downVotes: string[];
   replies?: BlogComment[];
 }
 
-interface UserVote {
-  userId: string;
-  timestamp: Timestamp;
-}
-
+/** Blog Posts without comments */
 export interface BlogPost {
   id?: string;
   body: string;
   displayImage?: string;
   relatedLinks?: relatedLink[];
   replies?: BlogComment[];
-  upvotes?: UserVote[];
-  downVote?: UserVote[];
+  upVotes: string[];
+  downVotes: string[];
   status: 'archived' | 'draft' | 'published';
   summary: string;
   tags?: blogTag[];
