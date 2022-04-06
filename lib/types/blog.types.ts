@@ -1,9 +1,8 @@
+/** Blog related interfaces */
 import {Timestamp, FieldValue} from '@firebase/firestore-types';
 
-// Blog related interfaces
-
 /**Tags to be used for filtering and sorting */
-interface blogTag {
+export interface BlogTag {
   color: string;
   id: string;
   name: string;
@@ -20,35 +19,36 @@ interface Author {
   username?: string;
   email: string;
   uid: string;
+  permissions: {admin: boolean; level: number};
+  profilePhoto?: string;
 }
 
-/**Replies to blog posts  */
-interface BlogReply {
+/** Comments on blog posts  */
+export interface BlogComment {
   author: Author;
-  comment: string;
-  timestamp: Timestamp;
-  upvotes: UserVote[];
-  downVote: UserVote[];
-  replies?: BlogReply[];
+  body: string;
+  id: string;
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt?: Timestamp | FieldValue | number;
+  upVotes: string[];
+  downVotes: string[];
+  replies?: BlogComment[];
 }
 
-interface UserVote {
-  userId: string;
-  timestamp: Timestamp;
-}
-
+/** Blog Posts without comments */
 export interface BlogPost {
+  id?: string;
   body: string;
   displayImage?: string;
   relatedLinks?: relatedLink[];
-  replies?: BlogReply[];
-  upvotes?: UserVote[];
-  downVote?: UserVote[];
+  replies?: BlogComment[];
+  upVotes: string[];
+  downVotes: string[];
   status: 'archived' | 'draft' | 'published';
   summary: string;
-  tags?: blogTag[];
-  createdAt: Timestamp | FieldValue;
-  updatedAt?: Timestamp;
+  tags?: BlogTag[];
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt?: Timestamp | FieldValue | number;
   edited?: Timestamp;
   title: string;
   readingTime: string;

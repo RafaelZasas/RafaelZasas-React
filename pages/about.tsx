@@ -1,6 +1,8 @@
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import CustomImage from '../components/Image';
 import Metatags from '../components/Metatags';
+import {GithubIcon, InstagramIcon, LinkedInIcon, StackOverflowIcon, TwitterIcon} from '../public/svg-icons';
 
 export default function AboutPage({}) {
   const Header = () => {
@@ -10,17 +12,22 @@ export default function AboutPage({}) {
           <span className="block">Hello, folks!</span>
         </h1>
 
-        <img
+        <CustomImage
           className="mt-2 inline-block align-middle"
           src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif"
           width="30px"
+          height={'30px'}
+          alt={'wave'}
         />
 
         <div className="mt-3  flex-auto justify-center text-2xl">
-          <p className="whitespace-normal">Welcome to the React version of my Website</p>
-          <img
+          <p className="mb-2 whitespace-normal">Welcome to the React version of my Website</p>
+          <CustomImage
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1280px-React-icon.svg.png"
-            className="mt-2 inline-block h-8 align-middle sm:h-8 md:h-10 lg:h-14"
+            className="mt-2 inline-block h-8 p-2 align-middle sm:h-8 md:h-10 lg:h-14"
+            width={45}
+            height={40}
+            alt={'reactIcon'}
           />
         </div>
       </div>
@@ -61,7 +68,7 @@ export default function AboutPage({}) {
             {stats.map((item, index) => (
               <li key={index} className="overflow-hidden px-4 py-1 sm:p-0">
                 <a href={item.url}>
-                  <img src={item.src} alt={item.alt} />
+                  <img src={item.src} alt={item.alt} width={150} height={50} />
                 </a>
               </li>
             ))}
@@ -75,18 +82,26 @@ export default function AboutPage({}) {
       {
         url: 'https://img.shields.io/tokei/lines/github/RafaelZasas/RafaelZasas-React',
         alt: 'lines of code',
+        width: 100,
+        height: 50,
       },
       {
         url: 'https://img.shields.io/github/contributors/RafaelZasas/RafaelZasas-React',
         alt: 'Contributors',
+        width: 100,
+        height: 50,
       },
       {
         url: 'https://img.shields.io/github/issues/RafaelZasas/RafaelZasas-React',
         alt: 'issues',
+        width: 100,
+        height: 50,
       },
       {
         url: 'https://img.shields.io/github/issues-pr/RafaelZasas/RafaelZasas-React',
         alt: 'Pull Requests',
+        width: 150,
+        height: 100,
       },
     ];
 
@@ -96,7 +111,7 @@ export default function AboutPage({}) {
         <ul className="mx-16 mt-3 grid grid-cols-1 place-items-center gap-0 sm:grid-cols-4">
           {stats.map((item, index) => (
             <li key={index} className="overflow-hidden px-4 py-1 sm:p-3">
-              <img src={item.url} alt={item.alt} />
+              <img src={item.url} alt={item.alt} width={item?.width ?? 100} height={item?.height ?? 50} />
             </li>
           ))}
         </ul>
@@ -146,6 +161,7 @@ export default function AboutPage({}) {
       {
         src: 'https://img.shields.io/github/watchers/RafaelZasas/RafaelZasas-React?style=social',
         alt: 'Watchers',
+        width: 125,
       },
       {
         src: 'https://img.shields.io/github/stars/rafaelzasas/RafaelZasas-React?style=social',
@@ -171,7 +187,7 @@ export default function AboutPage({}) {
           <ul className="mx-16 mt-3 grid grid-cols-1 place-items-center gap-0 sm:grid-cols-3">
             {stats.map((item, index) => (
               <li key={index} className="overflow-hidden px-4 py-1 sm:p-0">
-                <img src={item.src} alt={item.alt} />
+                <img src={item.src} alt={item.alt} width={item?.width ?? 100} height={50} />
               </li>
             ))}
           </ul>
@@ -183,21 +199,24 @@ export default function AboutPage({}) {
   const Social = () => {
     const stats = [
       {
-        src: 'https://image.flaticon.com/icons/png/512/2111/2111463.png',
+        icon: <InstagramIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800" />,
         url: 'https://instagram.com/rafaelzasas',
         alt: 'Instagram',
       },
       {
+        icon: <TwitterIcon className="h-10 w-10 fill-sky-500 stroke-slate-500 hover:fill-sky-600" />,
         src: 'https://image.flaticon.com/icons/png/512/733/733579.png',
         url: 'https://twitter.com/rafaelzasas',
         alt: 'Twitter',
       },
       {
-        src: 'https://image.flaticon.com/icons/png/512/977/977597.png',
-        url: 'https://rafaelzasas.com',
-        alt: 'Website',
+        icon: <LinkedInIcon className="h-10 w-10 fill-sky-600 stroke-slate-500 hover:fill-sky-700" />,
+        src: 'https://image.flaticon.com/icons/png/512/174/174857.png',
+        url: 'https://linkedin.com/in/rafael-zasas',
+        alt: 'LinkedIn',
       },
       {
+        icon: <GithubIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800" />,
         src: 'https://image.flaticon.com/icons/png/512/174/174857.png',
         url: 'https://linkedin.com/in/rafael-zasas',
         alt: 'LinkedIn',
@@ -214,11 +233,11 @@ export default function AboutPage({}) {
             <h3 className={'text-xl'}>🍻 Connect With Me!</h3>
           </div>
 
-          <ul className="mx-4 mt-3 grid grid-cols-4 place-items-center gap-0 md:mx-8 lg:mx-16">
+          <ul className="mx-auto mt-3 grid w-full grid-cols-4 justify-items-center gap-2 md:w-1/2">
             {stats.map((item, index) => (
-              <li key={index} className="overflow-hidden p-0 py-1 sm:p-0 md:px-4 lg:px-4">
-                <a href={item.url}>
-                  <img className={'lg:h-15 h-5 md:h-10'} src={item.src} alt={item.alt} />
+              <li key={index} className="overflow-hidden py-1">
+                <a className="h-10 w-20 fill-sky-500 stroke-sky-700" href={item.url}>
+                  {item.icon}
                 </a>
               </li>
             ))}

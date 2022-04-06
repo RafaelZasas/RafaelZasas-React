@@ -1,14 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
-import {storage, firestore} from '../lib/firebase';
+import {storage} from '../lib/firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {DocumentDownloadIcon} from '@heroicons/react/outline';
 import {UserContext} from '../lib/context';
 import AddEmailModal from '../components/addEmailModal';
-import {Toast} from '../components/toast';
+import {Toast, ToastData} from '../components/toast';
 import Button from '../components/Button';
 import Metatags from '../components/Metatags';
+import {addMail} from '../lib/FirestoreOperations';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -26,11 +27,7 @@ export default function ResumePage({}) {
 
   //  For showing toast and its data
   const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState({
-    heading: '',
-    body: '',
-    type: '',
-  });
+  const [toastData, setToastData] = useState<ToastData>();
 
   /** END HOOKS */
 
@@ -150,7 +147,7 @@ const SendButton = (params) => {
         },
       };
       try {
-        await firestore.collection(`mail`).add(mail);
+        await addMail(mail);
 
         // display success toast
         params.toast.setToastData({

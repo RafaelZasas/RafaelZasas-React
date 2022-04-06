@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import CustomImage from '../components/Image';
 import Metatags from '../components/Metatags';
 import {GetImage} from '../lib/CloudStorageOperations';
 
@@ -54,9 +54,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home(props) {
-  const customLoader = ({src, width, quality}) => {
-    return `${src}?w=${width}&q=${quality || 75}`;
-  };
   return (
     <main>
       <Metatags
@@ -74,8 +71,7 @@ export default function Home(props) {
               <li key={index} className="relative">
                 <a href={card.url}>
                   <div className="aspect-w-10 aspect-h-7 group block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
-                    <Image
-                      loader={customLoader}
+                    <CustomImage
                       src={card.source}
                       alt={card.alt}
                       width={1200}

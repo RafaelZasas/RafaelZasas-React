@@ -122,7 +122,7 @@ function _getOrderedList(blockDepth: number) {
   return {
     start: `<li style="${style}">`,
     end: '</li>',
-    nest: '<ol style="margin-top: 8px; margin-bottom: 8px;">',
+    nest: '<ol style="margin-top: 8px; margin-bottom: 8px; margin-left: 1rem;">',
     nestStart: '<ol>',
     nestEnd: '</ol>',
   };
@@ -161,7 +161,7 @@ function _getUnorderedList(blockDepth: number) {
     start: `<li style="${style}">`,
     end: '</li>',
     nest: '<ul>',
-    nestStart: '<ul style="margin-top: 8px; margin-bottom: 8px;">',
+    nestStart: '<ul style="margin-top: 8px; margin-bottom: 8px; margin-left: 1rem;">',
     nestEnd: '</ul>',
   };
 }

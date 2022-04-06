@@ -6,7 +6,7 @@ import {UserContext} from '../../lib/context';
 import EditorContent from './EditorContent';
 
 interface TextEditorProps {
-  comment?: boolean;
+  placeholder?: string;
   editorState: EditorState;
   setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
 }
@@ -23,11 +23,6 @@ export default function TextEditor(props: TextEditorProps) {
     editor.current.focus();
   }
 
-  function _onTab(e: React.KeyboardEvent<{}>) {
-    const maxDepth = 4;
-    setEditorState(RichUtils.onTab(e, editorState, maxDepth));
-  }
-
   function _keyBindingFn(e: React.KeyboardEvent<{}>): string | null {
     if (e.key === 'b' /* `B` key */ && hasCommandModifier(e)) {
       return 'bold';
@@ -42,6 +37,12 @@ export default function TextEditor(props: TextEditorProps) {
     }
     if (e.key == 'Enter' && e.shiftKey) {
       return 'shift-enter';
+    }
+
+    if (e.key == 'Tab') {
+      const maxDepth = 4;
+      setEditorState(RichUtils.onTab(e, editorState, maxDepth));
+      return 'tab';
     }
 
     return getDefaultKeyBinding(e);
@@ -80,11 +81,12 @@ export default function TextEditor(props: TextEditorProps) {
         editorState={editorState}
         onChange={setEditorState}
         spellCheck={true}
+        autoCorrect={'on'}
+        autoComplete={'on'}
         textAlignment={'left'}
         keyBindingFn={_keyBindingFn}
         handleKeyCommand={_handleKeyCommand}
-        onTab={_onTab}
-        placeholder={props.comment ? 'Enter comment...' : 'Blog Entry...'}
+        placeholder={props.placeholder ?? 'Blog Entry...'}
       />
     );
   };
@@ -100,7 +102,6 @@ export default function TextEditor(props: TextEditorProps) {
         editorState={editorState}
         selectedTab={selectedTab}
         setSelectedtab={setSelectedtab}
-        focusEditor={focusEditor}
       />
       {selectedTab === 'edit' && (
         <div

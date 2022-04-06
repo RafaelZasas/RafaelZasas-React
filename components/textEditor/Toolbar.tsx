@@ -1,17 +1,16 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {toolBarActions} from './toolbarActions';
-import {User} from '../../lib/types';
+import {UserData} from '../../lib/types';
 import {EditorState, RichUtils} from 'draft-js';
 import React, {Dispatch, SetStateAction} from 'react';
 
 // todo: Fix Tab indentation to add spaces before word instead of removing the word
 interface ToolBarProps {
-  userData: User;
+  userData: UserData;
   editorState: EditorState;
   setEditorState: Dispatch<SetStateAction<EditorState>>;
   selectedTab: 'edit' | 'preview' | 'both';
   setSelectedtab: Dispatch<SetStateAction<'edit' | 'preview' | 'both'>>;
-  focusEditor: Function;
 }
 export default function Toolbar(props: ToolBarProps) {
   const editorState = props.editorState;
@@ -30,8 +29,8 @@ export default function Toolbar(props: ToolBarProps) {
         ) : (
           <p
             onClick={() => props.setSelectedtab('edit')}
-            className="cursor-pointer rounded-t-lg border-x-2 border-t-2 py-0.5 px-2 
-            hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white"
+            className="cursor-pointer rounded-t-lg border-x-2 border-t-2 py-0.5 px-2 hover:border-x-slate-500
+            hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
           >
             Edit
           </p>
@@ -48,8 +47,8 @@ export default function Toolbar(props: ToolBarProps) {
         ) : (
           <p
             onClick={() => props.setSelectedtab('preview')}
-            className="cursor-pointer rounded-t-lg border-x-2 border-t-2 px-2 py-0.5
-             hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white"
+            className="cursor-pointer rounded-t-lg border-x-2 border-t-2 px-2 py-0.5 hover:border-x-slate-500
+             hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
           >
             Preview
           </p>
@@ -73,7 +72,7 @@ export default function Toolbar(props: ToolBarProps) {
           <div
             onClick={() => props.setSelectedtab('both')}
             className="hover:text-whitehover:border-x-slate-500 text -slate-700 cursor-pointer rounded-t-lg border-x-2
-            border-t-2 px-2 py-1 text-slate-700 hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white"
+            border-t-2 px-2 py-1 text-slate-700 hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
               <path
@@ -89,7 +88,10 @@ export default function Toolbar(props: ToolBarProps) {
         {toolBarActions.map((action, index) => {
           if (!action.adminOnly || (action.adminOnly && props.userData?.permissions.admin)) {
             return (
-              <div key={index} className={`m-0.5 ${getSelectedActions(action) ? 'bg-blue-500/10' : 'bg-none'}`}>
+              <div
+                key={index}
+                className={`m-0.5 ${getSelectedActions(action) ? 'bg-blue-500/10 dark:bg-sky-500/10' : 'bg-none'}`}
+              >
                 <FontAwesomeIcon
                   onClick={() => {
                     // props.focusEditor();
@@ -127,8 +129,9 @@ export default function Toolbar(props: ToolBarProps) {
                       }
                     }
                   }}
-                  className={`mx-2 h-4 w-4 cursor-pointer md:mb-0`}
-                  color={getSelectedActions(action) ? '#3b82f6' : 'black'}
+                  className={`${
+                    getSelectedActions(action) ? 'text-[#3b82f6] dark:text-[#3b82f6]' : 'text-black'
+                  } mx-2 h-4 w-4 cursor-pointer hover:text-[#3b82f6] dark:text-white md:mb-0`}
                   aria-hidden="true"
                   icon={action.icon}
                 />
