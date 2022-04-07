@@ -4,6 +4,7 @@ import 'draft-js/dist/Draft.css';
 import Toolbar from './Toolbar';
 import {UserContext} from '../../lib/context';
 import EditorContent from './EditorContent';
+import 'draft-js/dist/Draft.css';
 
 interface TextEditorProps {
   placeholder?: string;
