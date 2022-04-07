@@ -32,7 +32,7 @@ export interface BlogComment {
   updatedAt?: Timestamp | FieldValue | number;
   upVotes: string[];
   downVotes: string[];
-  replies?: BlogComment[];
+  numReplies: number;
 }
 
 /** Blog Posts without comments */
