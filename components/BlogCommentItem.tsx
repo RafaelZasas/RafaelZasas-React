@@ -3,15 +3,48 @@ import Link from 'next/link';
 import CustomImage from './Image';
 import EditorContent from './textEditor/EditorContent';
 import {convertFromRaw, EditorState} from 'draft-js';
-import {addBlogCommentVote, deleteBlogComment} from '../lib/FirestoreOperations';
+import {addBlogCommentVote, deleteBlogComment, removeBlogComentVote} from '../lib/FirestoreOperations';
 import Modal from './Modal';
-import {useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 import {default as dayjs} from 'dayjs';
+import {ToastData} from './toast';
 
 const defaultAvatar = `https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/default-avatar.jpg?alt=media&token=da5befb3-193c-4a14-a17b-f036828dbf5b`;
+const errorHeadings = ['Whoops', 'Uh Oh', 'Oh Shucks', 'Yikes', 'Problemo'];
 
-const UpVoteIcon = (props: VoteSectionProps) => {
-  const userHasUpvoted = props.comment?.upVotes?.filter((vote) => vote === props.userId).length ?? false;
+const VoteOnComment = (
+  postId: string,
+  commentId: string,
+  user: Partial<UserData>,
+  isUpvote: boolean,
+  userHasDownvoted: boolean,
+  userHasUpvoted: boolean,
+  toast: {
+    setShowToast: Dispatch<SetStateAction<boolean>>;
+    setToastData: Dispatch<SetStateAction<ToastData>>;
+  }
+) => {
+  if (user) {
+    if (userHasDownvoted || userHasUpvoted) {
+      removeBlogComentVote(postId, commentId, user.uid);
+    } else {
+      addBlogCommentVote(postId, commentId, user.uid, isUpvote);
+    }
+  } else {
+    toast.setToastData({
+      heading: errorHeadings[Math.ceil(Math.random() * 5)],
+      body: 'You need to log in to vote on comments',
+      type: 'error',
+    });
+    toast.setShowToast(true);
+    setTimeout(() => {
+      toast.setShowToast(false);
+    }, 3000);
+  }
+};
+
+const UpVoteIcon = (props: BlogCommentProps) => {
+  const userHasUpvoted = props.comment?.upVotes?.filter((vote) => vote === props.user?.uid).length ?? false;
 
   return (
     <div
@@ -20,7 +53,9 @@ const UpVoteIcon = (props: VoteSectionProps) => {
         userHasUpvoted && 'text-blue-500'
       } mx-auto flex cursor-pointer items-center justify-center text-center hover:text-blue-500`}
       // todo: remove blogCommentVote if user has upvoted and clicks the upvote icon
-      onClick={() => addBlogCommentVote(props.postId, props.comment.id, props.userId, true)}
+      onClick={() =>
+        VoteOnComment(props.postId, props.comment.id, props.user, true, !!userHasUpvoted, false, props.toast)
+      }
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="24" height="24" fill="currentColor">
         <path
@@ -33,8 +68,8 @@ const UpVoteIcon = (props: VoteSectionProps) => {
   );
 };
 
-const DownVoteIcon = (props: VoteSectionProps) => {
-  const userHasDownvoted = props.comment?.downVotes?.filter((vote) => vote === props.userId).length > 0 ?? false;
+const DownVoteIcon = (props: BlogCommentProps) => {
+  const userHasDownvoted = props.comment?.downVotes?.filter((vote) => vote === props.user?.uid).length > 0 ?? false;
   return (
     <div
       className={` ${
@@ -42,7 +77,9 @@ const DownVoteIcon = (props: VoteSectionProps) => {
       } mx-auto flex cursor-pointer items-center justify-center text-center hover:text-blue-500`}
       // todo: remove blogCommentVote if user has downVoted and clicks the downvote icon
 
-      onClick={() => addBlogCommentVote(props.postId, props.comment.id, props.userId, false)}
+      onClick={() =>
+        VoteOnComment(props.postId, props.comment.id, props.user, false, false, !!userHasDownvoted, props.toast)
+      }
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="24" height="24" fill="currentColor">
         <path
@@ -54,18 +91,12 @@ const DownVoteIcon = (props: VoteSectionProps) => {
   );
 };
 
-interface VoteSectionProps {
-  numVotes: number;
-  userId: string;
-  postId: string;
-  comment: BlogComment;
-}
-
-const VoteSection = (props: VoteSectionProps) => {
+const VoteSection = (props: BlogCommentProps) => {
+  const numVotes = (props.comment?.upVotes?.length ?? 0) - (props.comment?.downVotes?.length ?? 0);
   return (
     <div className="flex w-10 flex-col items-center justify-start">
       <UpVoteIcon {...props} />
-      <div>{props.numVotes}</div>
+      <div>{numVotes}</div>
       <DownVoteIcon {...props} />
     </div>
   );
@@ -79,7 +110,7 @@ const ReputationSection = (props: {user: Partial<UserData>}) => {
     reputation = `${props.user?.permissions?.level || 0}`;
   }
 
-  return <p className="my-0 px-1 text-xs text-slate-500">Reputation: {reputation}</p>;
+  return <p className="mb-0 px-1 text-xs text-slate-500 dark:text-slate-300">Reputation: {reputation}</p>;
 };
 
 const UserSection = (props: BlogCommentProps) => {
@@ -89,22 +120,21 @@ const UserSection = (props: BlogCommentProps) => {
     typeof comment?.createdAt === 'number' ? dayjs.unix(comment.createdAt).format('MMM DD YYYY') : 'Error';
   const createdAtTime =
     typeof comment?.createdAt === 'number' ? dayjs.unix(comment.createdAt).format('HH:mm') : 'Error';
+
   return (
-    <div className="grid grid-cols-1">
-      <p className="pb-1 text-xs text-slate-500">
+    <div className="grid grid-cols-1 rounded-sm bg-blue-500/20 p-2 dark:bg-sky-200/20">
+      <p className="pb-1 text-xs text-slate-500 dark:text-slate-300">
         Replied {createdAtDate} at {createdAtTime}
       </p>
-      <div className="flex flex-row">
-        <div className="justify-right">
-          <CustomImage
-            src={author?.profilePhoto || author?.photoURL || defaultAvatar}
-            alt={author?.username ?? 'profile photo'}
-            width={40}
-            height={40}
-            className="pointer-events-none object-cover"
-          />
-        </div>
-        <div className="flex flex-col">
+      <div className="justify-right flex flex-row">
+        <CustomImage
+          src={author?.profilePhoto || author?.photoURL || defaultAvatar}
+          alt={author?.username ?? 'profile photo'}
+          width={40}
+          height={40}
+          className="pointer-events-none object-cover"
+        />
+        <div className="flex-1 flex-col">
           {/* Username Section */}
           <Link passHref href={`/users/${props.user?.uid}`}>
             <a className="my-0 cursor-pointer self-start px-1 pb-0 pt-0.5 text-sm text-blue-500 visited:text-purple-500 hover:text-blue-400">
@@ -124,6 +154,10 @@ interface BlogCommentProps {
   comment: BlogComment;
   postId: string;
   user: UserData;
+  toast: {
+    setShowToast: Dispatch<SetStateAction<boolean>>;
+    setToastData: Dispatch<SetStateAction<ToastData>>;
+  };
 }
 
 export default function BlogCommentItem(props: BlogCommentProps) {
@@ -142,7 +176,7 @@ export default function BlogCommentItem(props: BlogCommentProps) {
       ();
   };
   return (
-    <div className="flex flex-col space-y-3 py-2 md:space-y-4">
+    <div className="mr-1 flex flex-row space-x-3 py-4 md:space-x-2">
       <Modal
         open={openConfirmationModal}
         setOpen={setOpenConfirmationModal}
@@ -150,39 +184,43 @@ export default function BlogCommentItem(props: BlogCommentProps) {
         confirmFunction={deleteComment}
         body={`Are you sure you want to delete ${props.user?.username}'s comment?`}
       />
+      <VoteSection {...props} />
 
-      <div className="flex flex-row space-x-2 ">
-        <VoteSection
-          numVotes={(props.comment?.upVotes?.length ?? 0) - (props.comment?.downVotes?.length ?? 0)}
-          postId={props.postId}
-          comment={props.comment}
-          userId={props.user?.uid}
-        />
-        <div className="flex flex-col space-y-2">
-          <EditorContent editorState={editorState} />
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col">
+          <span className="pr-1">
+            <EditorContent editorState={editorState} />
+          </span>
           {props.comment.updatedAt && props.comment.updatedAt !== props.comment.createdAt && (
-            <span className="m-0 p-0 text-xs text-slate-500">
+            <span className="mt-2 p-0 text-xs text-slate-500">
               (Edited {editedDate} at {editedTime})
             </span>
           )}
         </div>
-      </div>
-      <div className="grid max-h-16 grid-cols-2">
-        <div className="mx-2 flex flex-row items-start justify-start space-x-2 text-base text-slate-500">
-          {props.user && <p className="cursor-pointer">reply</p>}
+        <div className="grid grid-cols-2 pt-4">
+          <div className="grid grid-rows-2">
+            <div className="flex flex-row items-start justify-start space-x-2 self-start text-base text-slate-500 dark:text-slate-400">
+              {props.user && <p className="cursor-pointer hover:text-slate-300">reply</p>}
 
-          {(props.user?.permissions?.admin || props.user?.permissions?.level > 5) && (
-            <p className="cursor-pointer">flag</p>
-          )}
+              {(props.user?.permissions?.admin || props.user?.permissions?.level > 5) && (
+                <p className="cursor-pointer hover:text-slate-300">flag</p>
+              )}
 
-          {props.user?.permissions.admin && (
-            <p className="cursor-pointer hover:text-red-500" onClick={async () => setOpenConfirmationModal(true)}>
-              delete
-            </p>
-          )}
-        </div>
-        <div className="mx-2 justify-self-end">
-          <UserSection {...props} />
+              {props.user?.permissions.admin && (
+                <p className="cursor-pointer hover:text-red-500" onClick={async () => setOpenConfirmationModal(true)}>
+                  delete
+                </p>
+              )}
+            </div>
+            {props.comment.numReplies > 0 && (
+              <p className="mt-2 cursor-pointer self-end text-slate-500 hover:text-slate-300 dark:text-slate-400">
+                {props.comment.numReplies > 1 ? `View all ${props.comment.numReplies} replies` : `View 1 Reply`}
+              </p>
+            )}
+          </div>
+          <div className="mx-0 justify-self-end md:mx-2">
+            <UserSection {...props} />
+          </div>
         </div>
       </div>
     </div>

@@ -101,6 +101,7 @@ export default function BlogPostPage(props: BlogPostProps) {
                 {comments.map((comment, index) => {
                   return (
                     <BlogCommentItem
+                      toast={{setShowToast, setToastData}}
                       comment={comment}
                       user={props.userProps.userData}
                       key={index}
@@ -187,6 +188,7 @@ const AddCommentSection = (props: AddCommentSectionProps) => {
         id: props.user.uid,
         body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         updatedAt: serverTimestamp(),
+        numReplies: props.usersComment?.numReplies || 0,
       };
 
       if (!props.usersComment) {

@@ -137,7 +137,6 @@ export const addBlogComment = async (postId: string, comment: Partial<BlogCommen
  */
 export const addBlogCommentVote = (postId: string, commentId: string, userId: string, isUpvote: boolean) => {
   const blogCommentVotesRef = doc(db, `blogs/${postId}/comments/${commentId}`);
-  // todo: Disallow users from voting on their own comments
   const data = isUpvote
     ? {
         upVotes: arrayUnion(userId),
@@ -147,6 +146,21 @@ export const addBlogCommentVote = (postId: string, commentId: string, userId: st
         downVotes: arrayUnion(userId),
         upVotes: arrayRemove(userId),
       };
+  updateDoc(blogCommentVotesRef, data);
+};
+
+/**
+ * Removes a users vote from a comment (Up or Down votes)
+ * @param postId Document Id of the blog post
+ * @param commentId Document Id a comment on the post (UID of the comment author)
+ * @param userId UID of the user who is removing their commment vote
+ */
+export const removeBlogComentVote = (postId: string, commentId: string, userId: string) => {
+  const blogCommentVotesRef = doc(db, `blogs/${postId}/comments/${commentId}`);
+  const data = {
+    downVotes: arrayRemove(userId),
+    upVotes: arrayRemove(userId),
+  };
   updateDoc(blogCommentVotesRef, data);
 };
 
