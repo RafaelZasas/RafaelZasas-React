@@ -35,6 +35,14 @@ export interface BlogComment {
   numReplies: number;
 }
 
+export interface BlogCommentReply {
+  author: Author;
+  id: string;
+  body: string;
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt: Timestamp | FieldValue | number;
+}
+
 /** Blog Posts without comments */
 export interface BlogPost {
   id?: string;
