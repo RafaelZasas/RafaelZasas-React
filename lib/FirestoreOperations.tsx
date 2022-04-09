@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {db} from './firebase';
-import {BlogComment, BlogPost, BlogTag, UserData} from './types';
+import {BlogComment, BlogCommentReply, BlogPost, BlogTag, UserData} from './types';
 import {
   collection,
   where,
@@ -234,6 +234,76 @@ export const deleteBlogComment = async (postId: string, commentId: string) => {
   const commentRef = doc(db, `blogs/${postId}/comments/${commentId}`);
   await deleteDoc(commentRef);
 };
+
+/**
+ * Get all the replies to a blog comment as snapshot updates
+ * @param postId
+ * @param commentId
+ * @returns Snapshots of blog comment replies
+ */
+export const GetBlogCommentReplies$ = (postId: string, commentId: string): BlogCommentReply[] => {
+  const [replies, setReplies] = useState<BlogCommentReply[]>();
+  const blogCommentRepliesRef = query(
+    collection(db, `blogs/${postId}/comments/${commentId}/replies`),
+    orderBy('createdAt', 'asc')
+  );
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const unsubscribe = onSnapshot(blogCommentRepliesRef, async (res) => {
+      const replies = [];
+      if (!isCancelled) {
+        res.docs.map(async (doc) => {
+          const data = doc.data() as BlogCommentReply;
+          const updatedAt: Timestamp = data?.updatedAt as Timestamp;
+          const createdAt: Timestamp = data?.createdAt as Timestamp;
+          replies.push({
+            ...data,
+            id: doc.id,
+            createdAt: createdAt?.seconds || 0,
+            updatedAt: updatedAt?.seconds || 0,
+          });
+        });
+
+        setReplies(replies);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      isCancelled = true;
+    };
+  }, []);
+
+  return replies;
+};
+
+/**
+ * Add a reply to a blog comment
+ * @param postId
+ * @param comment
+ * @param reply
+ */
+export const AddBlogCommentReply = async (postId: string, comment: BlogComment, reply: BlogCommentReply) => {
+  const commentReplyRef = collection(db, `blogs/${postId}/comments/${comment.id}/replies`);
+  addDoc(commentReplyRef, reply).then((res) => {
+    let replyDocRef = doc(db, `blogs/${postId}/comments/${comment.id}/replies/${res.id}`);
+    let commentDocRef = doc(db, `blogs/${postId}/comments/${comment.id}`);
+    // adding the id to the comment reply
+    updateDoc(replyDocRef, {
+      id: res.id,
+    });
+
+    //updating the numReplies on the comment
+    updateDoc(commentDocRef, {
+      numReplies: comment.numReplies + 1,
+    });
+  });
+};
+
+//todo: delete blog comment replies
+// deleteBlogCommentReply = async()
 
 /**
  * Retrieves all the users from the db.
