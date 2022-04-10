@@ -1,7 +1,7 @@
 import {UserInfo} from '@firebase/auth-types';
 import {UserData} from '../../lib/types';
 import Error from 'next/error';
-import {CheckCircleIcon, ChevronRightIcon, MailIcon} from '@heroicons/react/solid';
+import {MailIcon} from '@heroicons/react/solid';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import {useEffect, useState} from 'react';
 import {GetAllUsers} from '../../lib/FirestoreOperations';

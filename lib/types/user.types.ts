@@ -4,7 +4,7 @@ export interface UserData {
   bio?: string;
   email: string;
   photoURL?: string;
-  profilePhoto?: string;
+  profilePhoto: string;
   username?: string;
   website?: string;
   permissions: {

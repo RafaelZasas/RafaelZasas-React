@@ -7,14 +7,28 @@ import debounce from 'lodash.debounce';
 import {Toast, ToastData} from '../components/toast';
 import Metatags from '../components/Metatags';
 import {getUsersByField, updateUser} from '../lib/FirestoreOperations';
+import Error from 'next/error';
+import {UserInfo} from 'firebase/auth';
+import CustomImage from '../components/Image';
 
 export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
-  const [isValid, setIsValid] = useState(true);
-  const [show, setShow] = useState(false);
-  const [toastData, setToastData] = useState<ToastData>();
 
-  const onSubmit = async (e) => {
+  return !user ? (
+    <Error statusCode={401} title={'Unauthorized'} />
+  ) : (
+    <div className="mx-auto flex flex-col">
+      <Profile user={user} />
+    </div>
+  );
+}
+
+const Profile = (props: {user: UserInfo}) => {
+  const [isValid, setIsValid] = useState(true);
+  const [toastData, setToastData] = useState<ToastData>();
+  const [show, setShow] = useState(false);
+
+  const updateProfile = async (e) => {
     e.preventDefault();
     const formData = {
       username: e.target.username.value,
@@ -34,7 +48,7 @@ export default function ProfilePage({}) {
       },
     };
     try {
-      await updateUser(user.uid, formData);
+      await updateUser(props.user.uid, formData);
       setToastData({
         heading: 'Success!',
         body: 'Your profile and preferences have been saved.',
@@ -55,7 +69,7 @@ export default function ProfilePage({}) {
   return (
     <main>
       <Metatags title="Profile" description="User Profile" currentURL="rafaelzasas.com/profile" />
-      <form className="space-y-6 px-5 py-4" onSubmit={onSubmit}>
+      <form className="space-y-6 px-5 py-4" onSubmit={updateProfile}>
         <>
           <Toast setShow={setShow} toastData={toastData} show={show} />{' '}
         </>
@@ -123,7 +137,7 @@ export default function ProfilePage({}) {
       </form>
     </main>
   );
-}
+};
 
 const UsernameInput = (props) => {
   // validity state passed into component as a property- used in parent to disable submit button
@@ -265,22 +279,14 @@ function BioInput() {
 }
 
 function PhotoInput() {
-  const {user, userData} = useContext(UserContext);
+  const {userData} = useContext(UserContext);
 
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">Photo</label>
       <div className="mt-1 flex items-center space-x-5">
         <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-          {!userData?.profilePhoto && (
-            <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          )}
-
-          {userData?.profilePhoto && (
-            <img className="h-full w-full text-gray-300" src={userData.profilePhoto} width={96} height={96} />
-          )}
+          <CustomImage src={userData.profilePhoto} alt={'Profile Photo'} width={96} height={96} />
         </span>
         <button
           type="button"
