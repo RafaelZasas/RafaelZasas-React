@@ -1,25 +1,22 @@
 import {faFeather} from '@fortawesome/free-solid-svg-icons';
 import {EditorState, convertFromRaw, convertToRaw, ContentState} from 'draft-js';
 import {serverTimestamp} from 'firebase/firestore';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useContext, useState} from 'react';
+import {ToastContext} from '../../lib/context';
 import {addBlogComment} from '../../lib/FirestoreOperations';
 import {UserData, BlogComment} from '../../lib/types';
 import Button from '../Button';
 import TextEditor from '../textEditor/TextEditor';
-import {ToastData} from '../toast';
 
 interface AddCommentSectionProps {
   setShowCommentEditor: Dispatch<SetStateAction<boolean>>;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   blogId: string;
   usersComment: BlogComment;
 }
 
 export default function AddCommentSection(props: AddCommentSectionProps) {
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const [editorState, setEditorState] = useState<EditorState>(() => {
     if (props.usersComment) {
       const contentState = convertFromRaw(JSON.parse(props.usersComment.body));
@@ -56,33 +53,33 @@ export default function AddCommentSection(props: AddCommentSectionProps) {
       try {
         await addBlogComment(props.blogId, comment);
         props.setShowCommentEditor(false);
-        props.toast.setToastData({
+        setToastData({
           heading: `Thanks ${props.user.username?.split(' ')[0] ?? props.user.email.split('@')[0]}`,
           body: 'Your thoughts are greatly apprecated',
           type: 'success',
         });
 
-        props.toast.setShowToast(true);
+        setShowToast(true);
 
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
       } catch (error) {
         console.log(error);
-        props.toast.setToastData({
+        setToastData({
           heading: `Error`,
           body: error,
           type: 'error',
         });
 
-        props.toast.setShowToast(true);
+        setShowToast(true);
       }
     } else {
-      props.toast.setToastData({
+      setToastData({
         heading: 'Comment is too short',
         body: 'Thoughtful comments should be 10 words at least',
         type: 'error',
       });
 
-      props.toast.setShowToast(true);
+      setShowToast(true);
     }
   }
 

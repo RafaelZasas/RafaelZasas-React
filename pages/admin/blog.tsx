@@ -2,7 +2,7 @@ import {ContentState, convertToRaw, EditorState} from 'draft-js';
 import React, {FormEvent, useContext, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
-import {UserContext} from '../../lib/context';
+import {ToastContext, UserContext} from '../../lib/context';
 import DefaultErrorPage from 'next/error';
 import Button from '../../components/Button';
 import ComboBox from '../../components/ComboBox';
@@ -10,7 +10,6 @@ import Tag from '../../components/Tag';
 import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
 import {BlogPost, BlogTag} from '../../lib/types';
 import {serverTimestamp} from 'firebase/firestore';
-import {Toast, ToastData} from '../../components/toast';
 import Metatags from '../../components/Metatags';
 
 function TitleInput() {
@@ -60,8 +59,7 @@ export default function BlogPage({}) {
   const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>([]);
   const [isDraft, setIsDraft] = useState(true);
   const tags = GetTags();
-  const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState<ToastData>();
+  const {setShowToast, setToastData} = useContext(ToastContext);
 
   function AddTag(tag: BlogTag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
@@ -138,7 +136,6 @@ export default function BlogPage({}) {
           description="Shhh. This page is a secret"
           currentURL="rafaelzasas.com/admin/blog"
         />
-        <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
         <form
           className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4"
           onSubmit={SubmitBlogPost}

@@ -2,27 +2,32 @@ import '../styles/globals.css';
 import '../styles/main.css';
 import {Navbar} from '../components/Navbar';
 import Footer from '../components/Footer';
-import {UserContext} from '../lib/context';
-import {useUserData} from '../lib/hooks';
+import {ToastContext, UserContext} from '../lib/context';
+import {useToast, useUserData} from '../lib/hooks';
 import {FirebaseTrackingProvider} from '../lib/FirebaseTrackingProvider';
+import {Toast} from '../components/toast';
 
 function MyApp({Component, pageProps}) {
   const userData = useUserData();
+  const {showToast, setShowToast, toastData, setToastData} = useToast();
 
   return (
     <UserContext.Provider value={userData}>
       <FirebaseTrackingProvider>
-        <div
-          className="flex min-h-screen flex-col
+        <ToastContext.Provider value={{showToast, setShowToast, toastData, setToastData}}>
+          <div
+            className="flex min-h-screen flex-col
             bg-gradient-to-tl from-blue-100 to-white md:from-blue-200 md:via-blue-100 md:to-transparent"
-        >
-          <Navbar />
-          <main className="flex-grow">
-            <Component {...pageProps} userProps={userData} />
-          </main>
-          <Footer />
-        </div>
+          >
+            <Navbar />
+            <main className="flex-grow">
+              <Component {...pageProps} userProps={userData} />
+            </main>
+            <Footer />
+          </div>
+        </ToastContext.Provider>
       </FirebaseTrackingProvider>
+      <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
     </UserContext.Provider>
   );
 }

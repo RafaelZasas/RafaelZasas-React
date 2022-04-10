@@ -1,7 +1,6 @@
 import {appleAuthProvider, githubAuthProvider, auth, googleAuthProvider} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import {useContext, useEffect, useState} from 'react';
-import {Toast, ToastData} from '../components/toast';
 import ConfirmSignUpModal from '../components/confirmSignUpMoodal';
 import Metatags from '../components/Metatags';
 import {FirebaseContext} from '../lib/FirebaseTrackingProvider';
@@ -10,6 +9,7 @@ import {signInWithPopup} from '@firebase/auth';
 import {getUser, updateUser} from '../lib/FirestoreOperations';
 import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from 'firebase/auth';
 import {GetImage} from '../lib/CloudStorageOperations';
+import {ToastContext} from '../lib/context';
 
 function validateEmail(email) {
   const regexp =
@@ -29,6 +29,7 @@ export default function Login() {
   const [openConfirmSignUpModal, setOpenConfirmSignUpModal] = useState(false);
   const [createNewUser, setCreateNewUser] = useState(false);
   const analytics = useContext(FirebaseContext);
+  const {setShowToast, setToastData} = useContext(ToastContext);
 
   useEffect(() => {
     const SignUp = async () => {
@@ -56,9 +57,6 @@ export default function Login() {
 
     createNewUser ? SignUp() : null;
   }, [createNewUser]);
-
-  const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState<ToastData>();
 
   const loginWithEmail = async (e) => {
     e.preventDefault();
@@ -108,7 +106,6 @@ export default function Login() {
         currentURL="rafaelzasas.com/login"
       />
       <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
-        <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
         <ConfirmSignUpModal
           open={openConfirmSignUpModal}
           setOpen={setOpenConfirmSignUpModal}
