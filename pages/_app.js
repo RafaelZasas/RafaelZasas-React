@@ -32,18 +32,18 @@ function MyApp({Component, pageProps}) {
         console.log('An error occurred while retrieving token. ', err);
         // ...
       });
-  }
 
-  onMessage(messaging, (payload) => {
-    console.log('Message received. ', payload);
-    setToastData({
-      heading: 'Message Recieved',
-      body: 'FCM message recieved',
-      type: 'success',
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+      setToastData({
+        heading: 'Message Recieved',
+        body: 'FCM message recieved',
+        type: 'success',
+      });
+      setShowToast(true);
+      // ...
     });
-    setShowToast(true);
-    // ...
-  });
+  }
 
   return (
     <UserContext.Provider value={userData}>
