@@ -9,6 +9,7 @@ import {logEvent} from 'firebase/analytics';
 import {signInWithPopup} from '@firebase/auth';
 import {getUser, updateUser} from '../lib/FirestoreOperations';
 import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from 'firebase/auth';
+import {GetImage} from '../lib/CloudStorageOperations';
 
 function validateEmail(email) {
   const regexp =
@@ -78,7 +79,12 @@ export default function Login() {
       } catch (e) {
         console.log(e);
         const error = () => {
-          throw new Error(e.message);
+          setToastData({
+            type: 'error',
+            heading: 'Authentication Error',
+            body: e.message,
+          });
+          setShowToast(true);
         };
         e.code === 'auth/user-not-found' ? setOpenConfirmSignUpModal(true) : error();
       }
@@ -111,6 +117,9 @@ export default function Login() {
         />
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+          <h6 className="mt-2 text-center text-sm text-slate-500">
+            Or create an account by entering your desired credentials
+          </h6>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -168,7 +177,7 @@ export default function Login() {
                 </div>
 
                 <div className="text-sm">
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                  <a href="" className="font-medium text-blue-600 hover:text-blue-500">
                     Forgot your password?
                   </a>
                 </div>
@@ -316,15 +325,14 @@ function SignInWithAppleButton() {
 async function ValidateNewUser(token, analytics) {
   const userData = await getUser(token.user.uid);
 
-  if (!userData) {
+  if (!userData || !userData.email) {
     const data = {
       uid: token.user.uid,
       email: token.user.email,
-      profilePhoto: token.user.photoURL,
-      username: token.user.displayName,
+      profilePhoto: token.user.photoURL || (await GetImage('profilePhotos/default-avatar.jpg')),
+      username: token.user.displayName || token.user.email.split('@')[0],
       permissions: {
-        user: true,
-        edit: false,
+        level: 0,
         admin: false,
       },
       communications: {
