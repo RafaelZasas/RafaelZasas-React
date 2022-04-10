@@ -66,8 +66,8 @@ export default function BlogCommentItem(props: BlogCommentProps) {
             </span>
           )}
         </div>
-        <div className="grid grid-cols-2 pt-4">
-          <div className="grid grid-rows-2">
+        <div className="flex flex-row pt-4">
+          <div className="grid grow grid-rows-2">
             <div className="flex flex-row items-start justify-start space-x-2 self-start text-base text-slate-500 dark:text-slate-400">
               {props.user && (
                 <p
@@ -104,7 +104,7 @@ export default function BlogCommentItem(props: BlogCommentProps) {
               </p>
             )}
           </div>
-          <div className="mx-0 justify-self-end pr-2 md:mx-2">
+          <div className="gorw-0 mx-0 justify-self-end pr-2 md:mx-2">
             <UserSection {...props} />
           </div>
         </div>

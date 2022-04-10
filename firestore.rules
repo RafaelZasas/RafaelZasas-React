@@ -43,7 +43,6 @@ service cloud.firestore {
      allow read;
     }
     
-    // reusable function to determine document ownership
     function isOwner(userID){
     	return request.auth.uid == userID;
     }
@@ -52,10 +51,8 @@ service cloud.firestore {
       return request.auth != null;
     }
     
-    // Note* that the document data can only be accessed after the .data field
     function isAdmin(request) {
      return request.auth.token.admin
-      // return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.permissions.admin == true;
     }
     
   }
