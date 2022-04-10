@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        run: npm install
+        run: npm install --registry https://registry.npmjs.org
       - name: Linter
         run: 'npm run lint'
       - name: Build
