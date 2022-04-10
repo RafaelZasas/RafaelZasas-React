@@ -8,9 +8,9 @@ import {Toast, ToastData} from '../components/toast';
 import {addMail} from '../lib/FirestoreOperations';
 
 export default function ContactModal() {
-  const [open, setOpen] = useState(true); // hook for contact modal
+  const [openModal, setOpenModal] = useState(true); // hook for contact modal
   const {user, userData} = useContext(UserContext);
-  const [show, setShow] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -19,7 +19,7 @@ export default function ContactModal() {
 
   // this will route user back once they click out
   useEffect(() => {
-    !open ? Router.back() : null;
+    !openModal ? Router.back() : null;
   });
 
   const onSubmit = async () => {
@@ -44,10 +44,9 @@ export default function ContactModal() {
           body: "Thanks! I'll get back to you shortly",
           type: 'success',
         });
-        setShow(true);
+        setShowToast(true);
         setTimeout(() => {
-          setShow(false);
-          setOpen(false);
+          setOpenModal(false);
         }, 2500);
       } catch (e) {
         console.log(e);
@@ -56,10 +55,7 @@ export default function ContactModal() {
           body: e.message,
           type: 'error',
         });
-        setShow(true);
-        setTimeout(() => {
-          setShow(false);
-        }, 2000);
+        setShowToast(true);
       }
     };
     const promptLogin = () => {
@@ -68,10 +64,9 @@ export default function ContactModal() {
         body: 'You have to Login to use this feature',
         type: 'error',
       });
-      setShow(true);
+      setShowToast(true);
       setTimeout(() => {
-        setShow(false);
-        setOpen(false);
+        setOpenModal(false);
       }, 3000);
     };
 
@@ -79,8 +74,8 @@ export default function ContactModal() {
   };
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" auto-reopen="true" className="fixed inset-0 z-10 overflow-y-auto" onClose={setOpen}>
+    <Transition.Root show={openModal} as={Fragment}>
+      <Dialog as="div" auto-reopen="true" className="fixed inset-0 z-10 overflow-y-auto" onClose={setOpenModal}>
         <div className="flex min-h-screen items-start justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -110,7 +105,7 @@ export default function ContactModal() {
             <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
               <div>
                 <div>
-                  <Toast setShow={setShow} toastData={toastData} show={show} />
+                  <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
                 </div>
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                   <FontAwesomeIcon className="h-6 w-6 text-green-600" aria-hidden="true" icon={faMailBulk} />
@@ -177,7 +172,7 @@ export default function ContactModal() {
               <div className="mt-5 flex flex-col items-center justify-center sm:mt-6">
                 <button
                   onClick={() => {
-                    setOpen(false);
+                    setOpenModal(false);
                   }}
                   type="button"
                   className="inline-flex w-16 justify-center rounded-md border border-transparent

@@ -108,7 +108,6 @@ export default function BlogPage({}) {
       });
       setShowToast(true);
       setTimeout(() => {
-        setShowToast(false);
         // reset the form
         // @ts-ignore
         e.target.reset();

@@ -157,9 +157,6 @@ const SendButton = (params) => {
         });
 
         params.toast.setShowToast(true);
-        setTimeout(() => {
-          params.toast.setShowToast(false);
-        }, 3000);
       } catch (e) {
         console.log(e);
         params.toast.setToastData({
@@ -168,9 +165,6 @@ const SendButton = (params) => {
           type: 'error',
         });
         params.toast.setShowToast(true);
-        setTimeout(() => {
-          params.toast.setShowToast(false);
-        }, 3000);
       }
     } else {
       params.modal.setOpen(true);

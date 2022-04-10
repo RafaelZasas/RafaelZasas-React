@@ -41,9 +41,6 @@ export default function Login() {
           type: 'success',
         });
         setShowToast(true);
-        setTimeout(() => {
-          setShowToast(false);
-        }, 3000);
         (await ValidateNewUser(token, analytics)) ? await router.push('/profile') : await router.push('/');
       } catch (e) {
         console.log(e);
@@ -53,9 +50,6 @@ export default function Login() {
           type: 'error',
         });
         setShowToast(true);
-        setTimeout(() => {
-          setShowToast(false);
-        }, 3000);
       }
     };
 
@@ -98,9 +92,6 @@ export default function Login() {
         type: 'error',
       });
       setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
     }
   };
   return (

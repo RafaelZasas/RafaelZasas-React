@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, {Dispatch, Fragment, SetStateAction} from 'react';
+import React, {Dispatch, Fragment, SetStateAction, useEffect} from 'react';
 import {Transition} from '@headlessui/react';
 import {CheckCircleIcon, ExclamationCircleIcon} from '@heroicons/react/outline';
 import {XIcon} from '@heroicons/react/solid';
@@ -20,6 +20,15 @@ interface ToastProps {
  * @param {ToastProps} props
  */
 export const Toast = (props: ToastProps) => {
+  const show = props.show;
+  const setShow = props.setShow;
+
+  useEffect(() => {
+    show &&
+      setTimeout(() => {
+        setShow(false);
+      }, 4500);
+  }, [setShow, show]);
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
@@ -30,7 +39,7 @@ export const Toast = (props: ToastProps) => {
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
           <Transition
-            show={props.show}
+            show={show}
             as={Fragment}
             enter="transform ease-out duration-300 transition"
             enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -58,7 +67,7 @@ export const Toast = (props: ToastProps) => {
                     <button
                       className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => {
-                        props.setShow(false);
+                        setShow(false);
                       }}
                     >
                       <span className="sr-only">Close</span>

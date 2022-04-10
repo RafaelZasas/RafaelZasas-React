@@ -32,7 +32,15 @@ export interface BlogComment {
   updatedAt?: Timestamp | FieldValue | number;
   upVotes: string[];
   downVotes: string[];
-  replies?: BlogComment[];
+  numReplies: number;
+}
+
+export interface BlogCommentReply {
+  author: Author;
+  id: string;
+  body: string;
+  createdAt: Timestamp | FieldValue | number;
+  updatedAt: Timestamp | FieldValue | number;
 }
 
 /** Blog Posts without comments */
