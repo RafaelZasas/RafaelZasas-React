@@ -54,7 +54,6 @@ const AddEmailModal = (params) => {
       });
       setShowToast(true);
       setTimeout(() => {
-        setShowToast(false);
         setOpen(false);
       }, 2500);
 
@@ -67,9 +66,6 @@ const AddEmailModal = (params) => {
         type: 'error',
       });
       setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
     }
   };
 

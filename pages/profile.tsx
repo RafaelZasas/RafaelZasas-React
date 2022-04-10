@@ -41,9 +41,6 @@ export default function ProfilePage({}) {
         type: 'success',
       });
       setShow(true);
-      setTimeout(() => {
-        setShow(false);
-      }, 2000);
     } catch (e) {
       console.log(e);
       setToastData({
@@ -52,9 +49,6 @@ export default function ProfilePage({}) {
         type: 'error',
       });
       setShow(true);
-      setTimeout(() => {
-        setShow(false);
-      }, 2000);
     }
   };
 

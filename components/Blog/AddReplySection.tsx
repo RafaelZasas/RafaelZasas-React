@@ -51,9 +51,6 @@ export default function AddReplySection(props: AddReplySectionProps) {
         });
 
         props.toast.setShowToast(true);
-        setTimeout(() => {
-          props.toast.setShowToast(false);
-        }, 3000);
 
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
       } catch (error) {
@@ -65,9 +62,6 @@ export default function AddReplySection(props: AddReplySectionProps) {
         });
 
         props.toast.setShowToast(true);
-        setTimeout(() => {
-          props.toast.setShowToast(false);
-        }, 3000);
       }
     } else {
       props.toast.setToastData({
@@ -77,9 +71,6 @@ export default function AddReplySection(props: AddReplySectionProps) {
       });
 
       props.toast.setShowToast(true);
-      setTimeout(() => {
-        props.toast.setShowToast(false);
-      }, 3000);
     }
   }
 

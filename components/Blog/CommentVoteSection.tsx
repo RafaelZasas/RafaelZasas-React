@@ -41,9 +41,6 @@ const VoteOnComment = (
       type: 'error',
     });
     toast.setShowToast(true);
-    setTimeout(() => {
-      toast.setShowToast(false);
-    }, 5000);
   }
 };
 

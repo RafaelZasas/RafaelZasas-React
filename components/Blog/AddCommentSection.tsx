@@ -63,9 +63,6 @@ export default function AddCommentSection(props: AddCommentSectionProps) {
         });
 
         props.toast.setShowToast(true);
-        setTimeout(() => {
-          props.toast.setShowToast(false);
-        }, 3000);
 
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
       } catch (error) {
@@ -77,9 +74,6 @@ export default function AddCommentSection(props: AddCommentSectionProps) {
         });
 
         props.toast.setShowToast(true);
-        setTimeout(() => {
-          props.toast.setShowToast(false);
-        }, 3000);
       }
     } else {
       props.toast.setToastData({
@@ -89,9 +83,6 @@ export default function AddCommentSection(props: AddCommentSectionProps) {
       });
 
       props.toast.setShowToast(true);
-      setTimeout(() => {
-        props.toast.setShowToast(false);
-      }, 3000);
     }
   }
 
