@@ -7,11 +7,32 @@ import {useToast, useUserData} from '../lib/hooks';
 import {FirebaseTrackingProvider} from '../lib/FirebaseTrackingProvider';
 import {Toast} from '../components/toast';
 import {onMessage} from 'firebase/messaging';
-import {messaging} from '../lib/firebase';
+import {firebaseApp} from '../lib/firebase';
 
 function MyApp({Component, pageProps}) {
   const userData = useUserData();
   const {showToast, setShowToast, toastData, setToastData} = useToast();
+
+  if (typeof window !== 'undefined' && !!firebaseApp) {
+    // FCM Init
+    const messaging = getMessaging(firebaseApp);
+    getToken(messaging, {vapidKey: process.env.NEXT_PUBLIC_FCM_KEY})
+      .then((currentToken) => {
+        if (currentToken) {
+          // Send the token to your server and update the UI if necessary
+          // ...
+          console.log('Got Token for FCM');
+        } else {
+          // Show permission request UI
+          console.log('No registration token available. Request permission to generate one.');
+          // ...
+        }
+      })
+      .catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+        // ...
+      });
+  }
 
   onMessage(messaging, (payload) => {
     console.log('Message received. ', payload);
