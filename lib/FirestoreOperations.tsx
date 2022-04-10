@@ -302,8 +302,21 @@ export const AddBlogCommentReply = async (postId: string, comment: BlogComment, 
   });
 };
 
-//todo: delete blog comment replies
-// deleteBlogCommentReply = async()
+/**
+ * Delete a reply of a blog comment
+ * @param postId
+ * @param commentId
+ * @param replyId
+ */
+export const deleteBlogCommentReply = async (postId: string, comment: BlogComment, replyId: string) => {
+  const repliesRef = doc(db, `blogs/${postId}/comments/${comment.id}/replies/${replyId}`);
+  let commentDocRef = doc(db, `blogs/${postId}/comments/${comment.id}`);
+
+  await deleteDoc(repliesRef);
+  updateDoc(commentDocRef, {
+    numReplies: comment.numReplies - 1,
+  });
+};
 
 /**
  * Retrieves all the users from the db.

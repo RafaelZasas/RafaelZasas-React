@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 import {convertFromRaw, EditorState} from 'draft-js';
 import {Dispatch, SetStateAction, useState} from 'react';
-import {deleteBlogComment} from '../../lib/FirestoreOperations';
-import {BlogCommentReply, UserData} from '../../lib/types';
+import {deleteBlogCommentReply} from '../../lib/FirestoreOperations';
+import {BlogComment, BlogCommentReply, UserData} from '../../lib/types';
 import Modal from '../Modal';
 import EditorContent from '../textEditor/EditorContent';
 import {ToastData} from '../toast';
 import UserSection from './UserSection';
 
-interface BlogCommentProps {
+interface CommentReplyItemProps {
   reply: BlogCommentReply;
   postId: string;
   user: UserData;
@@ -16,9 +16,10 @@ interface BlogCommentProps {
     setShowToast: Dispatch<SetStateAction<boolean>>;
     setToastData: Dispatch<SetStateAction<ToastData>>;
   };
+  comment: BlogComment;
 }
 
-export default function CommentReplyItem(props: BlogCommentProps) {
+export default function CommentReplyItem(props: CommentReplyItemProps) {
   const contentState = convertFromRaw(JSON.parse(props.reply.body));
   const editorState = EditorState.createWithContent(contentState);
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
@@ -27,12 +28,16 @@ export default function CommentReplyItem(props: BlogCommentProps) {
   const editedTime =
     typeof props.reply?.updatedAt === 'number' ? dayjs.unix(props.reply.updatedAt).format('HH:mm') : 'Error';
 
-  // todo: replace with deleteReply()
-  const deleteComment = () => {
-    deleteBlogComment(props.postId, props.reply.id)
-      .then
-      // todo: show toast maybe??
-      ();
+  const deleteReply = () => {
+    deleteBlogCommentReply(props.postId, props.comment, props.reply.id).then(() => {
+      props.toast.setToastData({
+        type: 'success',
+        heading: 'Success',
+        body: `Deleted ${props.reply.author.username || props.reply.author.email}'s reply`,
+      });
+      setOpenConfirmationModal(false);
+      props.toast.setShowToast(true);
+    });
   };
   return (
     <div className="mr-1 flex flex-row space-x-3 py-4 md:space-x-2">
@@ -40,7 +45,7 @@ export default function CommentReplyItem(props: BlogCommentProps) {
         open={openConfirmationModal}
         setOpen={setOpenConfirmationModal}
         header={'Delete Reply'}
-        confirmFunction={deleteComment}
+        confirmFunction={deleteReply}
         body={`Are you sure you want to delete ${props.user?.username}'s reply?`}
       />
 
@@ -63,7 +68,7 @@ export default function CommentReplyItem(props: BlogCommentProps) {
             )}
 
             {props.user?.permissions.admin && (
-              <p className="cursor-pointer hover:text-red-500" onClick={async () => setOpenConfirmationModal(true)}>
+              <p className="cursor-pointer hover:text-red-500" onClick={() => setOpenConfirmationModal(true)}>
                 delete
               </p>
             )}

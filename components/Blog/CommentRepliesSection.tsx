@@ -63,6 +63,7 @@ export default function CommentRepliesSection(props: CommentRepliesSectionProps)
                   {replies.map((reply, index) => {
                     return (
                       <CommentReplyItem
+                        comment={props.comment}
                         toast={props.toast}
                         reply={reply}
                         user={props.userData}
