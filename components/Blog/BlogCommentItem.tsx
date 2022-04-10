@@ -34,10 +34,15 @@ export default function BlogCommentItem(props: BlogCommentProps) {
     typeof props.comment?.updatedAt === 'number' ? dayjs.unix(props.comment.updatedAt).format('HH:mm') : undefined;
 
   const deleteComment = () => {
-    deleteBlogComment(props.postId, props.comment.id)
-      .then
-      // todo: show toast maybe??
-      ();
+    deleteBlogComment(props.postId, props.comment.id).then(() => {
+      props.toast.setToastData({
+        type: 'success',
+        heading: 'Success',
+        body: `Deleted ${props.comment.author.username || props.comment.author.email}'s reply`,
+      });
+      setOpenConfirmationModal(false);
+      props.toast.setShowToast(true);
+    });
   };
   return (
     <div className="mr-1 flex flex-row space-x-3 py-4 md:space-x-2">
