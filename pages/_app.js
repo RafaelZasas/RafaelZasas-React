@@ -6,10 +6,23 @@ import {ToastContext, UserContext} from '../lib/context';
 import {useToast, useUserData} from '../lib/hooks';
 import {FirebaseTrackingProvider} from '../lib/FirebaseTrackingProvider';
 import {Toast} from '../components/toast';
+import {onMessage} from 'firebase/messaging';
+import {messaging} from '../lib/firebase';
 
 function MyApp({Component, pageProps}) {
   const userData = useUserData();
   const {showToast, setShowToast, toastData, setToastData} = useToast();
+
+  onMessage(messaging, (payload) => {
+    console.log('Message received. ', payload);
+    setToastData({
+      heading: 'Message Recieved',
+      body: 'FCM message recieved',
+      type: 'success',
+    });
+    setShowToast(true);
+    // ...
+  });
 
   return (
     <UserContext.Provider value={userData}>

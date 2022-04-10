@@ -1,5 +1,5 @@
 // firebase V9 imports
-import {initializeApp, getApp} from 'firebase/app';
+import {initializeApp} from 'firebase/app';
 import {getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider} from 'firebase/auth';
 import {
   connectFirestoreEmulator,
@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 import {getFunctions, httpsCallable, connectFunctionsEmulator} from 'firebase/functions';
+import {getMessaging, getToken} from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -53,6 +54,25 @@ const functions = getFunctions(firebaseApp);
 export const addPermissions = httpsCallable(functions, 'addPermissions');
 // Storage exports
 export const storage = getStorage(firebaseApp);
+
+// FCM Init
+export const messaging = getMessaging(firebaseApp);
+getToken(messaging, {vapidKey: process.env.NEXT_PUBLIC_FCM_KEY})
+  .then((currentToken) => {
+    if (currentToken) {
+      // Send the token to your server and update the UI if necessary
+      // ...
+      console.log('Got Token for FCM');
+    } else {
+      // Show permission request UI
+      console.log('No registration token available. Request permission to generate one.');
+      // ...
+    }
+  })
+  .catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+    // ...
+  });
 
 const EMULATORS_STARTED = 'EMULATORS_STARTED';
 function startEmulators() {
