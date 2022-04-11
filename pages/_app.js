@@ -6,44 +6,42 @@ import {ToastContext, UserContext} from '../lib/context';
 import {useToast, useUserData} from '../lib/hooks';
 import {FirebaseTrackingProvider} from '../lib/FirebaseTrackingProvider';
 import {Toast} from '../components/toast';
-import {onMessage} from 'firebase/messaging';
-import {firebaseApp} from '../lib/firebase';
+import {useState} from 'react';
+import {fetchFCMToken, onMessageListener} from '../lib/firebase';
+import {isSupported} from 'firebase/messaging';
 
 function MyApp({Component, pageProps}) {
   const userData = useUserData();
   const {showToast, setShowToast, toastData, setToastData} = useToast();
-
-  if (typeof window !== 'undefined' && !!firebaseApp) {
-    // FCM Init
-    const messaging = getMessaging(firebaseApp);
-    getToken(messaging, {vapidKey: process.env.NEXT_PUBLIC_FCM_KEY})
-      .then((currentToken) => {
-        if (currentToken) {
-          // Send the token to your server and update the UI if necessary
-          // ...
-          console.log('Got Token for FCM');
-        } else {
-          // Show permission request UI
-          console.log('No registration token available. Request permission to generate one.');
-          // ...
-        }
+  const [browserIsSupported, setBrowserSupported] = useState(false);
+  const [isTokenFound, setTokenFound] = useState(false);
+  isSupported().then((res) => {
+    setBrowserSupported(res);
+  });
+  if (browserIsSupported && typeof window !== 'undefined') {
+    fetchFCMToken(setTokenFound);
+    onMessageListener()
+      .then((payload) => {
+        setToastData({
+          type: 'success',
+          heading: 'Success',
+          body: 'baby we done it',
+        });
+        setShowToast(true);
+        console.log(payload);
       })
-      .catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
-        // ...
-      });
-
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      setToastData({
-        heading: 'Message Recieved',
-        body: 'FCM message recieved',
-        type: 'success',
-      });
-      setShowToast(true);
-      // ...
+      .catch((err) => console.log('failed: ', err));
+  } else {
+    isSupported().then((res) => {
+      console.log('browser supported:', res);
     });
+    console.log('Window Type:', typeof window);
   }
+
+  const onShowNotificationClicked = () => {
+    setNotification({title: 'Notification', body: 'This is a test notification'});
+    setShow(true);
+  };
 
   return (
     <UserContext.Provider value={userData}>

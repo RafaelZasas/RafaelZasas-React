@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 import {getFunctions, httpsCallable, connectFunctionsEmulator} from 'firebase/functions';
-import {getMessaging, getToken} from 'firebase/messaging';
+import {getMessaging, getToken, isSupported, onMessage} from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -54,6 +54,33 @@ const functions = getFunctions(firebaseApp);
 export const addPermissions = httpsCallable(functions, 'addPermissions');
 // Storage exports
 export const storage = getStorage(firebaseApp);
+
+// FCM Inits and exports
+export const fetchFCMToken = async (setTokenFound) => {
+  const messaging = getMessaging(firebaseApp);
+
+  try {
+    const currentToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FCM_KEY,
+    });
+    if (currentToken) {
+      console.log('current token for client: ', currentToken);
+      setTokenFound(true);
+    } else {
+      console.log('No registration token available. Request permission to generate one.');
+      setTokenFound(false);
+    }
+  } catch (err) {
+    console.log('An error occurred while retrieving token. ', err);
+  }
+};
+
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(getMessaging(firebaseApp), (payload) => {
+      resolve(payload);
+    });
+  });
 
 const EMULATORS_STARTED = 'EMULATORS_STARTED';
 function startEmulators() {
