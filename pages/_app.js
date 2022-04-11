@@ -6,7 +6,7 @@ import {ToastContext, UserContext} from '../lib/context';
 import {useToast, useUserData} from '../lib/hooks';
 import {FirebaseTrackingProvider} from '../lib/FirebaseTrackingProvider';
 import {Toast} from '../components/toast';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {fetchFCMToken, onMessageListener} from '../lib/firebase';
 import {isSupported} from 'firebase/messaging';
 
@@ -14,34 +14,53 @@ function MyApp({Component, pageProps}) {
   const userData = useUserData();
   const {showToast, setShowToast, toastData, setToastData} = useToast();
   const [browserIsSupported, setBrowserSupported] = useState(false);
-  const [isTokenFound, setTokenFound] = useState(false);
-  isSupported().then((res) => {
-    setBrowserSupported(res);
-  });
-  if (browserIsSupported && typeof window !== 'undefined') {
-    fetchFCMToken(setTokenFound);
-    onMessageListener()
-      .then((payload) => {
-        setToastData({
-          type: 'success',
-          heading: 'Success',
-          body: 'baby we done it',
-        });
-        setShowToast(true);
-        console.log(payload);
-      })
-      .catch((err) => console.log('failed: ', err));
-  } else {
-    isSupported().then((res) => {
-      console.log('browser supported:', res);
-    });
-    console.log('Window Type:', typeof window);
-  }
 
-  const onShowNotificationClicked = () => {
-    setNotification({title: 'Notification', body: 'This is a test notification'});
-    setShow(true);
-  };
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      const firebaseConfig = encodeURIComponent(
+        JSON.stringify({
+          apiKey: process.env.NEXT_PUBLIC_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+          databaseURL: process.env.NEXT_PUBLIC_DATABASE_URL,
+          projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+          storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+          messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_APP_ID,
+          measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
+        })
+      );
+      navigator.serviceWorker
+        .register(`../public/firebase-messaging-sw.js?firebaseConfig=${firebaseConfig}`)
+        .then(function (registration) {
+          console.log('Registration successful, scope is:', registration.scope);
+        })
+        .catch(function (err) {
+          console.log('Service worker registration failed, error:', err);
+        });
+    }
+    isSupported().then((res) => {
+      setBrowserSupported(res);
+    });
+
+    if (browserIsSupported && typeof window !== 'undefined') {
+      fetchFCMToken(userData.userData);
+      onMessageListener()
+        .then((payload) => {
+          setToastData({
+            type: 'success',
+            heading: payload.notification.title,
+            body: payload.notification.body,
+          });
+          setShowToast(true);
+        })
+        .catch((err) => console.log('failed: ', err));
+    } else {
+      isSupported().then((res) => {
+        console.log('browser supported:', res);
+      });
+      console.log('Window Type:', typeof window);
+    }
+  }, [browserIsSupported, setShowToast, setToastData]);
 
   return (
     <UserContext.Provider value={userData}>

@@ -1,6 +1,6 @@
 // firebase V9 imports
 import {initializeApp} from 'firebase/app';
-import {getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider} from 'firebase/auth';
+import {getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider, UserInfo} from 'firebase/auth';
 import {
   connectFirestoreEmulator,
   enableIndexedDbPersistence,
@@ -9,7 +9,9 @@ import {
 } from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 import {getFunctions, httpsCallable, connectFunctionsEmulator} from 'firebase/functions';
-import {getMessaging, getToken, isSupported, onMessage} from 'firebase/messaging';
+import {getMessaging, getToken, isSupported, MessagePayload, onMessage} from 'firebase/messaging';
+import {UserData} from './types';
+import {updateUser} from './FirestoreOperations';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -56,26 +58,23 @@ export const addPermissions = httpsCallable(functions, 'addPermissions');
 export const storage = getStorage(firebaseApp);
 
 // FCM Inits and exports
-export const fetchFCMToken = async (setTokenFound) => {
+export const fetchFCMToken = async (userData: UserData) => {
   const messaging = getMessaging(firebaseApp);
-
   try {
     const currentToken = await getToken(messaging, {
       vapidKey: process.env.NEXT_PUBLIC_FCM_KEY,
     });
-    if (currentToken) {
-      console.log('current token for client: ', currentToken);
-      setTokenFound(true);
-    } else {
-      console.log('No registration token available. Request permission to generate one.');
-      setTokenFound(false);
+    if (currentToken && !userData?.fcmToken && userData?.uid) {
+      updateUser(userData.uid, {fcmToken: currentToken}).then((res) => {
+        console.log('New token for client: ', currentToken);
+      });
     }
   } catch (err) {
     console.log('An error occurred while retrieving token. ', err);
   }
 };
 
-export const onMessageListener = () =>
+export const onMessageListener = (): Promise<MessagePayload> =>
   new Promise((resolve) => {
     onMessage(getMessaging(firebaseApp), (payload) => {
       resolve(payload);
