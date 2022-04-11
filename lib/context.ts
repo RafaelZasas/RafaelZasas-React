@@ -1,6 +1,6 @@
-import { createContext } from 'react';
-import firebase from "firebase";
-import {User} from './types';
-let userData: User = null;
-let user: firebase.User = null;
-export const UserContext = createContext({ user , userData });
+import {User} from 'firebase/auth';
+import {createContext} from 'react';
+import {UserData} from './types';
+let userData: UserData = null;
+let user: User = null;
+export const UserContext = createContext({user, userData});
