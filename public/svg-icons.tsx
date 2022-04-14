@@ -1,4 +1,4 @@
-export const InstagramIcon = (props?: {className?: string}) => {
+export const InstagramIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,6 +6,7 @@ export const InstagramIcon = (props?: {className?: string}) => {
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       viewBox="0 0 448 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       strokeWidth="2"
     >
       <path
@@ -17,12 +18,13 @@ export const InstagramIcon = (props?: {className?: string}) => {
   );
 };
 
-export const LinkedInIcon = (props?: {className?: string}) => {
+export const LinkedInIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 448 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -31,12 +33,13 @@ export const LinkedInIcon = (props?: {className?: string}) => {
     </svg>
   );
 };
-export const StackOverflowIcon = (props?: {className?: string}) => {
+export const StackOverflowIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 384 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -45,12 +48,13 @@ export const StackOverflowIcon = (props?: {className?: string}) => {
     </svg>
   );
 };
-export const TwitterIcon = (props?: {className?: string}) => {
+export const TwitterIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -60,12 +64,13 @@ export const TwitterIcon = (props?: {className?: string}) => {
   );
 };
 
-export const GithubIcon = (props?: {className?: string}) => {
+export const GithubIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 496 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -75,12 +80,13 @@ export const GithubIcon = (props?: {className?: string}) => {
   );
 };
 
-export const CheckCircleIcon = (props?: {className?: string}) => {
+export const CheckCircleIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-8 w-8 stroke-green-600 text-green-500'}
       strokeWidth="2"
       fill="currentColor"
@@ -91,12 +97,13 @@ export const CheckCircleIcon = (props?: {className?: string}) => {
   );
 };
 
-export const ExclamationCircleIcon = (props?: {className?: string}) => {
+export const ExclamationCircleIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-6 w-6 fill-red-700 stroke-red-700 text-red-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -107,12 +114,13 @@ export const ExclamationCircleIcon = (props?: {className?: string}) => {
   );
 };
 
-export const InfoCircleIcon = (props?: {className?: string}) => {
+export const InfoCircleIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-8 w-8 fill-sky-400'}
       strokeWidth="2"
       fill="currentColor"
@@ -123,18 +131,104 @@ export const InfoCircleIcon = (props?: {className?: string}) => {
   );
 };
 
-export const XIcon = (props?: {className?: string}) => {
+export const XIcon = (props?: {className?: string; function?: Function}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 320 512"
       stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
       aria-hidden="true"
     >
       <path d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z" />
+    </svg>
+  );
+};
+
+export const ArchiveIcon = (props?: {className?: string; function?: Function}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
+      className={props.className || 'h-8 w-8 fill-slate-700'}
+      strokeWidth="2"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M464 32h-416C21.49 32 0 53.49 0 80v64C0 161.6 14.4 176 31.1 176L32 416c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V176c17.6 0 32-14.4 32-31.1V80C512 53.49 490.5 32 464 32zM416 432H96c-8.837 0-16-7.163-16-16V176h352V416C432 424.8 424.8 432 416 432zM464 128h-416V80h416V128zM183.1 272h144C341.3 272 352 261.3 352 248C352 234.7 341.3 224 328 224H183.1C170.7 224 160 234.7 160 247.1C160 261.3 170.7 272 183.1 272z" />
+    </svg>
+  );
+};
+
+export const TrashCanIcon = (props?: {className?: string; function?: Function}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 448 512"
+      stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
+      className={props.className || 'h-8 w-8 fill-slate-700'}
+      strokeWidth="2"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M160 400C160 408.8 152.8 416 144 416C135.2 416 128 408.8 128 400V192C128 183.2 135.2 176 144 176C152.8 176 160 183.2 160 192V400zM240 400C240 408.8 232.8 416 224 416C215.2 416 208 408.8 208 400V192C208 183.2 215.2 176 224 176C232.8 176 240 183.2 240 192V400zM320 400C320 408.8 312.8 416 304 416C295.2 416 288 408.8 288 400V192C288 183.2 295.2 176 304 176C312.8 176 320 183.2 320 192V400zM317.5 24.94L354.2 80H424C437.3 80 448 90.75 448 104C448 117.3 437.3 128 424 128H416V432C416 476.2 380.2 512 336 512H112C67.82 512 32 476.2 32 432V128H24C10.75 128 0 117.3 0 104C0 90.75 10.75 80 24 80H93.82L130.5 24.94C140.9 9.357 158.4 0 177.1 0H270.9C289.6 0 307.1 9.358 317.5 24.94H317.5zM151.5 80H296.5L277.5 51.56C276 49.34 273.5 48 270.9 48H177.1C174.5 48 171.1 49.34 170.5 51.56L151.5 80zM80 432C80 449.7 94.33 464 112 464H336C353.7 464 368 449.7 368 432V128H80V432z" />
+    </svg>
+  );
+};
+
+export const UploadIcon = (props?: {className?: string; function?: Function}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
+      className={props.className || 'h-8 w-8 fill-slate-700'}
+      strokeWidth="2"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M448 304h-128V352h128c8.822 0 16 7.178 16 16V448c0 8.822-7.178 16-16 16H64c-8.822 0-16-7.178-16-16v-80C48 359.2 55.18 352 64 352h128V304H64c-35.35 0-64 28.65-64 64V448c0 35.35 28.65 64 64 64h384c35.35 0 64-28.65 64-64v-80C512 332.7 483.3 304 448 304zM136.1 176.1L232 81.94V352c0 13.25 10.75 24 24 24s24-10.75 24-24V81.94l95.03 95.03C379.7 181.7 385.8 184 392 184s12.28-2.344 16.97-7.031c9.375-9.375 9.375-24.56 0-33.94l-136-136c-9.375-9.375-24.56-9.375-33.94 0l-136 136c-9.375 9.375-9.375 24.56 0 33.94S127.6 186.3 136.1 176.1zM432 408c0-13.26-10.75-24-24-24S384 394.7 384 408c0 13.25 10.75 24 24 24S432 421.3 432 408z" />
+    </svg>
+  );
+};
+
+export const EditIcon = (props?: {className?: string; function?: Function}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
+      className={props.className || 'h-8 w-8 fill-slate-700'}
+      strokeWidth="2"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
+    </svg>
+  );
+};
+
+export const UnarchiveIcon = (props?: {className?: string; function?: Function}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 640 512"
+      stroke="currentColor"
+      onClick={(e) => props.function(e) || null}
+      className={props.className || 'h-8 w-8 fill-slate-700'}
+      strokeWidth="2"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.24 125.5L58.94 42.12C61.97 36.06 68.5 32.56 75.23 33.4L320 63.1L236.6 202.1C229.2 215.4 214.3 221.2 200.4 217.3L37.07 170.6C17.81 165.1 8.283 143.4 17.24 125.5V125.5zM320 63.1L564.8 33.4C571.5 32.56 578 36.06 581.1 42.12L622.8 125.5C631.7 143.4 622.2 165.1 602.9 170.6L439.6 217.3C425.7 221.2 410.8 215.4 403.4 202.1L320 63.1zM576 211.6V378.5C576 400.5 561 419.7 539.6 425.1L335.5 476.1C325.3 478.7 314.7 478.7 304.5 476.1L100.4 425.1C78.99 419.7 64 400.5 64 378.5V211.6L112 225.3V378.5L296 424.5V184C296 170.7 306.7 160 320 160C333.3 160 344 170.7 344 184V424.5L528 378.5V225.3L576 211.6zM318.9 128H321.1z" />
     </svg>
   );
 };
