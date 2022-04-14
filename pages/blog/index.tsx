@@ -36,7 +36,7 @@ export default function BlogPage(props: BlogPageProps) {
   const {setShowToast, setToastData} = useContext(ToastContext);
 
   return (
-    <main>
+    <main className="bg-blog-background dark:bg-blog-background_dark">
       <Metatags title="Blog" description="Browse my latest blog posts!" currentURL="rafaelzasas.com/blog" />
       <Modal
         open={openConfirmationModal}
@@ -45,14 +45,16 @@ export default function BlogPage(props: BlogPageProps) {
         confirmFunction={confirmationModalFunction}
         body={confirmationModalBody}
       />
-      <div className="relative bg-sky-100/30 px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-24 lg:pb-28">
+      <div className="relative px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-24 lg:pb-28">
         <div className="absolute inset-0">
           <div className="h-1/3 sm:h-2/3" />
         </div>
         <div className="relative mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-xl text-gray-500 sm:mt-4">
+            <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-sky-100 sm:text-4xl">
+              From the blog
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-xl text-slate-800 dark:text-sky-100 sm:mt-4">
               A collaborative space for me to share ideas and hear your opinion on them.
             </p>
           </div>
@@ -195,13 +197,13 @@ export default function BlogPage(props: BlogPageProps) {
                             />
                           )}
                         </div>
-                        <div className="flex flex-1 flex-col justify-between bg-white/30 bg-clip-padding p-6 backdrop-blur-xl backdrop-filter">
+                        <div className="flex flex-1 flex-col justify-between bg-white/30 bg-clip-padding p-6 backdrop-blur-xl backdrop-filter dark:bg-black/30">
                           <div className=" flex-1">
-                            <p className="text-xl font-semibold text-gray-900">{post.title}</p>
-                            <p className="mt-3 text-base text-gray-500">{post.summary}</p>
+                            <p className="text-xl font-semibold text-gray-900 dark:text-slate-100">{post.title}</p>
+                            <p className="mt-3 text-base text-slate-800 dark:text-slate-200">{post.summary}</p>
                           </div>
                           <div className="mt-6 flex items-center">
-                            <div className="flex space-x-1 text-sm text-gray-500">
+                            <div className="flex space-x-1 text-sm text-gray-700 dark:text-slate-300">
                               <time dateTime={createdAtDate.toString()}>
                                 {createdAtDate} at {createdAtTime}
                               </time>
