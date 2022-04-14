@@ -10,6 +10,10 @@ interface CustomImageProps {
   width: string | number;
   height: string | number;
   className?: string;
+  layout?: 'responsive' | 'fill' | 'intrinsic' | 'fixed';
+  quality?: number;
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
+  priority?: boolean;
 }
 export default function CustomImage(props: CustomImageProps) {
   return (
@@ -19,6 +23,10 @@ export default function CustomImage(props: CustomImageProps) {
       alt={props.alt}
       width={props.width}
       height={props.height}
+      priority={props.priority || false}
+      layout={props.layout || 'intrinsic'}
+      objectFit={props.objectFit || 'none'}
+      quality={props.quality || 75}
       className={props.className ?? 'pointer-events-none object-cover'}
     />
   );
