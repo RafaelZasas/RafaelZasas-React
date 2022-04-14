@@ -168,9 +168,9 @@ export default function BlogPage(props: BlogPageProps) {
                 post.status === 'published'
               ) {
                 return (
-                  <div className="flex cursor-pointer flex-col overflow-hidden rounded-lg shadow-lg" key={post.id}>
+                  <div className="flex flex-col" key={post.id}>
                     <Link href={`/blog/${post.id}`} passHref>
-                      <>
+                      <div className="flex h-full cursor-pointer flex-col overflow-hidden rounded-lg shadow-lg">
                         <div className="flex-shrink-0">
                           {post.displayImage ? (
                             <CustomImage
@@ -196,17 +196,9 @@ export default function BlogPage(props: BlogPageProps) {
                           )}
                         </div>
                         <div className="flex flex-1 flex-col justify-between bg-white/30 bg-clip-padding p-6 backdrop-blur-xl backdrop-filter">
-                          <div className="flex-1">
-                            <div className={'space-x-1 space-y-1'}>
-                              {post.tags.map((tag, index) => {
-                                return <Tag tag={tag} key={index} />;
-                              })}
-                            </div>
-
-                            <div className="mt-2 block">
-                              <p className="text-xl font-semibold text-gray-900">{post.title}</p>
-                              <p className="mt-3 text-base text-gray-500">{post.summary}</p>
-                            </div>
+                          <div className=" flex-1">
+                            <p className="text-xl font-semibold text-gray-900">{post.title}</p>
+                            <p className="mt-3 text-base text-gray-500">{post.summary}</p>
                           </div>
                           <div className="mt-6 flex items-center">
                             <div className="flex space-x-1 text-sm text-gray-500">
@@ -217,49 +209,54 @@ export default function BlogPage(props: BlogPageProps) {
                               <span>{post.readingTime}</span>
                             </div>
                           </div>
-                          {props.userProps.userData?.permissions?.admin && (
-                            <div className="mt-4 flex flex-row items-center justify-between">
-                              {post.status === 'archived' && (
-                                <>
-                                  <Tag tag={{color: 'bg-rose-500', name: 'Archived'}} />
-                                  <TrashCanIcon
-                                    className="h-6 w-6 fill-red-500 text-center hover:fill-red-600"
-                                    function={DeletePost}
-                                  />
-                                  <UnarchiveIcon
-                                    className="h-7 w-7 fill-orange-500 text-center hover:fill-orange-600"
-                                    function={UnarchivePost}
-                                  />
-                                </>
-                              )}
-                              {post.status === 'draft' && (
-                                <>
-                                  <Tag tag={{color: 'bg-amber-500', name: 'Draft'}} />
-                                  <ArchiveIcon
-                                    className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
-                                    function={ArchivePost}
-                                  />
-                                  <UploadIcon
-                                    className="h-6 w-6 fill-green-500 hover:fill-green-700"
-                                    function={PublishPost}
-                                  />
-                                </>
-                              )}
-                              {post.status === 'published' && (
-                                <>
-                                  <Tag tag={{color: 'bg-emerald-500', name: 'Published'}} />
-                                  <ArchiveIcon
-                                    className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
-                                    function={ArchivePost}
-                                  />
-                                </>
-                              )}
-                              <EditIcon className="h-6 w-6 fill-blue-500 hover:fill-blue-600" />
-                            </div>
-                          )}
+                          <div className={'mt-4 space-x-1 space-y-1'}>
+                            {post.tags.map((tag, index) => {
+                              return <Tag tag={tag} key={index} />;
+                            })}
+                          </div>
                         </div>
-                      </>
+                      </div>
                     </Link>
+                    {props.userProps.userData?.permissions?.admin && (
+                      <div className="mx-6 mt-2 flex flex-row items-center justify-between">
+                        {post.status === 'archived' && (
+                          <>
+                            <Tag tag={{color: 'bg-rose-500', name: 'Archived'}} />
+                            <TrashCanIcon
+                              className="h-6 w-6 fill-red-500 text-center hover:fill-red-600"
+                              function={DeletePost}
+                            />
+                            <UnarchiveIcon
+                              className="h-7 w-7 fill-orange-500 text-center hover:fill-orange-600"
+                              function={UnarchivePost}
+                            />
+                          </>
+                        )}
+                        {post.status === 'draft' && (
+                          <>
+                            <Tag tag={{color: 'bg-amber-500', name: 'Draft'}} />
+                            <ArchiveIcon
+                              className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
+                              function={ArchivePost}
+                            />
+                            <UploadIcon
+                              className="h-6 w-6 fill-green-500 hover:fill-green-700"
+                              function={PublishPost}
+                            />
+                          </>
+                        )}
+                        {post.status === 'published' && (
+                          <>
+                            <Tag tag={{color: 'bg-emerald-500', name: 'Published'}} />
+                            <ArchiveIcon
+                              className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
+                              function={ArchivePost}
+                            />
+                          </>
+                        )}
+                        <EditIcon className="h-6 w-6 fill-blue-500 hover:fill-blue-600" />
+                      </div>
+                    )}
                   </div>
                 );
               }
