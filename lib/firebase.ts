@@ -7,7 +7,7 @@ import {
   CACHE_SIZE_UNLIMITED,
   initializeFirestore,
 } from 'firebase/firestore';
-import {getStorage} from 'firebase/storage';
+import {connectStorageEmulator, getStorage} from 'firebase/storage';
 import {getFunctions, httpsCallable, connectFunctionsEmulator} from 'firebase/functions';
 import {getMessaging, getToken, isSupported, MessagePayload, onMessage} from 'firebase/messaging';
 import {UserData} from './types';
@@ -87,6 +87,7 @@ function startEmulators() {
     global[EMULATORS_STARTED] = true;
     connectFunctionsEmulator(functions, 'localhost', 5001);
     connectFirestoreEmulator(db, 'localhost', 8080);
+    connectStorageEmulator(storage, 'localhost', 9199);
   }
 }
 
