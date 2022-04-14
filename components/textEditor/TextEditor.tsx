@@ -106,8 +106,9 @@ export default function TextEditor(props: TextEditorProps) {
       />
       {selectedTab === 'edit' && (
         <div
-          className="h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2 border-gray-300 
-            bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
+          className="h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
+          border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter 
+            dark:border-slate-500 dark:bg-black/30 dark:text-slate-100 md:resize"
           onClick={focusEditor}
         >
           <TextEditor />
@@ -115,8 +116,9 @@ export default function TextEditor(props: TextEditorProps) {
       )}
       {selectedTab === 'preview' && (
         <div
-          className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none border-2
-           border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter md:resize"
+          className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
+          border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter 
+           dark:border-slate-500 dark:bg-black/30 dark:text-slate-100 md:resize"
         >
           <EditorContent editorState={editorState} />
         </div>
@@ -126,7 +128,8 @@ export default function TextEditor(props: TextEditorProps) {
         <div className="grid h-full resize-y grid-cols-2">
           <div
             className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md rounded-tl-none 
-            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+            border-2 border-gray-300 bg-gray-100/30 bg-clip-padding p-3 shadow-sm backdrop-blur-xl backdrop-filter
+             dark:border-slate-500 dark:bg-black/30 dark:text-slate-100"
             onClick={focusEditor}
           >
             <TextEditor />
@@ -134,7 +137,7 @@ export default function TextEditor(props: TextEditorProps) {
           <div
             className="block h-full w-full max-w-full resize-y overflow-y-scroll rounded-md
               border-2 border-gray-300 bg-gray-100/30 bg-clip-padding 
-              p-3 shadow-sm backdrop-blur-xl backdrop-filter"
+              p-3 shadow-sm backdrop-blur-xl backdrop-filter dark:border-slate-500 dark:bg-black/30 dark:text-slate-100"
           >
             <EditorContent editorState={editorState} />
           </div>
