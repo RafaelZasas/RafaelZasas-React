@@ -1,0 +1,20 @@
+{
+  "name": "card-tiles/resume-logo.jpg",
+  "bucket": "rafael-zasas.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1649911130381,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "88c6bb67-f19a-411c-b497-dd42734dc411"
+  ],
+  "etag": "O5T2OQKvNFayV2QIoJbWdvzHFY0",
+  "timeCreated": "2022-04-14T04:38:50.380Z",
+  "updated": "2022-04-14T04:38:50.380Z",
+  "size": 38973,
+  "md5Hash": "936d1S7DpAO5gmftj5XjlA==",
+  "crc32c": "812199349"
+}
