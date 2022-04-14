@@ -51,6 +51,25 @@ export const PostBlog = (data: BlogPost) => {
 };
 
 /**
+ * Updates a blog post
+ * @param data
+ */
+export const updateBlogPost = (data: Partial<BlogPost>) => {
+  const postRef = doc(db, `blogs/${data.id}`);
+  delete data.createdAt; // Removes the converted number createdAt timestamp to avoid date loss
+  updateDoc(postRef, data);
+};
+
+/**
+ * Permenantly deletes a blog post from the db
+ * @param postId
+ */
+export const deleteBlogPost = (postId: string) => {
+  const postRef = doc(db, `blogs/${postId}`);
+  deleteDoc(postRef);
+};
+
+/**
  * Retrieve all the blog posts once.
  * Serializes the createdAt and updatedAt timestamps to seconds to allow for JSON parsing.
  * @returns {BlogPost[]} A list of Blog posts with timestamps serialized to seconds (number).
