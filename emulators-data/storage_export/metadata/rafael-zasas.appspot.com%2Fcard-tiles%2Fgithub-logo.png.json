@@ -3,17 +3,17 @@
   "bucket": "rafael-zasas.appspot.com",
   "contentType": "image/png",
   "metageneration": 1,
-  "generation": 1649911114195,
+  "generation": 1649999553503,
   "storageClass": "STANDARD",
   "contentDisposition": "inline",
   "cacheControl": "public, max-age=3600",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "045d4be0-c2de-4ebb-87d2-bf4ac0844bba"
+    "ec643b48-d10a-4dc4-854f-a10b870588aa"
   ],
-  "etag": "kIqdn3R8OCVIygeKkmPKa5TIRDc",
-  "timeCreated": "2022-04-14T04:38:34.194Z",
-  "updated": "2022-04-14T04:38:34.195Z",
+  "etag": "zRBfK4ujvFYx09/Ur5wMcrI/l+E",
+  "timeCreated": "2022-04-15T05:12:33.503Z",
+  "updated": "2022-04-15T05:12:33.505Z",
   "size": 30155,
   "md5Hash": "LvHGhsp+R31YIHSsJ8UYpA==",
   "crc32c": "399061219"
