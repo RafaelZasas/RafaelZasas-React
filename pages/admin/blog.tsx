@@ -1,4 +1,4 @@
-import {ContentState, convertToRaw, EditorState} from 'draft-js';
+import {ContentState, convertFromRaw, convertToRaw, EditorState} from 'draft-js';
 import React, {Dispatch, FormEvent, SetStateAction, useContext, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
@@ -7,17 +7,18 @@ import DefaultErrorPage from 'next/error';
 import Button from '../../components/Button';
 import ComboBox from '../../components/ComboBox';
 import Tag from '../../components/Tag';
-import {GetTags, PostBlog} from '../../lib/FirestoreOperations';
+import {GetTags, PostBlog, updateBlogPost} from '../../lib/FirestoreOperations';
 import {BlogPost, BlogTag} from '../../lib/types';
 import {serverTimestamp} from 'firebase/firestore';
 import Metatags from '../../components/Metatags';
 import CustomImage from '../../components/Image';
 import FileInputButton from '../../components/FileInputButton';
 import {uploadImage} from '../../lib/CloudStorageOperations';
+import {useRouter} from 'next/router';
 
-function TitleInput() {
+function TitleInput(props: {editablePost: BlogPost | undefined}) {
   return (
-    <div className="">
+    <div>
       <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-slate-200">
         Title
       </label>
@@ -25,6 +26,7 @@ function TitleInput() {
         <input
           type="title"
           name="title"
+          defaultValue={props.editablePost?.title || ''}
           maxLength={60}
           autoFocus
           id="title"
@@ -37,7 +39,7 @@ function TitleInput() {
   );
 }
 
-function SummaryInput() {
+function SummaryInput(props: {editablePost: BlogPost | undefined}) {
   return (
     <div>
       <label htmlFor="summary" className="block text-sm font-medium text-gray-700 dark:text-slate-200">
@@ -51,7 +53,7 @@ function SummaryInput() {
           id="summary"
           className="block w-full rounded-md border-2 border-gray-300 bg-gray-100/30 p-2 shadow-sm
           backdrop-blur-xl backdrop-filter hover:border-blue-400/70 focus:border-blue-500 dark:border-slate-500 dark:bg-black/30 dark:text-white sm:text-sm"
-          defaultValue={''}
+          defaultValue={props.editablePost?.summary || ''}
         />
       </div>
     </div>
@@ -75,7 +77,6 @@ function ImageInput(props: ImageInputProps) {
     let fileReader = new FileReader();
     fileReader.addEventListener('load', () => {
       uploadImage(`card-tiles/${fileName}`, fileReader.result as string).then((imageUrl) => {
-        console.log(imageUrl);
         props.setPostImage(imageUrl);
       });
     });
@@ -114,14 +115,23 @@ function ImageInput(props: ImageInputProps) {
 }
 
 export default function BlogPage({}) {
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const router = useRouter();
   const {user, userData} = useContext(UserContext);
-  const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>([]);
-  const [isDraft, setIsDraft] = useState(true);
-  const tags = GetTags();
   const {setShowToast, setToastData} = useContext(ToastContext);
-  const [postImage, setPostImage] = useState<string | null>(null);
+  const editablePost: BlogPost = router.query.post ? JSON.parse(router.query.post as string) : undefined;
+  const [editorState, setEditorState] = useState<EditorState>(() => {
+    if (editablePost) {
+      const contentState = convertFromRaw(JSON.parse(editablePost.body));
+      return EditorState.createWithContent(contentState);
+    } else {
+      return EditorState.createEmpty();
+    }
+  });
+  const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>(editablePost?.tags || []);
+  const [isDraft, setIsDraft] = useState(true);
+  const [postImage, setPostImage] = useState<string | undefined>(editablePost?.displayImage || undefined);
   const [postImageName, setPostImageName] = useState<string>('postImage');
+  const tags = GetTags();
 
   function AddTag(tag: BlogTag) {
     if (selectedTags.filter((obj) => obj.id === tag.id).length === 0) {
@@ -131,8 +141,6 @@ export default function BlogPage({}) {
 
   function _removeTag(tag: BlogTag) {
     const res = selectedTags.filter((obj) => obj.id !== tag.id);
-    console.log(res);
-
     setSelectedTags(res);
   }
 
@@ -150,10 +158,11 @@ export default function BlogPage({}) {
       title,
       summary,
       tags: selectedTags,
-      status: isDraft ? 'draft' : 'published',
       body: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
       createdAt: serverTimestamp(),
       readingTime: `${readingTime} min read`,
+      status: isDraft ? 'draft' : 'published',
+      id: editablePost?.id || '',
       upVotes: [],
       downVotes: [],
     };
@@ -163,7 +172,7 @@ export default function BlogPage({}) {
     }
 
     try {
-      PostBlog(postData);
+      !!editablePost ? updateBlogPost(postData) : PostBlog(postData);
 
       setToastData({
         heading: 'Success',
@@ -179,6 +188,7 @@ export default function BlogPage({}) {
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
         setSelectedTags([]);
         setPostImage('');
+        router.push('/blog');
       }, 3000);
     } catch (error) {
       setToastData({
@@ -208,10 +218,10 @@ export default function BlogPage({}) {
           className="mx-2 h-max flex-1 flex-col justify-items-center space-y-4 p-0.5 align-middle md:mx-9 md:p-4"
           onSubmit={SubmitBlogPost}
         >
-          <h2 className="text-center text-lg font-semibold">Add Blog Entry</h2>
+          <h2 className="text-center text-lg font-semibold">{editablePost ? 'Edit Blog Post' : 'Add Blog Post'}</h2>
           <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
-            <TitleInput />
-            <SummaryInput />
+            <TitleInput editablePost={editablePost} />
+            <SummaryInput editablePost={editablePost} />
             <ImageInput
               postImage={postImage}
               setPostImage={setPostImage}

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import Tag from '../../components/Tag';
 import {deleteBlogPost, GetBlogPosts, updateBlogPost} from '../../lib/FirestoreOperations';
@@ -57,6 +56,13 @@ export default function BlogPage(props: BlogPageProps) {
             <p className="mx-auto mt-3 max-w-2xl text-xl text-slate-800 dark:text-sky-100 sm:mt-4">
               A collaborative space for me to share ideas and hear your opinion on them.
             </p>
+            {props.userProps.userData?.permissions.admin && (
+              <Link href={'admin/blog'} passHref>
+                <p className="mx-auto mt-3 max-w-2xl cursor-pointer text-xl text-slate-800 hover:text-blue-500 dark:text-sky-100 sm:mt-4">
+                  Draft New Blog Post
+                </p>
+              </Link>
+            )}
           </div>
           <div className="mx-auto mt-12 grid max-w-lg grid-cols-1 gap-5 md:max-w-none md:grid-cols-2 lg:max-w-none lg:grid-cols-3 xl:grid-cols-4">
             {props.posts.map((post) => {
@@ -220,17 +226,18 @@ export default function BlogPage(props: BlogPageProps) {
                       </div>
                     </Link>
                     {props.userProps.userData?.permissions?.admin && (
-                      <div className="mx-6 mt-2 flex flex-row items-center justify-between">
+                      <div className="mt-2 flex flex-row items-center justify-between px-6">
                         {post.status === 'archived' && (
                           <>
                             <Tag tag={{color: 'bg-rose-500', name: 'Archived'}} />
-                            <TrashCanIcon
-                              className="h-6 w-6 fill-red-500 text-center hover:fill-red-600"
-                              function={DeletePost}
-                            />
+
                             <UnarchiveIcon
-                              className="h-7 w-7 fill-orange-500 text-center hover:fill-orange-600"
+                              className="h-7 w-7 cursor-pointer fill-orange-500 text-center hover:fill-orange-600"
                               function={UnarchivePost}
+                            />
+                            <TrashCanIcon
+                              className="h-6 w-6 cursor-pointer fill-red-500 text-center hover:fill-red-600"
+                              function={DeletePost}
                             />
                           </>
                         )}
@@ -238,11 +245,11 @@ export default function BlogPage(props: BlogPageProps) {
                           <>
                             <Tag tag={{color: 'bg-amber-500', name: 'Draft'}} />
                             <ArchiveIcon
-                              className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
+                              className="h-6 w-6 cursor-pointer fill-orange-500 hover:fill-orange-600"
                               function={ArchivePost}
                             />
                             <UploadIcon
-                              className="h-6 w-6 fill-green-500 hover:fill-green-700"
+                              className="h-6 w-6 cursor-pointer fill-green-500 hover:fill-green-700"
                               function={PublishPost}
                             />
                           </>
@@ -251,12 +258,16 @@ export default function BlogPage(props: BlogPageProps) {
                           <>
                             <Tag tag={{color: 'bg-emerald-500', name: 'Published'}} />
                             <ArchiveIcon
-                              className="h-6 w-6 fill-orange-500 hover:fill-orange-600"
+                              className="h-6 w-6 cursor-pointer fill-orange-500 hover:fill-orange-600"
                               function={ArchivePost}
                             />
                           </>
                         )}
-                        <EditIcon className="h-6 w-6 fill-blue-500 hover:fill-blue-600" />
+                        <Link href={{pathname: 'admin/blog', query: {post: JSON.stringify(post)}}} passHref>
+                          <span>
+                            <EditIcon className="h-6 w-6 cursor-pointer fill-blue-500 hover:fill-blue-600" />
+                          </span>
+                        </Link>
                       </div>
                     )}
                   </div>
