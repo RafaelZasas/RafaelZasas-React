@@ -1,9 +1,7 @@
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import {Dispatch, SetStateAction} from 'react';
 import {UserData, BlogComment, BlogCommentReply} from '../../lib/types';
 import CustomImage from '../Image';
-import {ToastData} from '../toast';
 
 const defaultAvatar = `https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/default-avatar.jpg?alt=media&token=da5befb3-193c-4a14-a17b-f036828dbf5b`;
 
@@ -22,10 +20,6 @@ interface UserSectionProps {
   comment: BlogComment | BlogCommentReply;
   postId: string;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   primary?: boolean;
 }
 

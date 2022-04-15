@@ -1,25 +1,22 @@
 import dayjs from 'dayjs';
 import {convertFromRaw, EditorState} from 'draft-js';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {useContext, useState} from 'react';
+import {ToastContext} from '../../lib/context';
 import {deleteBlogCommentReply} from '../../lib/FirestoreOperations';
 import {BlogComment, BlogCommentReply, UserData} from '../../lib/types';
 import Modal from '../Modal';
 import EditorContent from '../textEditor/EditorContent';
-import {ToastData} from '../toast';
 import UserSection from './UserSection';
 
 interface CommentReplyItemProps {
   reply: BlogCommentReply;
   postId: string;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   comment: BlogComment;
 }
 
 export default function CommentReplyItem(props: CommentReplyItemProps) {
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const contentState = convertFromRaw(JSON.parse(props.reply.body));
   const editorState = EditorState.createWithContent(contentState);
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
@@ -30,13 +27,13 @@ export default function CommentReplyItem(props: CommentReplyItemProps) {
 
   const deleteReply = () => {
     deleteBlogCommentReply(props.postId, props.comment, props.reply.id).then(() => {
-      props.toast.setToastData({
+      setToastData({
         type: 'success',
         heading: 'Success',
         body: `Deleted ${props.reply.author.username || props.reply.author.email}'s reply`,
       });
       setOpenConfirmationModal(false);
-      props.toast.setShowToast(true);
+      setShowToast(true);
     });
   };
   return (
@@ -74,7 +71,7 @@ export default function CommentReplyItem(props: CommentReplyItemProps) {
             )}
           </div>
           <div className="mx-0 justify-self-end pr-2 md:mx-2">
-            <UserSection comment={props.reply} postId={props.postId} toast={props.toast} user={props.user} />
+            <UserSection comment={props.reply} postId={props.postId} user={props.user} />
           </div>
         </div>
       </div>

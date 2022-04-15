@@ -1,6 +1,6 @@
 interface Tag {
   name: string;
-  id: string;
+  id?: string;
   color: string;
 }
 
@@ -10,7 +10,15 @@ interface TagProps {
 }
 
 function _getBackground(tagColor: string) {
-  const colors = ['bg-blue-500', 'bg-fuchsia-500', 'bg-rose-500', 'bg-yellow-500', 'bg-red-500', 'bg-emerald-500'];
+  const colors = [
+    'bg-blue-500',
+    'bg-fuchsia-500',
+    'bg-rose-500',
+    'bg-yellow-500',
+    'bg-red-500',
+    'bg-emerald-500',
+    'bg-amber-500',
+  ];
   const match = colors.filter((item) => item === tagColor);
   return match.length > 0 ? match[0] : 'bg-sky-500';
 }

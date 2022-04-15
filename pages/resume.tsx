@@ -1,12 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
 import {Document, Page, pdfjs} from 'react-pdf';
 import {storage} from '../lib/firebase';
 import {ref, getDownloadURL} from 'firebase/storage';
 import {faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {DocumentDownloadIcon} from '@heroicons/react/outline';
-import {UserContext} from '../lib/context';
+import {ToastContext, UserContext} from '../lib/context';
 import AddEmailModal from '../components/addEmailModal';
-import {Toast, ToastData} from '../components/toast';
 import Button from '../components/Button';
 import Metatags from '../components/Metatags';
 import {addMail} from '../lib/FirestoreOperations';
@@ -24,10 +23,6 @@ export default function ResumePage({}) {
   // For modal if user isn't signed in
   const [openAddEmailModal, setOpenAddEmailModal] = useState(false);
   const [width, setWidth] = useState<number>(null);
-
-  //  For showing toast and its data
-  const [showToast, setShowToast] = useState(false);
-  const [toastData, setToastData] = useState<ToastData>();
 
   /** END HOOKS */
 
@@ -87,20 +82,9 @@ export default function ResumePage({}) {
       </div>
 
       <div className="mx-12 my-6 flex-row space-x-4 sm:mt-0">
-        <SendButton
-          resume={resume}
-          modal={{open: openAddEmailModal, setOpen: setOpenAddEmailModal}}
-          toast={{
-            showToast: showToast,
-            setShowToast: setShowToast,
-            toastData: toastData,
-            setToastData: setToastData,
-          }}
-        />
+        <SendButton resume={resume} setOpenModal={setOpenAddEmailModal} />
         <DownloadButton resume={resume} />
       </div>
-
-      <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
     </main>
   );
 }
@@ -116,22 +100,14 @@ const loader = () => {
   );
 };
 
-/**
- * Component and Logic for sending the resume. Will prompt user to enter email with a modal if not logged in.
- * @param params {
- * resume: string;
- * modal: {[open: Boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>]};
- * toast: {
- * {[showToast: Boolean, setShowToast: React.Dispatch<React.SetStateAction<boolean>>]},
- * {[toastData: Boolean, setToastData: React.Dispatch<React.SetStateAction<boolean>>]}
- *   }
- * }
- * }
- * @constructor
- */
-const SendButton = (params) => {
-  const {user, userData} = useContext(UserContext);
+interface SendButtonProps {
+  resume: string;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+}
 
+const SendButton = (props: SendButtonProps) => {
+  const {user, userData} = useContext(UserContext);
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const sendResume = async () => {
     if (user) {
       const mail = {
@@ -142,7 +118,7 @@ const SendButton = (params) => {
           name: 'resumeRequest',
           data: {
             username: userData.username,
-            resume: params.resume,
+            resume: props.resume,
           },
         },
       };
@@ -150,24 +126,24 @@ const SendButton = (params) => {
         await addMail(mail);
 
         // display success toast
-        params.toast.setToastData({
+        setToastData({
           heading: 'Resume Sent!',
           body: `Check your inbox for ${user.email}`,
           type: 'success',
         });
 
-        params.toast.setShowToast(true);
+        setShowToast(true);
       } catch (e) {
         console.log(e);
-        params.toast.setToastData({
+        setToastData({
           heading: 'Error sending resume',
           body: e.message,
           type: 'error',
         });
-        params.toast.setShowToast(true);
+        setShowToast(true);
       }
     } else {
-      params.modal.setOpen(true);
+      props.setOpenModal(true);
     }
   };
 
@@ -176,13 +152,13 @@ const SendButton = (params) => {
 
 /**
  * Button to download resume to device
- * @param params {resume: {string} The url of the resume to be downloaded}
+ * @param props {resume: {string} The url of the resume to be downloaded}
  * @constructor
  */
-const DownloadButton = (params) => {
+const DownloadButton = (props) => {
   return (
     <a
-      href={params.resume}
+      href={props.resume}
       target="_blank"
       type="button"
       rel="noreferrer"

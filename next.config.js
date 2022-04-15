@@ -8,6 +8,7 @@ module.exports = {
       'lh3.googleusercontent.com',
       'lh6.googleusercontent.com',
       'avatars.githubusercontent.com',
+      'localhost',
     ],
     formats: ['image/avif', 'image/webp'],
   },

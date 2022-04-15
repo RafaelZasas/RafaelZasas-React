@@ -76,6 +76,7 @@ export default function Home(props) {
                       alt={card.alt}
                       width={1200}
                       height={800}
+                      priority={true}
                       className="group-hover:bounce pointer-events-none object-cover"
                     />
                   </div>

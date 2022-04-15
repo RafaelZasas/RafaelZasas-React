@@ -45,11 +45,7 @@ export default function Button(props: buttonProps) {
   return (
     <button
       onSubmit={props.handleSubmit ?? null}
-      onClick={() => {
-        if (props.function) {
-          props.function(props.functionParams ?? null);
-        }
-      }}
+      onClick={(e) => props.function && props.function(e)}
       type={props.type ?? 'button'}
       className={getStyle()}
       hidden={props.hidden ?? false}

@@ -1,26 +1,23 @@
 import {faReply} from '@fortawesome/free-solid-svg-icons';
 import {EditorState, convertToRaw, ContentState} from 'draft-js';
 import {serverTimestamp} from 'firebase/firestore';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useContext, useState} from 'react';
+import {ToastContext} from '../../lib/context';
 import {AddBlogCommentReply} from '../../lib/FirestoreOperations';
 import {UserData, BlogComment, BlogCommentReply} from '../../lib/types';
 import Button from '../Button';
 import TextEditor from '../textEditor/TextEditor';
-import {ToastData} from '../toast';
 
 interface AddReplySectionProps {
   setShowReplyEditor: Dispatch<SetStateAction<boolean>>;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   postId: string;
   comment: BlogComment;
 }
 
 export default function AddReplySection(props: AddReplySectionProps) {
   const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+  const {setShowToast, setToastData} = useContext(ToastContext);
 
   async function SubmitReply() {
     const defaultAvatar = `https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/default-avatar.jpg?alt=media&token=da5befb3-193c-4a14-a17b-f036828dbf5b`;
@@ -44,33 +41,33 @@ export default function AddReplySection(props: AddReplySectionProps) {
       try {
         await AddBlogCommentReply(props.postId, props.comment, reply);
         props.setShowReplyEditor(false);
-        props.toast.setToastData({
+        setToastData({
           heading: `Thanks ${props.user.username?.split(' ')[0] ?? props.user.email.split('@')[0]}`,
           body: 'Your engagement is greatly apprecated',
           type: 'success',
         });
 
-        props.toast.setShowToast(true);
+        setShowToast(true);
 
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
       } catch (error) {
         console.log(error);
-        props.toast.setToastData({
+        setToastData({
           heading: `Error`,
           body: error,
           type: 'error',
         });
 
-        props.toast.setShowToast(true);
+        setShowToast(true);
       }
     } else {
-      props.toast.setToastData({
+      setToastData({
         heading: 'Reply is too short',
         body: 'Informative replies should be 10 words or more.',
         type: 'error',
       });
 
-      props.toast.setShowToast(true);
+      setShowToast(true);
     }
   }
 

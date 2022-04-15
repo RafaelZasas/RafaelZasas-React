@@ -3,26 +3,24 @@ import EditorContent from '../textEditor/EditorContent';
 import {convertFromRaw, EditorState} from 'draft-js';
 import {deleteBlogComment} from '../../lib/FirestoreOperations';
 import Modal from '../Modal';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useContext, useState} from 'react';
 import {default as dayjs} from 'dayjs';
 import {ToastData} from '../toast';
 import UserSection from './UserSection';
 import VoteSection from './CommentVoteSection';
+import {ToastContext} from '../../lib/context';
 
 interface BlogCommentProps {
   comment: BlogComment;
   postId: string;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   setShowCommentReplies: Dispatch<SetStateAction<boolean>>;
   setSelectedComment: Dispatch<SetStateAction<BlogComment>>;
   setReplyingToComment: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function BlogCommentItem(props: BlogCommentProps) {
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const contentState = convertFromRaw(JSON.parse(props.comment.body));
   const editorState = EditorState.createWithContent(contentState);
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
@@ -35,13 +33,13 @@ export default function BlogCommentItem(props: BlogCommentProps) {
 
   const deleteComment = () => {
     deleteBlogComment(props.postId, props.comment.id).then(() => {
-      props.toast.setToastData({
+      setToastData({
         type: 'success',
         heading: 'Success',
         body: `Deleted ${props.comment.author.username || props.comment.author.email}'s reply`,
       });
       setOpenConfirmationModal(false);
-      props.toast.setShowToast(true);
+      setShowToast(true);
     });
   };
   return (
