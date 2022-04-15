@@ -6,7 +6,7 @@ export const InstagramIcon = (props?: {className?: string; function?: Function})
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       viewBox="0 0 448 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       strokeWidth="2"
     >
       <path
@@ -24,7 +24,7 @@ export const LinkedInIcon = (props?: {className?: string; function?: Function}) 
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 448 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -39,7 +39,7 @@ export const StackOverflowIcon = (props?: {className?: string; function?: Functi
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 384 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -54,7 +54,7 @@ export const TwitterIcon = (props?: {className?: string; function?: Function}) =
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -70,7 +70,7 @@ export const GithubIcon = (props?: {className?: string; function?: Function}) =>
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 496 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-10 w-10 fill-sky-500 stroke-sky-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -86,7 +86,7 @@ export const CheckCircleIcon = (props?: {className?: string; function?: Function
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 stroke-green-600 text-green-500'}
       strokeWidth="2"
       fill="currentColor"
@@ -103,7 +103,7 @@ export const ExclamationCircleIcon = (props?: {className?: string; function?: Fu
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-6 w-6 fill-red-700 stroke-red-700 text-red-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -120,7 +120,7 @@ export const InfoCircleIcon = (props?: {className?: string; function?: Function}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-sky-400'}
       strokeWidth="2"
       fill="currentColor"
@@ -137,7 +137,7 @@ export const XIcon = (props?: {className?: string; function?: Function}) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 320 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -154,7 +154,7 @@ export const ArchiveIcon = (props?: {className?: string; function?: Function}) =
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -171,7 +171,7 @@ export const TrashCanIcon = (props?: {className?: string; function?: Function}) 
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 448 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -188,7 +188,7 @@ export const UploadIcon = (props?: {className?: string; function?: Function}) =>
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -205,7 +205,7 @@ export const EditIcon = (props?: {className?: string; function?: Function}) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
@@ -222,7 +222,7 @@ export const UnarchiveIcon = (props?: {className?: string; function?: Function})
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 640 512"
       stroke="currentColor"
-      onClick={(e) => props.function(e) || null}
+      onClick={(e) => props.function && props.function(e)}
       className={props.className || 'h-8 w-8 fill-slate-700'}
       strokeWidth="2"
       fill="currentColor"
