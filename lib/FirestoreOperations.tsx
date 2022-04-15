@@ -17,6 +17,7 @@ import {
   deleteDoc,
   arrayUnion,
   arrayRemove,
+  serverTimestamp,
 } from 'firebase/firestore';
 import {Timestamp} from '@google-cloud/firestore';
 
@@ -57,6 +58,11 @@ export const PostBlog = (data: BlogPost) => {
 export const updateBlogPost = (data: Partial<BlogPost>) => {
   const postRef = doc(db, `blogs/${data.id}`);
   delete data.createdAt; // Removes the converted number createdAt timestamp to avoid date loss
+  if (data.status === 'published') {
+    data.updatedAt = serverTimestamp();
+  } else {
+    delete data.updatedAt;
+  }
   updateDoc(postRef, data);
 };
 
