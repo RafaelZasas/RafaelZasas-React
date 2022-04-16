@@ -1,5 +1,5 @@
 import {ContentState, convertFromRaw, convertToRaw, EditorState} from 'draft-js';
-import React, {Dispatch, FormEvent, SetStateAction, useContext, useState} from 'react';
+import React, {Dispatch, FormEvent, SetStateAction, useContext, useEffect, useState} from 'react';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import TextEditor from '../../components/textEditor/TextEditor';
 import {ToastContext, UserContext} from '../../lib/context';
@@ -15,6 +15,9 @@ import CustomImage from '../../components/Image';
 import FileInputButton from '../../components/FileInputButton';
 import {uploadImage} from '../../lib/CloudStorageOperations';
 import {useRouter} from 'next/router';
+import {FileData} from '../../lib/types/component.types';
+import Loader from 'react-spinners/HashLoader';
+import {UploadMetadata} from 'firebase/storage';
 
 function TitleInput(props: {editablePost: BlogPost | undefined}) {
   return (
@@ -61,37 +64,37 @@ function SummaryInput(props: {editablePost: BlogPost | undefined}) {
 }
 
 interface ImageInputProps {
-  postImage: string;
-  setPostImage: Dispatch<SetStateAction<string>>;
-  postImageName: string;
-  setPostImageName: Dispatch<SetStateAction<string>>;
+  imageData: FileData;
+  setImageData: Dispatch<SetStateAction<FileData>>;
 }
 
 function ImageInput(props: ImageInputProps) {
-  const addImage = (e) => {
-    let files = e.target.files;
+  const [imageIsLoading, setImageLoading] = useState(false);
 
-    let fileName = files[0].name;
-
-    props.setPostImageName(fileName);
-    let fileReader = new FileReader();
-    fileReader.addEventListener('load', () => {
-      uploadImage(`card-tiles/${fileName}`, fileReader.result as string).then((imageUrl) => {
-        props.setPostImage(imageUrl);
-      });
+  function Upload(imageData: FileData) {
+    const metadata: UploadMetadata = {
+      cacheControl: 'public,max-age=8200',
+      contentType: `image/${imageData.type}`,
+    };
+    uploadImage(`blog/${imageData.name}`, imageData.src, metadata).then((imageUrl) => {
+      props.setImageData({...imageData, src: imageUrl});
+      setImageLoading(false);
     });
-    fileReader.readAsDataURL(files[0]);
-  };
+  }
 
   return (
     <div className="flex flex-col space-y-5">
       <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">Image</label>
-
-      {props.postImage && (
+      {imageIsLoading && (
+        <span className="inline-block h-fit w-fit overflow-hidden bg-gray-100 dark:bg-gray-800">
+          <Spinner1 />
+        </span>
+      )}
+      {props.imageData.src !== '' && !imageIsLoading && (
         <span className="inline-block h-fit w-fit overflow-hidden bg-gray-100 dark:bg-gray-800">
           <CustomImage
-            src={props.postImage}
-            alt={props.postImageName}
+            src={props.imageData.src}
+            alt={props.imageData.name}
             width={'100%'}
             height={'100%'}
             className="h-48 w-full object-cover"
@@ -103,11 +106,14 @@ function ImageInput(props: ImageInputProps) {
       <label className="my-2" htmlFor="imageIput">
         <FileInputButton
           type="button"
-          text={props.postImage ? 'Edit' : 'Add'}
+          text={props.imageData.src !== '' ? 'Edit' : 'Add'}
           buttonStyle="info"
           id={'imageInput'}
           name={'imgageInput'}
-          handleOnChange={addImage}
+          maxFileSizeInKB={1000}
+          onUpload={(value: FileData) => Upload(value)}
+          allowedExtensions={['jpeg', 'jpeg', 'png']}
+          setLoading={setImageLoading}
         />
       </label>
     </div>
@@ -129,8 +135,13 @@ export default function BlogPage({}) {
   });
   const [selectedTags, setSelectedTags] = useState<BlogPost['tags']>(editablePost?.tags || []);
   const [isDraft, setIsDraft] = useState(true);
-  const [postImage, setPostImage] = useState<string | undefined>(editablePost?.displayImage || undefined);
-  const [postImageName, setPostImageName] = useState<string>('postImage');
+  const [imageData, setImageData] = useState<FileData>({
+    name: '',
+    size: '',
+    sizeInKB: 0,
+    src: editablePost?.displayImage || '',
+    type: '',
+  });
   const tags = GetTags();
 
   function AddTag(tag: BlogTag) {
@@ -167,8 +178,8 @@ export default function BlogPage({}) {
       downVotes: [],
     };
 
-    if (!!postImage) {
-      postData['displayImage'] = postImage;
+    if (imageData.src !== '') {
+      postData['displayImage'] = imageData.src;
     }
 
     try {
@@ -187,7 +198,13 @@ export default function BlogPage({}) {
         // reset the editor
         setEditorState(EditorState.push(editorState, ContentState.createFromText(''), 'remove-range'));
         setSelectedTags([]);
-        setPostImage('');
+        setImageData({
+          name: '',
+          size: '',
+          sizeInKB: 0,
+          type: '',
+          src: '',
+        });
         router.push('/blog');
       }, 3000);
     } catch (error) {
@@ -222,12 +239,7 @@ export default function BlogPage({}) {
           <div className="z-10 my-2 w-full flex-1 flex-row space-y-2 md:w-1/2">
             <TitleInput editablePost={editablePost} />
             <SummaryInput editablePost={editablePost} />
-            <ImageInput
-              postImage={postImage}
-              setPostImage={setPostImage}
-              postImageName={postImageName}
-              setPostImageName={setPostImageName}
-            />
+            <ImageInput imageData={imageData} setImageData={setImageData} />
             <div className="flex flex-col">
               <ComboBox items={tags} label={'Tags'} function={AddTag} />
               <div className="my-3 flex flex-wrap space-x-2 md:flex-row">
