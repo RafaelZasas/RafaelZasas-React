@@ -25,16 +25,6 @@ interface buttonProps {
 export default function FileInputButton(props: buttonProps) {
   const {setToastData, setShowToast} = useContext(ToastContext);
 
-  const clearFileUpload = () => {
-    props.onUpload({
-      name: '',
-      size: '',
-      sizeInKB: 0,
-      type: '',
-      src: '',
-    });
-  };
-
   const onPickFile = (e) => {
     e.preventDefault();
     document.getElementById(props.id).click();
@@ -51,13 +41,13 @@ export default function FileInputButton(props: buttonProps) {
 
     const validateFileSize = (): boolean => {
       if (props.maxFileSizeInKB && fileSizeKB > props.maxFileSizeInKB) {
+        props.setLoading(false);
         setToastData({
           heading: 'File is too large',
           type: 'error',
           body: `Max allowed file size is ${props?.maxFileSizeInKB} kb`,
         });
         setShowToast(true);
-        clearFileUpload();
         return false;
       }
       return true;
@@ -65,13 +55,13 @@ export default function FileInputButton(props: buttonProps) {
 
     const validateFileType = (): boolean => {
       if (props?.allowedExtensions && !arrToLowerCase(props?.allowedExtensions).includes(fileType)) {
+        props.setLoading(false);
         setToastData({
           heading: errorHeadings[Math.ceil(Math.random() * 5)],
           type: 'error',
           body: `Allowed file types are ${props.allowedExtensions} only`,
         });
         setShowToast(true);
-        clearFileUpload();
         return false;
       }
       return true;
@@ -79,8 +69,6 @@ export default function FileInputButton(props: buttonProps) {
 
     let fileReader = new FileReader();
     fileReader.addEventListener('load', () => {
-      // setSrc(fileReader.result as string);
-
       const fileData: FileData = {
         name: fileName,
         size: fileSize,
