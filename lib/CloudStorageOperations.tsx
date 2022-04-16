@@ -1,4 +1,4 @@
-import {getDownloadURL, ref, uploadString} from 'firebase/storage';
+import {getDownloadURL, ref, uploadString, UploadMetadata} from 'firebase/storage';
 import {storage} from './firebase';
 
 export const GetImage = async (path: string) => {
@@ -38,11 +38,11 @@ export const GetImage = async (path: string) => {
   }
 };
 
-export const uploadImage = async (path: string, image: string): Promise<string | null> => {
+export const uploadImage = async (path: string, image: string, metadata: UploadMetadata): Promise<string | null> => {
   const gsReference = ref(storage, `gs://rafael-zasas.appspot.com/${path}`);
 
   try {
-    const uploadTask = await uploadString(gsReference, image, 'data_url');
+    const uploadTask = await uploadString(gsReference, image, 'data_url', metadata);
 
     //than get the url
     const url = await getDownloadURL(uploadTask.ref);
