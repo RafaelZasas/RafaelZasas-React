@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState, useCallback} from 'react';
+import {useContext, useEffect, useState, useCallback, Dispatch, SetStateAction} from 'react';
 import {UserContext} from '../lib/context';
 import {ExclamationCircleIcon} from '@heroicons/react/solid';
 import {auth} from '../lib/firebase';
@@ -10,6 +10,10 @@ import {getUsersByField, updateUser} from '../lib/FirestoreOperations';
 import Error from 'next/error';
 import {UserInfo} from 'firebase/auth';
 import CustomImage from '../components/Image';
+import {UploadMetadata} from 'firebase/storage';
+import {uploadImage} from '../lib/CloudStorageOperations';
+import {FileData} from '../lib/types/component.types';
+import Button from '../components/Button';
 
 export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
@@ -278,22 +282,34 @@ function BioInput() {
   );
 }
 
-function PhotoInput() {
+interface ImageInputProps {
+  imageData: FileData;
+  setImageData: Dispatch<SetStateAction<FileData>>;
+}
+
+function PhotoInput(props: ImageInputProps) {
   const {userData} = useContext(UserContext);
+  const [imageIsLoading, setImageLoading] = useState(false);
+
+  function Upload(imageData: FileData) {
+    const metadata: UploadMetadata = {
+      cacheControl: 'public,max-age=8200',
+      contentType: `image/${imageData.type}`,
+    };
+    uploadImage(`blog/${imageData.name}`, imageData.src, metadata).then((imageUrl) => {
+      props.setImageData({...imageData, src: imageUrl});
+      setImageLoading(false);
+    });
+  }
 
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">Photo</label>
       <div className="mt-1 flex items-center space-x-5">
         <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-          <CustomImage src={userData.profilePhoto} alt={'Profile Photo'} width={96} height={96} />
+          <CustomImage src={userData?.profilePhoto || 'src'} alt={'Profile Photo'} width={96} height={96} />
         </span>
-        <button
-          type="button"
-          className="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Change
-        </button>
+        <Button text="Change" buttonStyle="basic" type="button" />
       </div>
     </div>
   );
