@@ -1,17 +1,13 @@
 import {ChangeEvent, Dispatch, Fragment, SetStateAction, useContext, useEffect, useState} from 'react';
 import {ToastContext} from '../lib/context';
-import {FileData} from '../lib/types/component.types';
+import {ButtonProps, FileData} from '../lib/types';
 import Button from './Button';
 
 const errorHeadings = ['Whoops', 'Uh Oh', 'Oh Shucks', 'Yikes', 'Problemo', 'Thing is...'];
 
-interface buttonProps {
-  text: string;
+interface FileInputButtonProps extends ButtonProps {
   id: string;
   name: string;
-  type?: 'button' | 'submit' | 'reset' | undefined;
-  buttonStyle?: 'danger' | 'warning' | 'info' | 'submit';
-  hidden?: boolean;
   allowedExtensions: Array<'jpg' | 'jpeg' | 'png' | 'gif' | 'pdf'>;
   onUpload: (FileData) => void;
   maxFileSizeInKB: number;
@@ -22,7 +18,7 @@ interface buttonProps {
  * Reusable button component with optional icon(s) to the left or right of button text
  * Button will fill container space on small devices and decide
  */
-export default function FileInputButton(props: buttonProps) {
+export default function FileInputButton(props: FileInputButtonProps) {
   const {setToastData, setShowToast} = useContext(ToastContext);
 
   const onPickFile = (e) => {
@@ -87,7 +83,7 @@ export default function FileInputButton(props: buttonProps) {
 
   return (
     <Fragment>
-      <Button text={props.text} type="button" buttonStyle="info" function={(e) => onPickFile(e)} />
+      <Button text={props.text} type="button" buttonStyle={props.buttonStyle} function={(e) => onPickFile(e)} />
 
       <input
         data-show-upload="true"

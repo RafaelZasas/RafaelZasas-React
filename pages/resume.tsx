@@ -26,7 +26,7 @@ export default function ResumePage({}) {
 
   /** END HOOKS */
 
-  const gsReference = ref(storage, 'gs://rafael-zasas.appspot.com/PDF-Resume-March2022.pdf');
+  const gsReference = ref(storage, 'gs://rafael-zasas.appspot.com/resumes/Resume-April2022.pdf');
 
   getDownloadURL(gsReference).then((res) => {
     setResume(res);

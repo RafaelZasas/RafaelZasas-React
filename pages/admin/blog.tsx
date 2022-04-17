@@ -16,7 +16,6 @@ import FileInputButton from '../../components/FileInputButton';
 import {uploadImage} from '../../lib/CloudStorageOperations';
 import {useRouter} from 'next/router';
 import {FileData} from '../../lib/types/component.types';
-import Loader from 'react-spinners/HashLoader';
 import {UploadMetadata} from 'firebase/storage';
 
 function TitleInput(props: {editablePost: BlogPost | undefined}) {

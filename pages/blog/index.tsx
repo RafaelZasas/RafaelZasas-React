@@ -35,7 +35,7 @@ export default function BlogPage(props: BlogPageProps) {
   const {setShowToast, setToastData} = useContext(ToastContext);
 
   return (
-    <main className="bg-blog-background dark:bg-blog-background_dark">
+    <main className="scroll-smooth bg-layered-waves bg-cover bg-fixed bg-center bg-no-repeat dark:bg-layered-waves-dark">
       <Metatags title="Blog" description="Browse my latest blog posts!" currentURL="rafaelzasas.com/blog" />
       <Modal
         open={openConfirmationModal}
@@ -203,7 +203,7 @@ export default function BlogPage(props: BlogPageProps) {
                             />
                           )}
                         </div>
-                        <div className="flex flex-1 flex-col justify-between bg-white/30 bg-clip-padding p-6 backdrop-blur-xl backdrop-filter dark:bg-black/30">
+                        <div className="flex flex-1 flex-col justify-between bg-white/25 bg-clip-padding p-6 backdrop-blur-xl backdrop-filter dark:bg-black/25">
                           <div className=" flex-1">
                             <p className="text-xl font-semibold text-gray-900 dark:text-slate-100">{post.title}</p>
                             <p className="mt-3 text-base text-slate-800 dark:text-slate-200">{post.summary}</p>
