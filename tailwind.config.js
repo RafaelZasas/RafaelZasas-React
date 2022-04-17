@@ -33,8 +33,8 @@ module.exports = {
         upperroman: 'upper-roman',
       },
       backgroundImage: {
-        'blog-background_dark': "url('../public/blog-background_dark.jpg')",
-        'blog-background': "url('../public/blog-background.jpg')",
+        'layered-waves': "url('../public/layered-waves.svg')",
+        'layered-waves-dark': "url('../public/layered-waves-dark.svg')",
       },
     },
     safelist: [
