@@ -11,9 +11,19 @@ service firebase.storage {
       allow read;
     }
 
+    match /profilePhotos/{profilePhotoId}{
+      allow read;
+      allow create: if isAuthenticated(request);
+      allow delete: if isAdmin(request);
+    }
+
     match /blog/{fileId}{
       allow read;
       allow write: if isAdmin(request);
+    }
+
+    function isAuthenticated(request){
+      return request.auth != null;
     }
     
     function isAdmin(request) {
