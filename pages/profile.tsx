@@ -1,10 +1,9 @@
 import {useContext, useEffect, useState, useCallback, Dispatch, SetStateAction} from 'react';
-import {UserContext} from '../lib/context';
+import {ToastContext, UserContext} from '../lib/context';
 import {ExclamationCircleIcon} from '@heroicons/react/solid';
 import {auth} from '../lib/firebase';
 import {useRouter} from 'next/router';
 import debounce from 'lodash.debounce';
-import {Toast, ToastData} from '../components/toast';
 import Metatags from '../components/Metatags';
 import {getUsersByField, updateUser} from '../lib/FirestoreOperations';
 import Error from 'next/error';
@@ -13,7 +12,9 @@ import CustomImage from '../components/Image';
 import {UploadMetadata} from 'firebase/storage';
 import {uploadImage} from '../lib/CloudStorageOperations';
 import {FileData} from '../lib/types/component.types';
-import Button from '../components/Button';
+import FileInputButton from '../components/FileInputButton';
+import Spinner1 from '../components/loadingSpinners/Spinner1';
+import {UserData} from '../lib/types';
 
 export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
@@ -22,21 +23,22 @@ export default function ProfilePage({}) {
     <Error statusCode={401} title={'Unauthorized'} />
   ) : (
     <div className="mx-auto flex flex-col">
-      <Profile user={user} />
+      <Profile user={user} userData={userData} />
     </div>
   );
 }
 
-const Profile = (props: {user: UserInfo}) => {
+const Profile = (props: {user: UserInfo; userData: UserData}) => {
   const [isValid, setIsValid] = useState(true);
-  const [toastData, setToastData] = useState<ToastData>();
-  const [show, setShow] = useState(false);
+  const {setShowToast, setToastData} = useContext(ToastContext);
+  const [imageData, setImageData] = useState<FileData>();
 
   const updateProfile = async (e) => {
     e.preventDefault();
-    const formData = {
+    const formData: Partial<UserData> = {
       username: e.target.username.value,
       website: e.target.website.value,
+      profilePhoto: imageData.src || props.userData.profilePhoto,
       bio: e.target.bio.value,
       communications: {
         email: {
@@ -58,7 +60,7 @@ const Profile = (props: {user: UserInfo}) => {
         body: 'Your profile and preferences have been saved.',
         type: 'success',
       });
-      setShow(true);
+      setShowToast(true);
     } catch (e) {
       console.log(e);
       setToastData({
@@ -66,7 +68,7 @@ const Profile = (props: {user: UserInfo}) => {
         body: e.message,
         type: 'error',
       });
-      setShow(true);
+      setShowToast(true);
     }
   };
 
@@ -74,9 +76,6 @@ const Profile = (props: {user: UserInfo}) => {
     <main>
       <Metatags title="Profile" description="User Profile" currentURL="rafaelzasas.com/profile" />
       <form className="space-y-6 px-5 py-4" onSubmit={updateProfile}>
-        <>
-          <Toast setShow={setShow} toastData={toastData} show={show} />{' '}
-        </>
         {/* Form Inputs */}
         <div
           className="bg-white bg-opacity-50 bg-clip-padding px-4 py-5 shadow
@@ -101,7 +100,7 @@ const Profile = (props: {user: UserInfo}) => {
 
                 <BioInput />
 
-                <PhotoInput />
+                <PhotoInput imageData={imageData} setImageData={setImageData} userData={props.userData} />
               </div>
             </div>
           </div>
@@ -282,12 +281,13 @@ function BioInput() {
   );
 }
 
-interface ImageInputProps {
+function PhotoInput(props: {
   imageData: FileData;
   setImageData: Dispatch<SetStateAction<FileData>>;
-}
-
-function PhotoInput(props: ImageInputProps) {
+  userData: UserData;
+}) {
+  const defaultProfilePhoto =
+    'https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/profilePhotos%2Fdefault-avatar.jpg?alt=media&token=f26406ac-4279-49f4-b6fe-385462e56923';
   const {userData} = useContext(UserContext);
   const [imageIsLoading, setImageLoading] = useState(false);
 
@@ -295,8 +295,12 @@ function PhotoInput(props: ImageInputProps) {
     const metadata: UploadMetadata = {
       cacheControl: 'public,max-age=8200',
       contentType: `image/${imageData.type}`,
+      customMetadata: {
+        username: userData.username,
+        email: userData.email,
+      },
     };
-    uploadImage(`blog/${imageData.name}`, imageData.src, metadata).then((imageUrl) => {
+    uploadImage(`profilePhotos/${userData.uid}.${imageData.type}`, imageData.src, metadata).then((imageUrl) => {
       props.setImageData({...imageData, src: imageUrl});
       setImageLoading(false);
     });
@@ -306,10 +310,33 @@ function PhotoInput(props: ImageInputProps) {
     <div>
       <label className="block text-sm font-medium text-gray-700">Photo</label>
       <div className="mt-1 flex items-center space-x-5">
-        <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-          <CustomImage src={userData?.profilePhoto || 'src'} alt={'Profile Photo'} width={96} height={96} />
-        </span>
-        <Button text="Change" buttonStyle="basic" type="button" />
+        {imageIsLoading ? (
+          <Spinner1 />
+        ) : (
+          <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+            <CustomImage
+              src={props.imageData?.src || userData?.profilePhoto || defaultProfilePhoto}
+              alt={'Profile Photo'}
+              layout={'responsive'}
+              objectFit={'cover'}
+              width={96}
+              height={96}
+            />
+          </span>
+        )}
+        <label className="my-2" htmlFor="imageIput">
+          <FileInputButton
+            type="button"
+            text={'Change'}
+            buttonStyle="basic"
+            id={'imageInput'}
+            name={'imgageInput'}
+            maxFileSizeInKB={1000}
+            onUpload={(value: FileData) => Upload(value)}
+            allowedExtensions={['jpeg', 'jpeg', 'png']}
+            setLoading={setImageLoading}
+          />
+        </label>
       </div>
     </div>
   );
