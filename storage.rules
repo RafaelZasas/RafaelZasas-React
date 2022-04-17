@@ -7,8 +7,9 @@ service firebase.storage {
     allow write;
     }
     
-    match /PDFResumeSept2021.pdf {
+    match /resumes/{resumeId} {
       allow read;
+      allow write, delete: if isAdmin(request);
     }
 
     match /profilePhotos/{profilePhotoId}{
