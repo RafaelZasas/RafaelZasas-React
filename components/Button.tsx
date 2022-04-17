@@ -1,24 +1,11 @@
-import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {FormEventHandler} from 'react';
-
-interface buttonProps {
-  leftIcon?: IconDefinition;
-  rightIcon?: IconDefinition;
-  text: string;
-  function?: Function;
-  functionParams?: Array<string>;
-  type?: 'button' | 'submit' | 'reset' | undefined;
-  buttonStyle?: 'danger' | 'warning' | 'info' | 'submit' | 'basic';
-  hidden?: boolean;
-  handleSubmit?: FormEventHandler;
-}
+import {ButtonProps} from '../lib/types';
 
 /**
  * Reusable button component with optional icon(s) to the left or right of button text
  * Button will fill container space on small devices and decide
  */
-export default function Button(props: buttonProps) {
+export default function Button(props: ButtonProps) {
   function getStyle() {
     let buttonClass = `
             w-full md:w-auto items-center px-4 py-2 text-white
