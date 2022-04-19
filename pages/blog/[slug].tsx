@@ -70,7 +70,7 @@ export default function BlogPostPage(props: BlogPostProps) {
         }
         currentURL={`rafaelzasas.com/blog/${props.postId}`}
       />
-      <div className="relative overflow-hidden px-3 pt-10 pb-4 font-roboto font-normal text-slate-800 dark:bg-gray-800 dark:text-slate-200 md:px-6 lg:px-6 xl:px-8">
+      <div className="relative overflow-hidden bg-slate-300/70 px-3 pt-10 pb-4 font-roboto font-normal text-slate-800 dark:bg-gray-800/95 dark:text-slate-200 md:px-6 lg:px-6 xl:px-8">
         <div className="flex flex-col space-y-4 divide-y divide-slate-900 dark:divide-slate-200">
           <div className="m-0 mx-auto max-w-prose text-lg ">
             <EditorContent editorState={editorState} />

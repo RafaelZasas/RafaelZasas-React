@@ -35,7 +35,7 @@ export default function BlogPage(props: BlogPageProps) {
   const {setShowToast, setToastData} = useContext(ToastContext);
 
   return (
-    <main className="scroll-smooth bg-layered-waves bg-cover bg-fixed bg-center bg-no-repeat dark:bg-layered-waves-dark">
+    <main>
       <Metatags title="Blog" description="Browse my latest blog posts!" currentURL="rafaelzasas.com/blog" />
       <Modal
         open={openConfirmationModal}
