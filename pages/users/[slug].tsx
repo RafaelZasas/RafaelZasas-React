@@ -28,7 +28,7 @@ export default function UserProfilePage() {
           >
             {!loading && (
               <CustomImage
-                src={user.profilePhoto || user.photoURL || defaultProfilePhoto}
+                src={user?.profilePhoto || user?.photoURL || defaultProfilePhoto}
                 alt={'Profile Photo'}
                 layout={'responsive'}
                 objectFit={'cover'}
@@ -38,7 +38,7 @@ export default function UserProfilePage() {
             )}
           </div>
 
-          <div className="flex flex-row space-x-6 py-4">
+          <div className="my-4 flex flex-col  md:flex-row">
             {loading || !user ? (
               <div className="flex-1 flex-col space-y-3 ">
                 <p className={`h-2 w-1/6 rounded bg-slate-700`}></p>
@@ -50,7 +50,16 @@ export default function UserProfilePage() {
               <div className="h-fit flex-1 flex-col space-y-3 font-semibold">
                 <p>{user?.username} </p>
                 <p>{user?.email}</p>
-                <p>{user?.website && user?.website}</p>
+                {user?.website && (
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={'text-blue-500 hover:text-blue-600'}
+                  >
+                    {user.website}
+                  </a>
+                )}
                 <p>
                   {user?.permissions.admin
                     ? 'Permission Level: Admin'
@@ -59,11 +68,11 @@ export default function UserProfilePage() {
               </div>
             )}
 
-            <div className="flex-1 flex-col">
+            <div className="flex-1 flex-col items-stretch justify-items-start">
               {loading || !user ? (
-                <p className="my-2 h-full bg-slate-700"></p>
+                <p className="h-full bg-slate-700"></p>
               ) : (
-                <p>{user.bio || 'User has not set a bio'}</p>
+                <span>{user.bio || 'User has not set a bio'}</span>
               )}
             </div>
           </div>
