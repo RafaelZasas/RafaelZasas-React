@@ -1,5 +1,6 @@
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import GlassCard from '../components/GlassCard';
 import CustomImage from '../components/Image';
 import Metatags from '../components/Metatags';
 import {GithubIcon, InstagramIcon, LinkedInIcon, StackOverflowIcon, TwitterIcon} from '../public/svg-icons';
@@ -16,6 +17,7 @@ export default function AboutPage({}) {
           className="mt-2 inline-block align-middle"
           src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif"
           width="30px"
+          layout="fixed"
           height={'30px'}
           alt={'wave'}
         />
@@ -26,6 +28,7 @@ export default function AboutPage({}) {
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1280px-React-icon.svg.png"
             className="mt-2 inline-block h-8 p-2 align-middle sm:h-8 md:h-10 lg:h-14"
             width={45}
+            layout="fixed"
             height={40}
             alt={'reactIcon'}
           />
@@ -54,29 +57,22 @@ export default function AboutPage({}) {
     ];
 
     return (
-      <main>
-        <Metatags
-          title="About"
-          description="A concise description of the site and it's status"
-          currentURL="rafaelzasas.com/about"
-        />
+      <div className={'mt-6 flex flex-col'}>
+        <h3 className={'text-center text-xl'}>🚀 Build and Deployment Status</h3>
 
-        <div className={'mt-6 flex flex-col'}>
-          <h3 className={'text-center text-xl'}>🚀 Build and Deployment Status</h3>
-
-          <ul className="mx-16 mt-3 grid grid-cols-1 place-items-center gap-0 sm:grid-cols-3">
-            {stats.map((item, index) => (
-              <li key={index} className="overflow-hidden px-4 py-1 sm:p-0">
-                <a href={item.url}>
-                  <img src={item.src} alt={item.alt} width={150} height={50} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </main>
+        <ul className="mx-16 mt-3 grid grid-cols-1 place-items-center gap-0 sm:grid-cols-3">
+          {stats.map((item, index) => (
+            <li key={index} className="overflow-hidden px-4 py-1 sm:p-0">
+              <a href={item.url}>
+                <img src={item.src} alt={item.alt} width={150} height={50} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   };
+
   const ProjectStats = () => {
     const stats = [
       {
@@ -121,9 +117,9 @@ export default function AboutPage({}) {
 
   const About = () => {
     return (
-      <div
-        className="mx-5 mb-3 overflow-hidden rounded-lg bg-white bg-opacity-20 bg-clip-padding px-4
-                 py-5 shadow-lg backdrop-filter sm:p-6"
+      <GlassCard
+        className="py-5sm:p-6 mx-5 mb-3 overflow-hidden rounded-lg
+                 px-4"
       >
         <div className="mx-auto max-w-2xl px-4 pt-2 text-center font-sans font-bold sm:px-3 sm:pt-3 sm:text-lg lg:px-5 lg:text-lg">
           <p>
@@ -152,7 +148,7 @@ export default function AboutPage({}) {
             .
           </p>
         </div>
-      </div>
+      </GlassCard>
     );
   };
 
@@ -174,9 +170,9 @@ export default function AboutPage({}) {
     ];
 
     return (
-      <div
-        className="mx-5 mb-3 overflow-hidden rounded-lg bg-white bg-opacity-20 bg-clip-padding px-4
-                 py-5 shadow-lg backdrop-filter sm:p-6 "
+      <GlassCard
+        className="mx-5 mb-3 overflow-hidden rounded-lg px-4
+                 py-5 shadow-lg sm:p-6"
       >
         <div className={'mt-6 flex flex-col justify-center'}>
           <div className={'flex justify-center'}>
@@ -192,14 +188,16 @@ export default function AboutPage({}) {
             ))}
           </ul>
         </div>
-      </div>
+      </GlassCard>
     );
   };
 
   const Social = () => {
     const stats = [
       {
-        icon: <InstagramIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800" />,
+        icon: (
+          <InstagramIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800 dark:fill-slate-300 dark:hover:fill-slate-500" />
+        ),
         url: 'https://instagram.com/rafaelzasas',
         alt: 'Instagram',
       },
@@ -216,7 +214,9 @@ export default function AboutPage({}) {
         alt: 'LinkedIn',
       },
       {
-        icon: <GithubIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800" />,
+        icon: (
+          <GithubIcon className="h-10 w-10 fill-slate-600 stroke-slate-500 hover:fill-slate-800 dark:fill-slate-300 dark:fill-slate-300 dark:hover:fill-slate-500" />
+        ),
         src: 'https://image.flaticon.com/icons/png/512/174/174857.png',
         url: 'https://linkedin.com/in/rafael-zasas',
         alt: 'LinkedIn',
@@ -224,9 +224,9 @@ export default function AboutPage({}) {
     ];
 
     return (
-      <div
-        className="mx-5 mb-3 overflow-hidden rounded-lg bg-white bg-opacity-20 bg-clip-padding px-4
-                 py-5 bg-blend-multiply shadow-lg backdrop-filter sm:p-6"
+      <GlassCard
+        className="mx-5 mb-3 overflow-hidden rounded-lg px-4
+                 py-5 bg-blend-multiply sm:p-6"
       >
         <div className={'mt-6 flex flex-col justify-center'}>
           <div className={'mb-2 flex justify-center'}>
@@ -243,23 +243,30 @@ export default function AboutPage({}) {
             ))}
           </ul>
         </div>
-      </div>
+      </GlassCard>
     );
   };
 
   return (
-    <div className={'container mx-auto'}>
-      <Header />
-      <div
-        className="mx-5 mb-3 overflow-hidden rounded-lg bg-white bg-opacity-20 bg-clip-padding px-4
-                 py-5 shadow-lg backdrop-filter sm:p-6 "
-      >
-        <StatusBadges />
-        <ProjectStats />
+    <main>
+      <Metatags
+        title="About"
+        description="A concise description of the site and it's status"
+        currentURL="rafaelzasas.com/about"
+      />
+      <div className={'container mx-auto dark:text-slate-200'}>
+        <Header />
+        <GlassCard
+          className="mx-5 mb-3 overflow-hidden rounded-lg
+                 px-4 py-5 shadow-lg sm:p-6"
+        >
+          <StatusBadges />
+          <ProjectStats />
+        </GlassCard>
+        <About />
+        <RepoStats />
+        <Social />
       </div>
-      <About />
-      <RepoStats />
-      <Social />
-    </div>
+    </main>
   );
 }
