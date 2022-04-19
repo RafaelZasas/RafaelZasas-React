@@ -44,8 +44,9 @@ export default function UserSection(props: UserSectionProps) {
       </p>
       <div className="justify-right flex flex-row">
         <CustomImage
-          src={author?.profilePhoto || author?.photoURL || defaultAvatar}
+          src={author?.profilePhoto || defaultAvatar}
           alt={author?.username ?? 'profile photo'}
+          layout="fixed"
           width={40}
           height={40}
           className="pointer-events-none object-cover"

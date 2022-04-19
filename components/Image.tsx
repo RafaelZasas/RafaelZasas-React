@@ -13,8 +13,8 @@ export default function CustomImage(props: ImageProps) {
       width={props.width}
       height={props.height}
       priority={props.priority || false}
-      layout={props.layout || 'intrinsic'}
-      objectFit={props.objectFit || 'none'}
+      layout={props.layout || 'responsive'}
+      objectFit={props.objectFit || 'cover'}
       quality={props.quality || 75}
       className={props.className ?? 'pointer-events-none object-cover'}
     />
