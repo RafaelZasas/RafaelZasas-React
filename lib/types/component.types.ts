@@ -18,5 +18,6 @@ export interface ButtonProps {
   type?: 'button' | 'submit' | 'reset' | undefined;
   buttonStyle?: 'danger' | 'warning' | 'info' | 'submit' | 'basic';
   hidden?: boolean;
+  disabled?: boolean;
   handleSubmit?: FormEventHandler;
 }
