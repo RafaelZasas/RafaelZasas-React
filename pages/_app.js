@@ -44,7 +44,7 @@ function MyApp({Component, pageProps}) {
             bg-gradient-to-tl from-blue-100 to-white md:from-blue-200 md:via-blue-100 md:to-transparent"
           >
             <Navbar />
-            <main className="flex-grow">
+            <main className="flex-grow bg-layered-waves bg-cover bg-fixed bg-center bg-no-repeat dark:bg-layered-waves-dark">
               <Component {...pageProps} userProps={userData} />
             </main>
             <Footer />

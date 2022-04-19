@@ -80,10 +80,12 @@ export default function Home(props) {
                       className="group-hover:bounce pointer-events-none object-cover"
                     />
                   </div>
-                  <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">
+                  <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 dark:text-slate-200">
                     {card.title}
                   </p>
-                  <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500">{card.summary}</p>
+                  <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500 dark:text-slate-400">
+                    {card.summary}
+                  </p>
                 </a>
               </li>
             );

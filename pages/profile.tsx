@@ -15,6 +15,8 @@ import {FileData} from '../lib/types/component.types';
 import FileInputButton from '../components/FileInputButton';
 import Spinner1 from '../components/loadingSpinners/Spinner1';
 import {UserData} from '../lib/types';
+import GlassCard from '../components/GlassCard';
+import Button from '../components/Button';
 
 export default function ProfilePage({}) {
   const {user, userData} = useContext(UserContext);
@@ -37,8 +39,8 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
     e.preventDefault();
     const formData: Partial<UserData> = {
       username: e.target.username.value,
-      website: e.target.website.value,
-      profilePhoto: imageData.src || props.userData.profilePhoto,
+      website: `https://${e.target.website.value}`,
+      profilePhoto: imageData?.src || props.userData.profilePhoto,
       bio: e.target.bio.value,
       communications: {
         email: {
@@ -77,15 +79,15 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
       <Metatags title="Profile" description="User Profile" currentURL="rafaelzasas.com/profile" />
       <form className="space-y-6 px-5 py-4" onSubmit={updateProfile}>
         {/* Form Inputs */}
-        <div
-          className="bg-white bg-opacity-50 bg-clip-padding px-4 py-5 shadow
-             backdrop-filter sm:rounded-lg sm:p-6 lg:backdrop-blur-md"
+        <GlassCard
+          className="!rounded-lg px-4 py-5
+              shadow-md sm:p-6"
         >
           {/* Heading */}
           <div className="w-full pb-5">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Profile</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              This information will be displayed on the feedback section and your public profile.
+            <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-slate-200">Profile</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-300">
+              This information will be displayed in comment sections and your public profile.
             </p>
           </div>
 
@@ -104,17 +106,17 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
               </div>
             </div>
           </div>
-        </div>
+        </GlassCard>
 
         {/* Notifications Section */}
-        <div
-          className="bg-white bg-opacity-50 bg-clip-padding px-4 py-5 shadow
-            backdrop-filter sm:rounded-lg sm:p-6 lg:backdrop-blur-md"
+        <GlassCard
+          className="!rounded-lg px-4 py-5
+              shadow-md sm:p-6 lg:backdrop-blur-md"
         >
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">Notifications</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-slate-300">Notifications</h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 Decide which communications you&apos;d like to receive and how.
               </p>
             </div>
@@ -125,15 +127,13 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
               </div>
             </div>
           </div>
-        </div>
+        </GlassCard>
 
-        <div className="sm:block md:block lg:block xl:block">
-          <div className="">
-            {/*<CancelBtn/>*/}
+        <div className="grid grid-rows-2 gap-y-6 p-4 md:grid-cols-2 md:p-0.5">
+          <div className="md:justify-self-start">
             <SaveBtn isValid={isValid} />
           </div>
-
-          <div className="float-right mb-2 sm:mt-2">
+          <div className="md:justify-self-end">
             <SignOutBtn />
           </div>
         </div>
@@ -150,9 +150,11 @@ const UsernameInput = (props) => {
   const {user, userData} = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState('');
   const usernameClasses = {
-    valid: `block w-full pr-10 border-gray-300 placeholder-gray-300
-        focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md`,
+    valid: `block w-full pr-10 border-gray-300 bg-gray-100/30 border
+     dark:border-slate-800 dark:bg-black/50 dark:text-slate-300 p-2 placeholder-gray-300 dark:placeholder-slate-200
+        focus:outline-none focus:border-blue-500 sm:text-sm rounded-md`,
     invalid: `block w-full pr-10 border-red-300 text-red-900 placeholder-red-300
+    dark:border-slate-800 border dark:bg-black/50 p-2 placeholder-gray-300 dark:text-red-600
         focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md`,
   };
 
@@ -188,39 +190,37 @@ const UsernameInput = (props) => {
   );
 
   return (
-    <div className="grid grid-cols-4 ">
-      <div className="col-span-full sm:col-span-full md:col-span-2 lg:col-span-2 xl:col-span-2">
-        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-          Username
-        </label>
-        <div className="relative mt-1 rounded-md shadow-sm ">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            onChange={onChange}
-            className={isValid ? usernameClasses.valid : usernameClasses.invalid}
-            placeholder={userData?.username ? userData?.username : 'username'}
-            defaultValue={userData?.username ? userData?.username : 'username'}
-            aria-invalid="false"
-            aria-describedby="username-error"
-          />
+    <div className="w-full flex-1 flex-row md:w-1/3">
+      <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+        Username
+      </label>
+      <div className="relative mt-1 rounded-md shadow-sm">
+        <input
+          type="text"
+          name="username"
+          id="username"
+          onChange={onChange}
+          className={isValid ? usernameClasses.valid : usernameClasses.invalid}
+          placeholder={userData?.username || 'username'}
+          defaultValue={userData?.username || userData?.email.split('@')[0]}
+          aria-invalid="false"
+          aria-describedby="username-error"
+        />
 
-          {!isValid && !loading && (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
-            </div>
-          )}
-          {loading && (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-              <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-500" />
-            </div>
-          )}
-        </div>
-        <p className="mt-2 text-sm text-red-600" id="username-error">
-          {errorMessage}
-        </p>
+        {!isValid && !loading && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+          </div>
+        )}
+        {loading && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-500" />
+          </div>
+        )}
       </div>
+      <p className="mt-2 text-sm text-red-600" id="username-error">
+        {errorMessage}
+      </p>
     </div>
   );
 };
@@ -229,15 +229,15 @@ function WebsiteInput() {
   const {user, userData} = useContext(UserContext);
 
   return (
-    <div className="grid grid-cols-4 gap-6">
+    <div className="w-full flex-1 flex-row md:w-1/3">
       <div className="col-span-full sm:col-span-full md:col-span-2 lg:col-span-2 xl:col-span-2">
-        <label htmlFor="website" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
           Website
         </label>
         <div className="mt-1 flex rounded-md shadow-sm">
           <span
-            className="inline-flex items-center rounded-l-md border border-r-0
-                                             border-gray-300 bg-gray-50 px-3 text-sm text-gray-500"
+            className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50
+            px-3 text-sm text-gray-500 dark:border-black dark:bg-black/70 dark:text-slate-500"
           >
             https://
           </span>
@@ -246,8 +246,8 @@ function WebsiteInput() {
             name="website"
             id="website"
             defaultValue={userData?.website ? userData.website : null}
-            className="block w-full flex-1
-                                            rounded-none rounded-r-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="block w-full flex-1 rounded-none
+             rounded-r-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-800 dark:bg-black/50 dark:text-slate-300 sm:text-sm"
             placeholder="www.example.com"
           />
         </div>
@@ -259,24 +259,23 @@ function WebsiteInput() {
 function BioInput() {
   const {user, userData} = useContext(UserContext);
   return (
-    <div className="grid grid-cols-4 gap-6">
-      <div className="col-span-full sm:col-span-full md:col-span-2 lg:col-span-2 xl:col-span-2">
-        <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-          Bio
-        </label>
-        <div className="mt-1">
-          <textarea
-            id="bio"
-            name="bio"
-            rows={3}
-            className="block w-full rounded-md border border-gray-300
-                                         p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            placeholder="eg. Hi, my name Jeff"
-            defaultValue={userData?.bio ? userData.bio : ''}
-          />
-        </div>
-        <p className="mt-2 text-sm text-gray-500">Brief description for your profile. URLs are hyperlinked.</p>
+    <div className="w-full flex-1 flex-row md:w-1/2">
+      <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+        Bio
+      </label>
+      <div className="mt-1">
+        <textarea
+          id="bio"
+          name="bio"
+          rows={3}
+          className="block w-full rounded-md border
+          border-gray-300 p-2 shadow-sm focus:border-blue-500
+           focus:ring-blue-500 dark:border-black dark:bg-black/50 dark:text-slate-300 sm:text-sm"
+          placeholder="eg. Hi, my name Jeff"
+          defaultValue={userData?.bio || ''}
+        />
       </div>
+      <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">Brief description for your profile.</p>
     </div>
   );
 }
@@ -308,7 +307,7 @@ function PhotoInput(props: {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">Photo</label>
+      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Profile Photo</label>
       <div className="mt-1 flex items-center space-x-5">
         {imageIsLoading ? (
           <Spinner1 />
@@ -348,7 +347,7 @@ function EmailNotificationsFieldset() {
 
   return (
     <fieldset>
-      <legend className="text-base font-medium text-gray-900">By Email</legend>
+      <legend className="text-base font-medium text-gray-900 dark:text-slate-300">By Email</legend>
       <div className="mt-4 space-y-4">
         <div className="flex items-start">
           <div className="flex h-5 items-center">
@@ -361,10 +360,12 @@ function EmailNotificationsFieldset() {
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="comments_email" className="font-medium text-gray-700">
+            <label htmlFor="comments_email" className="font-medium text-gray-700 dark:text-slate-300">
               Comments
             </label>
-            <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
+            <p className="text-gray-500 dark:text-slate-400">
+              Get notified when someones posts a comment on a posting.
+            </p>
           </div>
         </div>
         <div className="flex items-start">
@@ -378,10 +379,10 @@ function EmailNotificationsFieldset() {
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="projects_email" className="font-medium text-gray-700">
+            <label htmlFor="projects_email" className="font-medium text-gray-700 dark:text-slate-300">
               Projects
             </label>
-            <p className="text-gray-500">Get notified by projects (eg. spaceX updater)</p>
+            <p className="text-gray-500 dark:text-slate-400">Get notified by projects (eg. spaceX updater)</p>
           </div>
         </div>
         <div className="flex items-start">
@@ -395,10 +396,10 @@ function EmailNotificationsFieldset() {
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="updates_email" className="font-medium text-gray-700">
+            <label htmlFor="updates_email" className="font-medium text-gray-700 dark:text-slate-300">
               Updates
             </label>
-            <p className="text-gray-500">Get notified when a new project is ready for testing</p>
+            <p className="text-gray-500 dark:text-slate-400">Get notified when a new project is ready for testing</p>
           </div>
         </div>
       </div>
@@ -412,8 +413,10 @@ function PushNotificationsFieldset() {
   return (
     <fieldset>
       <div>
-        <legend className="text-base font-medium text-gray-900">Push Notifications</legend>
-        <p className="text-sm text-gray-500">These are delivered as banner notifications to your mobile or desktop.</p>
+        <legend className="text-base font-medium text-gray-900 dark:text-slate-300">Push Notifications</legend>
+        <p className="text-sm text-gray-500 dark:text-slate-400">
+          These are delivered as banner notifications to your mobile or desktop.
+        </p>
       </div>
       <div className="mt-4 space-y-4">
         <div className="flex items-center">
@@ -424,7 +427,7 @@ function PushNotificationsFieldset() {
             defaultChecked={pushCommunications?.comments}
             className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label htmlFor="comments_push" className="ml-3 block text-sm font-medium text-gray-700">
+          <label htmlFor="comments_push" className="ml-3 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Comments
           </label>
         </div>
@@ -436,7 +439,7 @@ function PushNotificationsFieldset() {
             defaultChecked={pushCommunications?.projects}
             className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label htmlFor="projects_push" className="ml-3 block text-sm font-medium text-gray-700">
+          <label htmlFor="projects_push" className="ml-3 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Projects
           </label>
         </div>
@@ -448,7 +451,7 @@ function PushNotificationsFieldset() {
             defaultChecked={pushCommunications?.updates}
             className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label htmlFor="updates_push" className="ml-3 block text-sm font-medium text-gray-700">
+          <label htmlFor="updates_push" className="ml-3 block text-sm font-medium text-gray-700 dark:text-slate-300">
             Updates
           </label>
         </div>
@@ -457,32 +460,9 @@ function PushNotificationsFieldset() {
   );
 }
 
-function CancelBtn() {
-  return (
-    <button
-      type="button"
-      className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700
-                     shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300
-                     focus:ring-offset-2"
-    >
-      Cancel
-    </button>
-  );
-}
-
 const SaveBtn = (props) => {
   const isValid = props.isValid;
-  return (
-    <button
-      type="submit"
-      disabled={!isValid}
-      className="ml-1 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4
-                     text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none
-                      focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-    >
-      Save
-    </button>
-  );
+  return <Button type="submit" disabled={!isValid} text={'Save'} />;
 };
 
 function SignOutBtn() {
@@ -492,15 +472,5 @@ function SignOutBtn() {
     await auth.signOut();
     await router.push('/');
   };
-  return (
-    <button
-      type="button"
-      onClick={signOut}
-      className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm
-             font-medium text-gray-700 shadow-sm hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500
-                     focus:ring-offset-2"
-    >
-      Log Out
-    </button>
-  );
+  return <Button type="button" text="Log Out" buttonStyle="basic" function={signOut} />;
 }
