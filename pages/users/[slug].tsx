@@ -1,3 +1,74 @@
+import Error from 'next/error';
+import {useRouter} from 'next/router';
+import GlassCard from '../../components/GlassCard';
+import CustomImage from '../../components/Image';
+import {GetUserData$} from '../../lib/dbOperations/users';
+
 export default function UserProfilePage() {
-  return <div>Users Profile Page</div>;
+  const router = useRouter();
+  const uid = router.query.slug as string;
+  const {user, loading, error} = GetUserData$(uid);
+  console.log;
+
+  const defaultProfilePhoto =
+    'https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/profilePhotos%2Fdefault-avatar.jpg?alt=media&token=f26406ac-4279-49f4-b6fe-385462e56923';
+
+  if (error) {
+    return <Error statusCode={parseInt(error?.code) || 500} title={'Unable to retrieve user profile'} />;
+  }
+
+  return (
+    <GlassCard className="mx-2 my-4 w-fit overflow-auto rounded-lg md:mx-auto md:w-1/2">
+      <div className="p-2 text-slate-800 dark:text-slate-200">
+        <div className={`flex flex-col space-x-4 ${loading && 'animate-pulse'} space-x-4`}>
+          <div
+            className={`mx-auto inline-block h-12 w-12 overflow-hidden rounded-full md:h-20 md:w-20 ${
+              loading ? 'bg-slate-700' : 'bg-gray-100'
+            }`}
+          >
+            {!loading && (
+              <CustomImage
+                src={user.profilePhoto || user.photoURL || defaultProfilePhoto}
+                alt={'Profile Photo'}
+                layout={'responsive'}
+                objectFit={'cover'}
+                width={96}
+                height={96}
+              />
+            )}
+          </div>
+
+          <div className="flex flex-row space-x-6 py-4">
+            {loading || !user ? (
+              <div className="flex-1 flex-col space-y-3 ">
+                <p className={`h-2 w-1/6 rounded bg-slate-700`}></p>
+                <p className={`h-2 w-1/3 rounded bg-slate-700`} />
+                <p className={`h-2 w-1/6 rounded bg-slate-700`} />
+                <p className={`h-2 w-1/6 rounded bg-slate-700`} />
+              </div>
+            ) : (
+              <div className="h-fit flex-1 flex-col space-y-3 font-semibold">
+                <p>{user?.username} </p>
+                <p>{user?.email}</p>
+                <p>{user?.website && user?.website}</p>
+                <p>
+                  {user?.permissions.admin
+                    ? 'Permission Level: Admin'
+                    : `Permission Level: ${user?.permissions?.level || 0}`}
+                </p>
+              </div>
+            )}
+
+            <div className="flex-1 flex-col">
+              {loading || !user ? (
+                <p className="my-2 h-full bg-slate-700"></p>
+              ) : (
+                <p>{user.bio || 'User has not set a bio'}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </GlassCard>
+  );
 }
