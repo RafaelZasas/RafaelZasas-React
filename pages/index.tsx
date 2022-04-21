@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import CustomImage from '../components/Image';
 import Metatags from '../components/Metatags';
 import {GetImage} from '../lib/CloudStorageOperations';
@@ -9,7 +10,7 @@ export async function getServerSideProps(context) {
       summary: 'Take a look, stay a while.',
       source: await GetImage('card-tiles/blog.png'),
       alt: 'Angular logo',
-      url: '/blog',
+      link: '/blog',
     },
     {
       title: 'GitHub',
@@ -23,7 +24,7 @@ export async function getServerSideProps(context) {
       summary: "Some personal projects I'm working on. Leave a feature request for anything you'd like to see!",
       source: await GetImage('card-tiles/projects-logo.jpg'),
       alt: 'Projects',
-      url: '/projects',
+      link: '/projects',
     },
     {
       title: 'LinkedIn',
@@ -37,7 +38,7 @@ export async function getServerSideProps(context) {
       summary: 'Currently working as a software engineer for 10X Academy.',
       source: await GetImage('card-tiles/resume-logo.jpg'),
       alt: 'resume',
-      url: '/resume',
+      link: '/resume',
     },
     {
       title: 'Stack Overflow',
@@ -68,25 +69,49 @@ export default function Home(props) {
         >
           {props.cards.map((card, index) => {
             return (
-              <li key={index} className="relative">
-                <a href={card.url}>
-                  <div className="aspect-w-10 aspect-h-7 group block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
-                    <CustomImage
-                      src={card.source}
-                      alt={card.alt}
-                      width={1200}
-                      height={800}
-                      priority={true}
-                      className="group-hover:bounce pointer-events-none object-cover"
-                    />
-                  </div>
-                  <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 dark:text-slate-200">
-                    {card.title}
-                  </p>
-                  <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500 dark:text-slate-400">
-                    {card.summary}
-                  </p>
-                </a>
+              <li key={index} className="relative cursor-pointer">
+                {card.url && (
+                  <a href={card.url}>
+                    <div className="aspect-w-10 aspect-h-7 group block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                      <CustomImage
+                        src={card.source}
+                        alt={card.alt}
+                        width={1200}
+                        height={800}
+                        priority={true}
+                        className="group-hover:bounce pointer-events-none object-cover"
+                      />
+                    </div>
+                    <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 dark:text-slate-200">
+                      {card.title}
+                    </p>
+                    <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500 dark:text-slate-400">
+                      {card.summary}
+                    </p>
+                  </a>
+                )}
+                {card.link && (
+                  <Link href={card.link} passHref>
+                    <span>
+                      <div className="aspect-w-10 aspect-h-7 group block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                        <CustomImage
+                          src={card.source}
+                          alt={card.alt}
+                          width={1200}
+                          height={800}
+                          priority={true}
+                          className="group-hover:bounce pointer-events-none object-cover"
+                        />
+                      </div>
+                      <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 dark:text-slate-200">
+                        {card.title}
+                      </p>
+                      <p className="pointer-events-none mt-1 block text-sm font-medium text-gray-500 dark:text-slate-400">
+                        {card.summary}
+                      </p>
+                    </span>
+                  </Link>
+                )}
               </li>
             );
           })}
