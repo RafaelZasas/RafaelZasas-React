@@ -54,12 +54,12 @@ export default function UserProfilePage() {
                   {user?.website && (
                     <p>
                       <a
-                        href={user.website}
+                        href={'https://' + user.website}
                         target="_blank"
                         rel="noreferrer"
                         className={'text-blue-500 hover:text-blue-600'}
                       >
-                        {user.website}
+                        https://{user.website}
                       </a>
                     </p>
                   )}
