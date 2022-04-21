@@ -26,7 +26,7 @@ export default function Button(props: ButtonProps) {
           '!leading-4 !rounded-md border !border-gray-300 bg-white !text-sm !drop-shadow-sm !text-gray-700 hover:bg-gray-50 !showow-sm focus:ring-blue-500';
         break;
       default:
-        buttonClass += 'focus:ring-blue-600 bg-blue-500/75 hover:bg-blue-500 dark:bg-blue-900/70 hover:bg-blue-900';
+        buttonClass += 'focus:ring-blue-600 bg-blue-500/75 hover:bg-blue-500 dark:bg-blue-900 dark:hover:bg-blue-700';
         break;
     }
 
