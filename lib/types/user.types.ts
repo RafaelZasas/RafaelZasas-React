@@ -17,4 +17,5 @@ export interface UserData {
     email: {comments: boolean; projects: boolean; updates: boolean};
     push: {comments: boolean; projects: boolean; updates: boolean};
   };
+  fcmToken?: string;
 }

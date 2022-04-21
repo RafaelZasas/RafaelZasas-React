@@ -1,0 +1,20 @@
+{
+  "name": "card-tiles/github-logo.png",
+  "bucket": "rafael-zasas.appspot.com",
+  "contentType": "image/png",
+  "metageneration": 1,
+  "generation": 1649999553503,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "ec643b48-d10a-4dc4-854f-a10b870588aa"
+  ],
+  "etag": "zRBfK4ujvFYx09/Ur5wMcrI/l+E",
+  "timeCreated": "2022-04-15T05:12:33.503Z",
+  "updated": "2022-04-15T05:12:33.505Z",
+  "size": 30155,
+  "md5Hash": "LvHGhsp+R31YIHSsJ8UYpA==",
+  "crc32c": "399061219"
+}

@@ -1,8 +1,8 @@
 import {UserInfo} from 'firebase/auth';
 import Link from 'next/link';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {Dispatch, SetStateAction, useContext, useState} from 'react';
+import {ToastContext} from '../../lib/context';
 import {BlogComment, UserData} from '../../lib/types';
-import {ToastData} from '../toast';
 import AddCommentSection from './AddCommentSection';
 import BlogCommentItem from './BlogCommentItem';
 
@@ -11,18 +11,13 @@ interface CommentSectionProps {
   user: UserInfo;
   userData: UserData;
   postId: string;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   setShowCommentReplies: Dispatch<SetStateAction<boolean>>;
   setSelectedComment: Dispatch<SetStateAction<BlogComment>>;
   setReplyingToComment: Dispatch<SetStateAction<boolean>>;
 }
 export default function CommentsSection(props: CommentSectionProps) {
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const comments: BlogComment[] = props.comments;
-  const setShowToast: Dispatch<SetStateAction<boolean>> = props.toast.setShowToast;
-  const setToastData: Dispatch<SetStateAction<ToastData>> = props.toast.setToastData;
   const usersComment: BlogComment[] = comments.filter((comment) => comment.id === props.user?.uid);
   const [showCommentEditor, setShowCommentEditor] = useState<boolean>(false);
 
@@ -41,7 +36,6 @@ export default function CommentsSection(props: CommentSectionProps) {
               <BlogCommentItem
                 setShowCommentReplies={props.setShowCommentReplies}
                 setSelectedComment={props.setSelectedComment}
-                toast={{setShowToast, setToastData}}
                 comment={comment}
                 user={props.userData}
                 key={index}
@@ -79,7 +73,6 @@ export default function CommentsSection(props: CommentSectionProps) {
             user={props.userData}
             usersComment={usersComment.length === 0 ? null : usersComment[0]}
             setShowCommentEditor={setShowCommentEditor}
-            toast={{setShowToast, setToastData}}
             blogId={props.postId}
           />
         )}

@@ -1,4 +1,4 @@
-import {Dispatch, Fragment, SetStateAction, useState} from 'react';
+import {Dispatch, Fragment, SetStateAction} from 'react';
 import {Dialog, Transition} from '@headlessui/react';
 import {ReactJSXElement} from '@emotion/react/types/jsx-namespace';
 import CustomImage from './Image';
@@ -56,6 +56,8 @@ export default function Modal(props: ModalProps) {
                       className="inline-block rounded-full"
                       width={400}
                       height={400}
+                      layout="intrinsic"
+                      objectFit="contain"
                       src={props.headerImg}
                       alt=" headerImg"
                     />

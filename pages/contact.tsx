@@ -3,19 +3,16 @@ import {Dialog, Transition} from '@headlessui/react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faMailBulk, faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import Router from 'next/router';
-import {UserContext} from '../lib/context';
-import {Toast, ToastData} from '../components/toast';
+import {ToastContext, UserContext} from '../lib/context';
 import {addMail} from '../lib/FirestoreOperations';
 
 export default function ContactModal() {
   const [openModal, setOpenModal] = useState(true); // hook for contact modal
   const {user, userData} = useContext(UserContext);
-  const [showToast, setShowToast] = useState(false);
+  const {setShowToast, setToastData} = useContext(ToastContext);
 
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
-
-  const [toastData, setToastData] = useState<ToastData>();
 
   // this will route user back once they click out
   useEffect(() => {
@@ -104,9 +101,6 @@ export default function ContactModal() {
           >
             <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
               <div>
-                <div>
-                  <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
-                </div>
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                   <FontAwesomeIcon className="h-6 w-6 text-green-600" aria-hidden="true" icon={faMailBulk} />
                 </div>

@@ -38,15 +38,17 @@ export default function ComboBox(props: ComboBoxProps) {
         }}
       >
         {props.label && (
-          <Combobox.Label className={'block text-sm font-medium text-gray-700'}>{props.label}</Combobox.Label>
+          <Combobox.Label className={'block text-sm font-medium text-gray-700 dark:text-slate-200'}>
+            {props.label}
+          </Combobox.Label>
         )}
         <div className="relative mt-1">
           <div
-            className="relative z-30 w-full cursor-default overflow-hidden rounded-lg border-2 border-gray-300
-             bg-gray-100/30 bg-white text-left shadow-md hover:border-blue-400/70 focus:border-blue-500 sm:text-sm"
+            className="relative z-30 w-full cursor-default overflow-hidden rounded-lg border-2 border-gray-300 bg-gray-100/30 text-left
+             shadow-md backdrop-blur-xl backdrop-filter hover:border-blue-400/70 focus:border-blue-500 dark:border-slate-500 dark:bg-black/30 sm:text-sm"
           >
             <Combobox.Input
-              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900"
+              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 dark:border-slate-500 dark:bg-black/30 dark:text-white"
               displayValue={(item: Item) => item.name}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -65,8 +67,8 @@ export default function ComboBox(props: ComboBoxProps) {
             afterLeave={() => setQuery('')}
           >
             <Combobox.Options
-              className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg
-             ring-1 ring-opacity-5 focus:outline-none sm:text-sm"
+              className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1
+             ring-opacity-5 focus:outline-none dark:border-slate-500 dark:bg-black/90 dark:text-white sm:text-sm"
             >
               {filteredItems.length === 0 && query !== '' ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">Nothing found.</div>
@@ -76,7 +78,7 @@ export default function ComboBox(props: ComboBoxProps) {
                     key={item.id}
                     className={({active}) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? 'bg-sky-500 text-white' : 'text-gray-900'
+                        active ? 'bg-sky-500 text-white' : 'text-gray-900 dark:text-slate-300'
                       }`
                     }
                     value={item}

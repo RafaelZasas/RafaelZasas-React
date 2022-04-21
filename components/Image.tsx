@@ -1,17 +1,10 @@
-import Image from 'next/image';
+import Image, {ImageProps} from 'next/image';
 
 const customLoader = ({src, width, quality}) => {
   return `${src}?w=${width}&q=${quality || 75}`;
 };
 
-interface CustomImageProps {
-  src: string;
-  alt: string;
-  width: string | number;
-  height: string | number;
-  className?: string;
-}
-export default function CustomImage(props: CustomImageProps) {
+export default function CustomImage(props: ImageProps) {
   return (
     <Image
       loader={customLoader}
@@ -19,6 +12,10 @@ export default function CustomImage(props: CustomImageProps) {
       alt={props.alt}
       width={props.width}
       height={props.height}
+      priority={props.priority || false}
+      layout={props.layout || 'responsive'}
+      objectFit={props.objectFit || 'cover'}
+      quality={props.quality || 75}
       className={props.className ?? 'pointer-events-none object-cover'}
     />
   );

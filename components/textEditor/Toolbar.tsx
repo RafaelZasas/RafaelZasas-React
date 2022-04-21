@@ -22,7 +22,7 @@ export default function Toolbar(props: ToolBarProps) {
           <p
             className="cursor-pointer rounded-t-lg border-x-2 border-t-2 border-x-slate-500
             border-t-slate-500 bg-gray-400/70 bg-clip-padding py-0.5 px-2 
-            text-white backdrop-blur-xl backdrop-filter"
+            text-white backdrop-blur-xl backdrop-filter dark:border-slate-500 dark:bg-gray-400/70 dark:text-white"
           >
             Edit
           </p>
@@ -30,7 +30,7 @@ export default function Toolbar(props: ToolBarProps) {
           <p
             onClick={() => props.setSelectedtab('edit')}
             className="cursor-pointer rounded-t-lg border-x-2 border-t-2 py-0.5 px-2 hover:border-x-slate-500
-            hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
+            hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:border-slate-500 dark:bg-black/60 dark:text-slate-300"
           >
             Edit
           </p>
@@ -40,7 +40,7 @@ export default function Toolbar(props: ToolBarProps) {
           <p
             className="rounded-t-lg border-x-2 border-t-2
             border-x-slate-500 border-t-slate-500 bg-gray-400/70 bg-clip-padding py-0.5 px-2 
-            text-white backdrop-blur-xl backdrop-filter"
+            text-white backdrop-blur-xl backdrop-filter dark:border-slate-500 dark:bg-gray-400/70 dark:text-white"
           >
             Preview
           </p>
@@ -48,7 +48,7 @@ export default function Toolbar(props: ToolBarProps) {
           <p
             onClick={() => props.setSelectedtab('preview')}
             className="cursor-pointer rounded-t-lg border-x-2 border-t-2 px-2 py-0.5 hover:border-x-slate-500
-             hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
+             hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:border-slate-500 dark:bg-black/60 dark:text-slate-300"
           >
             Preview
           </p>
@@ -58,7 +58,7 @@ export default function Toolbar(props: ToolBarProps) {
           <div
             className="cursor-pointer rounded-t-lg border-x-2 border-t-2 border-x-slate-500
             border-t-slate-500 bg-gray-400/70 bg-clip-padding py-1 px-2 
-            text-white backdrop-blur-xl backdrop-filter"
+            text-white backdrop-blur-xl backdrop-filter dark:border-slate-500 dark:bg-gray-400/70 dark:text-white"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
               <path
@@ -72,7 +72,8 @@ export default function Toolbar(props: ToolBarProps) {
           <div
             onClick={() => props.setSelectedtab('both')}
             className="hover:text-whitehover:border-x-slate-500 text -slate-700 cursor-pointer rounded-t-lg border-x-2
-            border-t-2 px-2 py-1 text-slate-700 hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white dark:text-slate-500"
+            border-t-2 px-2 py-1 text-slate-700 hover:border-x-slate-500 hover:border-t-slate-500 hover:bg-gray-400 hover:text-white
+             dark:border-slate-500 dark:bg-black/60 dark:text-slate-300"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor">
               <path
@@ -130,8 +131,8 @@ export default function Toolbar(props: ToolBarProps) {
                     }
                   }}
                   className={`${
-                    getSelectedActions(action) ? 'text-[#3b82f6] dark:text-[#3b82f6]' : 'text-black'
-                  } mx-2 h-4 w-4 cursor-pointer hover:text-[#3b82f6] dark:text-white md:mb-0`}
+                    getSelectedActions(action) ? 'text-[#3b82f6] dark:text-[#3b82f6]' : 'text-black dark:text-white'
+                  } mx-2 h-4 w-4 cursor-pointer hover:text-[#3b82f6] md:mb-0`}
                   aria-hidden="true"
                   icon={action.icon}
                 />

@@ -6,7 +6,6 @@ import {Dispatch, SetStateAction, useState} from 'react';
 import {GetBlogCommentReplies$} from '../../lib/FirestoreOperations';
 import {BlogComment, BlogCommentReply, UserData} from '../../lib/types';
 import Spinner1 from '../loadingSpinners/Spinner1';
-import {ToastData} from '../toast';
 import AddReplySection from './AddReplySection';
 import CommentReplyItem from './CommentReplyItem';
 import PrimaryComment from './PrimaryComment';
@@ -17,10 +16,6 @@ interface CommentRepliesSectionProps {
   comment: BlogComment;
   user: UserInfo;
   userData: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
   showReplyEditor?: boolean;
   setReplyingToComment: Dispatch<SetStateAction<boolean>>;
 }
@@ -51,7 +46,7 @@ export default function CommentRepliesSection(props: CommentRepliesSectionProps)
             <p className="my-2 font-semibold">
               {props.comment.author.username || props.comment.author.email}&apos;s comment:
             </p>
-            <PrimaryComment comment={props.comment} postId={props.postId} user={props.userData} toast={props.toast} />
+            <PrimaryComment comment={props.comment} postId={props.postId} user={props.userData} />
           </div>
           <div>
             {!replies.length ? (
@@ -64,7 +59,6 @@ export default function CommentRepliesSection(props: CommentRepliesSectionProps)
                     return (
                       <CommentReplyItem
                         comment={props.comment}
-                        toast={props.toast}
                         reply={reply}
                         user={props.userData}
                         key={index}
@@ -103,7 +97,6 @@ export default function CommentRepliesSection(props: CommentRepliesSectionProps)
             user={props.userData}
             comment={props.comment}
             setShowReplyEditor={setShowReplyEditor}
-            toast={props.toast}
             postId={props.postId}
           />
         )}

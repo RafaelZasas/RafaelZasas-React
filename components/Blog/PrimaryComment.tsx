@@ -3,21 +3,18 @@ import VoteSection from './CommentVoteSection';
 import UserSection from './UserSection';
 import {default as dayjs} from 'dayjs';
 import {convertFromRaw, EditorState} from 'draft-js';
-import {Dispatch, SetStateAction, useState} from 'react';
+import {useContext} from 'react';
 import {BlogComment, UserData} from '../../lib/types';
-import {ToastData} from '../toast';
+import {ToastContext} from '../../lib/context';
 
 interface PrimaryCommentProps {
   comment: BlogComment;
   postId: string;
   user: UserData;
-  toast: {
-    setShowToast: Dispatch<SetStateAction<boolean>>;
-    setToastData: Dispatch<SetStateAction<ToastData>>;
-  };
 }
 
 export default function PrimaryComment(props: PrimaryCommentProps) {
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const contentState = convertFromRaw(JSON.parse(props.comment.body));
   const editorState = EditorState.createWithContent(contentState);
   const editedDate =

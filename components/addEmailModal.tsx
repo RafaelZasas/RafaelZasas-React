@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faMailBulk, faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import {Toast, ToastData} from './toast';
 import {addMail} from '../lib/FirestoreOperations';
+import {ToastContext} from '../lib/context';
 
 function validateEmail(email) {
   const regexp =
@@ -14,13 +15,9 @@ function validateEmail(email) {
 const AddEmailModal = (params) => {
   const open = params.open; // open state of the modal
   const setOpen = params.setOpen; // change open state of modal
-
-  const [showToast, setShowToast] = useState(false);
-
+  const {setShowToast, setToastData} = useContext(ToastContext);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
-
-  const [toastData, setToastData] = useState<ToastData>();
 
   const onSubmit = async () => {
     const mail = {
@@ -100,9 +97,6 @@ const AddEmailModal = (params) => {
           >
             <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
               <div>
-                <div>
-                  <Toast setShow={setShowToast} toastData={toastData} show={showToast} />
-                </div>
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                   <FontAwesomeIcon className="h-6 w-6 text-green-600" aria-hidden="true" icon={faMailBulk} />
                 </div>

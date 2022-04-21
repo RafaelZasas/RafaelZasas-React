@@ -17,6 +17,7 @@ import {
   deleteDoc,
   arrayUnion,
   arrayRemove,
+  serverTimestamp,
 } from 'firebase/firestore';
 import {Timestamp} from '@google-cloud/firestore';
 
@@ -48,6 +49,30 @@ export const GetTags = (): BlogTag[] => {
 export const PostBlog = (data: BlogPost) => {
   const blogRef = collection(db, 'blogs');
   addDoc(blogRef, data);
+};
+
+/**
+ * Updates a blog post
+ * @param data
+ */
+export const updateBlogPost = (data: Partial<BlogPost>) => {
+  const postRef = doc(db, `blogs/${data.id}`);
+  delete data.createdAt; // Removes the converted number createdAt timestamp to avoid date loss
+  if (data.status === 'published') {
+    data.updatedAt = serverTimestamp();
+  } else {
+    delete data.updatedAt;
+  }
+  updateDoc(postRef, data);
+};
+
+/**
+ * Permenantly deletes a blog post from the db
+ * @param postId
+ */
+export const deleteBlogPost = (postId: string) => {
+  const postRef = doc(db, `blogs/${postId}`);
+  deleteDoc(postRef);
 };
 
 /**

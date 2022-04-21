@@ -6,7 +6,7 @@
     "start": "npm-run-all --parallel dev:*",
     "dev:tailiwind": "tailwind -o styles/main.css --watch",
     "dev:nextjs": "next dev",
-    "emulators": "firebase emulators:start --import firestore-data",
+    "emulators": "firebase emulators:start --import ./emulators-data --export-on-exit ./emulators-data",
     "build": "npm run build:css && next build",
     "serve": "next start",
     "lint": "next lint",
@@ -41,7 +41,7 @@
     "next": "11.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-firebase-hooks": "^3.0.4",
+    "react-firebase-hooks": "5.0.3",
     "react-pdf": "^5.3.2",
     "react-spinners": "^0.11.0"
   },

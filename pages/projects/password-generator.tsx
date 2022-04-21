@@ -1,8 +1,9 @@
-import {useEffect, useMemo, useState} from 'react';
+import {createRef, useContext, useState} from 'react';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import Spinner1 from '../../components/loadingSpinners/Spinner1';
 import Metatags from '../../components/Metatags';
+import {ToastContext} from '../../lib/context';
 /**
  *
  * @param param0
@@ -17,6 +18,7 @@ export default function PasswordGeneratorPage({}) {
   const [useLetters, setUseLetters] = useState(true);
   const [useNumbers, setUseNumbers] = useState(true);
   const [useSymbols, setUseSymbols] = useState(true);
+  const modalRef = createRef<any>();
 
   function ModalTitle() {
     return (
@@ -219,12 +221,17 @@ export default function PasswordGeneratorPage({}) {
   const TitleBar = () => {
     return (
       <div className="flex flex-col text-center">
-        <h1 className={'text-2xl font-bold text-blue-600'}>Password Generator</h1>
-        <h2 className={'text-lg font-semibold text-gray-600'}>
+        <h1 className={'text-2xl font-bold text-blue-600 dark:text-blue-100'}>Password Generator</h1>
+        <h2 className={'text-lg font-semibold text-gray-600 dark:text-blue-200'}>
           A random Password Generation API built using Python and FastAPI.
         </h2>
-        <h3 className={'text-base font-semibold text-gray-600'}>
-          <span onClick={() => setOpen(true)} className={'cursor-pointer text-blue-600/75 hover:text-blue-600'}>
+        <h3 className={'text-base font-semibold text-gray-600 dark:text-slate-300'}>
+          <span
+            onClick={() => setOpen(true)}
+            className={
+              'cursor-pointer text-blue-600/75 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300'
+            }
+          >
             Click Here{' '}
           </span>
           for more info
@@ -277,11 +284,13 @@ export default function PasswordGeneratorPage({}) {
         <div>
           <form onSubmit={HandleSubmit}>
             <fieldset className={'text-center'}>
-              <legend className="text-base font-medium text-gray-900">Configure Your Password</legend>
+              <legend className="text-base font-medium text-gray-900 dark:text-blue-100">
+                Configure Your Password
+              </legend>
               <div className="mt-4 space-y-4">
                 <div className="flex items-center">
                   <div className="ml-3 text-sm">
-                    <label htmlFor="password_length" className="font-medium text-gray-700">
+                    <label htmlFor="password_length" className="font-medium text-gray-700 dark:text-blue-200">
                       Password Length
                     </label>
                   </div>
@@ -292,7 +301,7 @@ export default function PasswordGeneratorPage({}) {
                       type="number"
                       min={1}
                       defaultValue={passwordLength}
-                      className="form-input h-10 w-12 rounded border-gray-300 text-center font-semibold text-gray-800 focus:ring-blue-500 md:w-20 md:text-left"
+                      className="form-input h-fit w-16 rounded border-gray-300 p-1 text-center font-semibold text-gray-800 focus:ring-blue-500 dark:bg-black/60 dark:text-slate-100 md:text-left"
                     />
                   </div>
                 </div>
@@ -308,7 +317,7 @@ export default function PasswordGeneratorPage({}) {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="use_letters" className="font-medium text-gray-700">
+                    <label htmlFor="use_letters" className="font-medium text-gray-700 dark:text-blue-200">
                       Use Letters
                     </label>
                   </div>
@@ -324,7 +333,7 @@ export default function PasswordGeneratorPage({}) {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="use_numbers" className="font-medium text-gray-700">
+                    <label htmlFor="use_numbers" className="font-medium text-gray-700 dark:text-blue-200">
                       Use Numbers
                     </label>
                   </div>
@@ -340,7 +349,7 @@ export default function PasswordGeneratorPage({}) {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="use_symbols" className="font-medium text-gray-700">
+                    <label htmlFor="use_symbols" className="font-medium text-gray-700 dark:text-blue-200">
                       Use Symbols
                     </label>
                   </div>
@@ -357,16 +366,30 @@ export default function PasswordGeneratorPage({}) {
   };
 
   const PasswordOutput = () => {
+    const {setShowToast, setToastData} = useContext(ToastContext);
     return (
-      <div className="my-4 flex flex-row justify-center">
+      <div className="my-4 mx-4 flex flex-row justify-center break-all px-2">
         {loading ? (
           <Spinner1 />
         ) : (
           <div>
             {showPassword && (
               <div>
-                <span className={'mr-1 text-xl font-bold text-blue-600'}>Password:</span>
-                <span className={'ml-1 text-base font-semibold text-gray-700'}>{password}</span>
+                <p className={'mr-1 text-center text-xl font-bold text-blue-600 dark:text-blue-100'}>Password:</p>
+                <p
+                  className={'cursor-pointer text-center text-base font-semibold text-gray-700 dark:text-blue-200'}
+                  onClick={() => {
+                    navigator.clipboard.writeText(password);
+                    setToastData({
+                      type: 'success',
+                      heading: 'Success',
+                      body: 'Password added to clipboard',
+                    });
+                    setShowToast(true);
+                  }}
+                >
+                  {password}
+                </p>
               </div>
             )}
           </div>
@@ -382,7 +405,15 @@ export default function PasswordGeneratorPage({}) {
         description="An awesome serverless password generator built with FastApi and Cloud Run"
         currentURL="rafaelzasas.com/password-generator"
       />
-      <Modal open={open} setOpen={setOpen} header={<ModalTitle />} body={<ModalBody />} headerImg={'lock-icon.png'} />
+      <Modal
+        open={open}
+        setOpen={setOpen}
+        header={<ModalTitle />}
+        body={<ModalBody />}
+        headerImg={
+          'https://firebasestorage.googleapis.com/v0/b/rafael-zasas.appspot.com/o/card-tiles%2Flock-icon.png?alt=media&token=2bdbe0f1-c224-4b87-950f-84e4e09c7119'
+        }
+      />
       <div className={'md:mb-2- mt-4 mb-6 flex flex-col lg:mb-28'}>
         <TitleBar />
         <PasswordGenerator />
