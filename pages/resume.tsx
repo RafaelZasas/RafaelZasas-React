@@ -81,7 +81,7 @@ export default function ResumePage({}) {
         </div>
       </div>
 
-      <div className="mx-12 my-6 flex-row space-x-4 sm:mt-0">
+      <div className="mx-12 my-6 flex-col space-y-4 sm:mt-0 md:flex-row md:space-x-4">
         <SendButton resume={resume} setOpenModal={setOpenAddEmailModal} />
         <DownloadButton resume={resume} />
       </div>
@@ -162,12 +162,17 @@ const DownloadButton = (props) => {
       target="_blank"
       type="button"
       rel="noreferrer"
-      className="inline-flex items-center rounded-md border
-            border-transparent bg-blue-600/80 px-4 py-2 text-base font-medium 
-            text-white drop-shadow-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
+      className="flex items-center justify-center rounded-md
+        border border-transparent bg-blue-500/75 px-4 py-2 text-center
+        text-base font-medium text-white drop-shadow-xl hover:bg-blue-500 
+        focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 
+        dark:bg-blue-900 dark:hover:bg-blue-700
+       md:inline-block"
     >
-      Download
-      <DocumentDownloadIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />
+      <span className="flex flex-row items-center">
+        Download
+        <DocumentDownloadIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />
+      </span>
     </a>
   );
 };

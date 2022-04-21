@@ -34,12 +34,13 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
   const [isValid, setIsValid] = useState(true);
   const {setShowToast, setToastData} = useContext(ToastContext);
   const [imageData, setImageData] = useState<FileData>();
+  const router = useRouter();
 
   const updateProfile = async (e) => {
     e.preventDefault();
     const formData: Partial<UserData> = {
       username: e.target.username.value,
-      website: `https://${e.target.website.value}`,
+      website: e.target.website.value,
       profilePhoto: imageData?.src || props.userData.profilePhoto,
       bio: e.target.bio.value,
       communications: {
@@ -130,8 +131,9 @@ const Profile = (props: {user: UserInfo; userData: UserData}) => {
         </GlassCard>
 
         <div className="grid grid-rows-2 gap-y-6 p-4 md:grid-cols-2 md:p-0.5">
-          <div className="md:justify-self-start">
+          <div className="space-y-2 md:flex-row md:space-x-2 md:justify-self-start">
             <SaveBtn isValid={isValid} />
+            <Button text="Public Profile" function={() => router.push(`users/${props.user.uid}`)} />
           </div>
           <div className="md:justify-self-end">
             <SignOutBtn />

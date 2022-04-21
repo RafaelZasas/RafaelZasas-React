@@ -10,7 +10,7 @@ export default function Button(props: ButtonProps) {
     let buttonClass = `
             w-full md:w-auto items-center px-4 py-2 text-white
             border drop-shadow-xl text-base font-medium rounded-md 
-            focus:outline-none focus:ring-2 focus:ring-offset-2 border-transparent disabled:opacity-50 disabled:tetx-slate-600`;
+            focus:outline-none focus:ring-2 focus:ring-offset-2 border-transparent disabled:opacity-50 disabled:text-slate-600`;
     switch (props.buttonStyle) {
       case 'danger':
         buttonClass += 'focus:ring-rose-700 bg-rose-500/80 hover:bg-rose-500';
@@ -26,7 +26,7 @@ export default function Button(props: ButtonProps) {
           '!leading-4 !rounded-md border !border-gray-300 bg-white !text-sm !drop-shadow-sm !text-gray-700 hover:bg-gray-50 !showow-sm focus:ring-blue-500';
         break;
       default:
-        buttonClass += 'focus:ring-blue-600 bg-blue-500/75 hover:bg-blue-500 dark:bg-blue-900/70 hover:bg-blue-900';
+        buttonClass += 'focus:ring-blue-600 bg-blue-500/75 hover:bg-blue-500 dark:bg-blue-900 dark:hover:bg-blue-700';
         break;
     }
 
