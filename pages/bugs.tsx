@@ -1,5 +1,5 @@
 import {UploadMetadata} from 'firebase/storage';
-import {ChangeEvent, FormEvent, useContext, useState} from 'react';
+import {FormEvent, useContext, useEffect, useState} from 'react';
 import Button from '../components/Button';
 import FileInputButton from '../components/FileInputButton';
 import CustomImage from '../components/Image';
@@ -8,19 +8,24 @@ import Metatags from '../components/Metatags';
 import {uploadImage} from '../lib/CloudStorageOperations';
 import {FileData} from '../lib/types';
 import {default as dayjs} from 'dayjs';
-import {UserContext} from '../lib/context';
+import {ToastContext, UserContext} from '../lib/context';
+import {addTicketToClickUp} from '../lib/firebase';
+import DefaultErrorPage from 'next/error';
+import {ToastData} from '../components/toast';
 
 interface BugReport {
-  title: string;
+  name: string;
   description: string;
   platform: string | null;
   browser: string;
-  image: string;
+  image?: string;
   timestamp: string;
   userEmail: string;
 }
 
 export default function Bugs() {
+  const {user} = useContext(UserContext);
+
   return (
     <main>
       <Metatags
@@ -28,13 +33,19 @@ export default function Bugs() {
         description="Report nasty bugs that are in need of extermination"
         currentURL="rafaelzasas.com/bugs"
       />
-      <div className="flex flex-col items-center p-2">
-        <div className="space-y-2 py-2 text-center">
-          <h1 className="text-2xl text-slate-800 dark:text-slate-200">Bugs are nasty</h1>
-          <h2 className="text-xl text-slate-700 dark:text-slate-300">Good thing you and I can find and squash them</h2>
+      {!user ? (
+        <DefaultErrorPage statusCode={401} title={'Unauthorized - Please Log In'} />
+      ) : (
+        <div className="flex flex-col items-center p-2">
+          <div className="space-y-2 py-2 text-center">
+            <h1 className="text-2xl text-slate-800 dark:text-slate-200">Bugs are nasty</h1>
+            <h2 className="text-xl text-slate-700 dark:text-slate-300">
+              Good thing you and I can find and squash them
+            </h2>
+          </div>
+          <BugReportForm />
         </div>
-        <BugReportForm />
-      </div>
+      )}
     </main>
   );
 }
@@ -43,6 +54,26 @@ const BugReportForm = () => {
   const [imageIsLoading, setImageLoading] = useState(false);
   const [imageData, setImageData] = useState<FileData>(undefined);
   const {userData} = useContext(UserContext);
+  const {setToastData, setShowToast} = useContext(ToastContext);
+  const [response, setResponse] = useState(undefined);
+
+  useEffect(() => {
+    if (response) {
+      const toastData: ToastData = response.ok
+        ? {
+            heading: 'Bug report submitted',
+            body: `You can follow the progress on GitHub`,
+            type: 'success',
+          }
+        : {
+            heading: 'An error has occurred',
+            body: JSON.parse(response.body).err,
+            type: 'error',
+          };
+      setToastData(toastData);
+      setShowToast(true);
+    }
+  }, [response, setShowToast, setToastData]);
 
   function Upload(imageData: FileData) {
     const metadata: UploadMetadata = {
@@ -63,11 +94,10 @@ const BugReportForm = () => {
     });
   }
 
-  function submitBugReport(event: FormEvent<HTMLFormElement>) {
+  function SubmitBugReport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData: BugReport = {
-      // @ts-ignore
-      title: event.target.title.value,
+      name: event.currentTarget.reportTitle.value,
       description: event.currentTarget.description.value,
       platform: typeof window !== 'undefined' ? navigator.platform : null,
       browser: getUserBrowser(),
@@ -75,19 +105,48 @@ const BugReportForm = () => {
       timestamp: dayjs(new Date()).format('DD/MM/YYYY HH:mm:ss'),
       userEmail: userData.email,
     };
-    sendTicketToClickUp(formData);
+    let ticketDescription = `
+   - Created by: ${formData.userEmail}
+   - Description: ${formData.description}
+   - Browser: ${formData.browser}
+   - Platform: ${formData.platform}
+   - Timestamp: ${formData.timestamp}  
+  `;
+
+    if (formData.image) {
+      ticketDescription += `![nasty_bug](${formData.image})`;
+    }
+    const body = {
+      name: formData.name,
+      markdown_description: ticketDescription,
+      tags: ['🐛 bug-fix'],
+      status: 'Open',
+      priority: 3,
+      notify_all: true,
+      parent: null,
+      links_to: null,
+      check_required_custom_fields: false,
+    };
+
+    addTicketToClickUp(body).then((res) => {
+      console.log(res);
+      setResponse(res.data);
+    });
   }
 
   return (
-    <form onSubmit={submitBugReport} className="flex w-full flex-col items-center justify-center py-2 ">
+    <form onSubmit={SubmitBugReport} className="flex w-full flex-col items-center justify-center py-2">
       <div className="m-2 mx-auto flex w-full flex-col space-y-4 p-2 md:w-1/3 md:p-0">
         <span>
-          <label htmlFor="title" className="text-sm font-medium text-slate-700 dark:text-slate-200 sm:mt-px sm:pt-2">
+          <label
+            htmlFor="reportTitle"
+            className="text-sm font-medium text-slate-700 dark:text-slate-200 sm:mt-px sm:pt-2"
+          >
             Title
           </label>
           <input
-            id="title"
-            name="title"
+            id="reportTitle"
+            name="reportTitle"
             type="text"
             maxLength={60}
             required
@@ -182,46 +241,4 @@ function getUserBrowser() {
   } else {
     return null;
   }
-}
-
-function sendTicketToClickUp(payload: BugReport) {
-  const request = new XMLHttpRequest();
-
-  request.open('POST', 'https://api.clickup.com/api/v2/list/126192634/task');
-
-  request.setRequestHeader('Authorization', 'pk_12753582_BAGQJFHNHBLT7GI3DMPVU19LKR9HA3C9');
-  request.setRequestHeader('Content-Type', 'application/json');
-
-  request.onreadystatechange = function () {
-    if (this.readyState === 4) {
-      console.log('Status:', this.status);
-      console.log('Headers:', this.getAllResponseHeaders());
-      console.log('Body:', this.responseText);
-    }
-  };
-
-  const ticketDescription = `
-  <p>Created by: ${payload.userEmail}</p>
-  <p>Desription:</p>
-  <p>${payload.description}</p>
-  <p>Browser: ${payload.browser}</p>
-  <p>Platform: ${payload.platform}</p>
-  <p>Timestamp: ${payload.timestamp}</p>
-  <br>
-  <img width="100%" alt="nasty_bug" src="${payload.image}">
-  `;
-
-  const body = {
-    name: payload.title,
-    markdown_description: ticketDescription,
-    tags: ['🐛 bug-fix'],
-    status: 'Open',
-    priority: 3,
-    notify_all: true,
-    parent: null,
-    links_to: null,
-    check_required_custom_fields: false,
-  };
-
-  request.send(JSON.stringify(body));
 }
