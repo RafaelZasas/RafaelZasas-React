@@ -1,6 +1,6 @@
 import {auth, firestore, initializeApp} from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import {Permissions} from './types';
+import {ClickUpTicketData, Permissions} from './types';
 
 const firebaseApp = initializeApp();
 const db = firestore(firebaseApp);
@@ -58,3 +58,39 @@ exports.deleteBlogCommentData = functions.firestore
 
     return batch.commit();
   });
+
+exports.addTicketToClickUp = functions.https.onCall((data: ClickUpTicketData, context) => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
+  const request: XMLHttpRequest = new XMLHttpRequest();
+
+  request.open('POST', 'https://api.clickup.com/api/v2/list/126192634/task');
+
+  request.setRequestHeader('Authorization', process.env.CLICKUP_API_TOKEN as string);
+  request.setRequestHeader('Content-Type', 'application/json');
+
+  request.send(JSON.stringify(data));
+  const res = {status: 0, body: '', ok: false};
+
+  return new Promise((resolve, reject) => {
+    request.onreadystatechange = function () {
+      if (request.readyState === request.DONE) {
+        const status = request.status;
+        const body = request.responseText;
+        if (status === 0 || (status >= 200 && status < 400)) {
+          // The request has been completed successfully
+          res.status = status;
+          res.body = body;
+          res.ok = true;
+          resolve(res);
+        } else {
+          // Oh no! There has been an error with the request!
+          res.status = status;
+          res.body = body;
+          resolve(res);
+        }
+      }
+    };
+  });
+});
