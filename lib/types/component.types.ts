@@ -1,5 +1,5 @@
 import {IconDefinition} from '@fortawesome/fontawesome-svg-core';
-import {FormEventHandler} from 'react';
+import {FormEventHandler, HTMLProps} from 'react';
 
 export interface FileData {
   name: string;
@@ -9,7 +9,7 @@ export interface FileData {
   src: string;
 }
 
-export interface ButtonProps {
+export interface ButtonProps extends HTMLProps<HTMLButtonElement> {
   leftIcon?: IconDefinition;
   rightIcon?: IconDefinition;
   text: string;

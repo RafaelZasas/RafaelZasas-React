@@ -18,6 +18,12 @@ service firebase.storage {
       allow delete: if isAdmin(request);
     }
 
+    match /bugReports/{bugReportImage}{
+      allow read;
+      allow create: if isAuthenticated(request);
+      allow delete: if isAdmin(request);
+    }
+
     match /blog/{fileId}{
       allow read;
       allow write: if isAdmin(request);

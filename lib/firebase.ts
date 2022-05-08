@@ -8,7 +8,7 @@ import {
   initializeFirestore,
 } from 'firebase/firestore';
 import {connectStorageEmulator, getStorage} from 'firebase/storage';
-import {getFunctions, httpsCallable, connectFunctionsEmulator} from 'firebase/functions';
+import {getFunctions, httpsCallable, connectFunctionsEmulator, HttpsCallable} from 'firebase/functions';
 import {getMessaging, getToken, isSupported, MessagePayload, onMessage} from 'firebase/messaging';
 import {UserData} from './types';
 import {updateUser} from './FirestoreOperations';
@@ -54,6 +54,9 @@ export const appleAuthProvider = new OAuthProvider('apple.com');
 // Functions
 const functions = getFunctions(firebaseApp);
 export const addPermissions = httpsCallable(functions, 'addPermissions');
+export const addTicketToClickUp: HttpsCallable<any, {status: string; body: {err: string; ECODE: string}; ok: boolean}> =
+  httpsCallable(functions, 'addTicketToClickUp');
+
 // Storage exports
 export const storage = getStorage(firebaseApp);
 
