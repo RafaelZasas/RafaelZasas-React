@@ -45,13 +45,13 @@ export default function AboutPage({}) {
         alt: 'built-test',
       },
       {
-        url: 'https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml',
-        src: 'https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/dev-deploy.yml/badge.svg',
-        alt: 'Dev Deploy',
+        url: 'https://github.com/RafaelZasas/rafaelzasas-react/deployments?environment=Preview',
+        src: 'https://img.shields.io/github/deployments/RafaelZasas/rafaelzasas-react/preview?label=Preview&logo=vercel',
+        alt: 'Preview',
       },
       {
-        url: 'https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml',
-        src: 'https://github.com/RafaelZasas/RafaelZasas-React/actions/workflows/live-deploy.yml/badge.svg',
+        url: 'https://github.com/RafaelZasas/rafaelzasas-react/deployments?environment=Production',
+        src: 'https://img.shields.io/github/deployments/RafaelZasas/rafaelzasas-react/production?label=Production&logo=vercel',
         alt: 'Live Deploy',
       },
     ];
