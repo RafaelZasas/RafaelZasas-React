@@ -107,7 +107,8 @@ const BugReportForm = () => {
     };
     let ticketDescription = `
    - Created by: ${formData.userEmail}
-   - Description: ${formData.description}
+   - Description:  
+       ${formData.description}
    - Browser: ${formData.browser}
    - Platform: ${formData.platform}
    - Timestamp: ${formData.timestamp}  
@@ -129,8 +130,10 @@ const BugReportForm = () => {
     };
 
     addTicketToClickUp(body).then((res) => {
-      console.log(res);
       setResponse(res.data);
+      // @ts-ignore
+      event.target.reset();
+      setImageData(undefined);
     });
   }
 
