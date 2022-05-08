@@ -5,22 +5,21 @@ import Link from 'next/link';
 
 const navigation = {
   toolsUsed: [
-    {name: 'React', href: 'https://reactjs.org/'},
-    {name: 'NextJs', href: 'https://nextjs.org/'},
-    {name: 'Tailwind CSS', href: 'https://tailwindcss.com/'},
     {name: 'Firebase', href: 'https://firebase.google.com/'},
+    {name: 'NextJs', href: 'https://nextjs.org/'},
+    {name: 'Vercel', href: 'https://vercel.com/about'},
+    {name: 'Tailwind CSS', href: 'https://tailwindcss.com/'},
     {name: 'Gitkraken', href: 'https://gitkraken.com/'},
   ],
   credits: [
+    {name: 'Madusha Cooray ', href: 'https://www.linkedin.com/in/madushacooray/'},
     {name: 'Jeff Delaney (Fireship)', href: 'https://fireship.io/'},
-    {name: 'Madusha Cooray ', href: 'https://totv.tech/'},
-    {name: 'Gitmoji', href: 'https://gitmoji.dev/'},
     {name: 'Font Awesome', href: 'https://fontawesome.com/'},
     {name: 'ClickUp', href: 'https://clickup.com/'},
   ],
   resources: [
-    {name: 'About', link: '/about'},
-    {name: 'Google DSC', href: 'https://developers.google.com/community/dsc'},
+    {name: 'Google Dev Community', href: 'https://developers.google.com/community/dsc'},
+    {name: 'Blog', link: '/blog'},
     {name: 'Stack Overflow', href: 'https://stackoverflow.com/'},
     {name: 'Firebase Series', href: 'https://www.youtube.com/watch?v=Wy1DnHP8LqQ&t=677s'},
     {name: 'This Codebase', href: 'https://github.com/RafaelZasas/RafaelZasas-React'},
@@ -40,7 +39,7 @@ const navigation = {
           <FontAwesomeIcon icon={faPhoneSquare} color={'currentColor'} /> Tel
         </div>
       ),
-      href: 'tel:+13106002053',
+      href: 'tel:+6194311715',
     },
     {
       name: (
@@ -130,7 +129,6 @@ const navigation = {
 };
 
 const Footer = () => {
-  const [mode, setMode] = useState('auto');
   return (
     <footer className="bg-blue-50 " aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
@@ -144,8 +142,8 @@ const Footer = () => {
 
           <div className="space-y-8 xl:col-span-1">
             <p className="text-base text-gray-500">
-              A digital portfolio of an aspiring Software Developer. This Front-end is built using React and NextJs.
-              Backend operations are done mostly through Firebase & GCP.
+              Digital portfolio of an aspiring 10X Developer. I initially built this to showcase competency and impress
+              recruiters, but it has morphed into a personal playground, and way for me to showcase what I have learned.
             </p>
 
             {/*Social Links */}
@@ -186,7 +184,7 @@ const Footer = () => {
                 </ul>
               </div>
               <div className="mt-12 md:mt-0">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Credit</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Shout out</h3>
                 <ul role="list" className="mt-4 space-y-4">
                   {navigation.credits.map((item) => (
                     <li key={item.name}>
