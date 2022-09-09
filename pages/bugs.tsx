@@ -64,6 +64,7 @@ const BugReportForm = () => {
             heading: 'Bug report submitted',
             body: `You can follow the progress on GitHub`,
             type: 'success',
+            externalLink: 'https://github.com/RafaelZasas/rafaelzasas-react/issues',
           }
         : {
             heading: 'An error has occurred',
