@@ -2,11 +2,14 @@
 import React, {Dispatch, Fragment, SetStateAction, useEffect} from 'react';
 import {Transition} from '@headlessui/react';
 import {CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon, XIcon} from '../public/svg-icons';
+import {useRouter} from 'next/router';
 
 export interface ToastData {
   heading: string;
   body: string;
   type: 'error' | 'success' | 'info';
+  internalLink?: string;
+  externalLink?: string;
 }
 
 interface ToastProps {
@@ -21,6 +24,7 @@ interface ToastProps {
 export const Toast = (props: ToastProps) => {
   const show = props.show;
   const setShow = props.setShow;
+  const router = useRouter();
 
   useEffect(() => {
     show &&
@@ -47,7 +51,17 @@ export const Toast = (props: ToastProps) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <div
+              className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+              onClick={() => {
+                if (props.toastData.externalLink) {
+                  window.open(props.toastData.externalLink, '_blank').focus();
+                }
+                if (props.toastData.internalLink) {
+                  router.push(props.toastData.internalLink);
+                }
+              }}
+            >
               <div className="p-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0 self-center">
