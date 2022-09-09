@@ -83,7 +83,13 @@ export default function FileInputButton(props: FileInputButtonProps) {
 
   return (
     <Fragment>
-      <Button text={props.text} type="button" buttonStyle={props.buttonStyle} function={(e) => onPickFile(e)} />
+      <Button
+        text={props.text}
+        type="button"
+        id="fileInputButton"
+        buttonStyle={props.buttonStyle}
+        function={(e) => onPickFile(e)}
+      />
 
       <input
         data-show-upload="true"
@@ -94,6 +100,7 @@ export default function FileInputButton(props: FileInputButtonProps) {
           }
         }}
         type={'file'}
+        required={props.required || false}
         className={'hidden'}
         accept="*"
         name={props.name || 'myFile'}
